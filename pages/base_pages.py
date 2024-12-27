@@ -1,6 +1,7 @@
 """
 Base test page class
 """
+from basic_ecommerce_test_automation.utils.tools import YamlManager
 
 class BasePageException(Exception):
     """Exception for BasePage class"""
@@ -9,8 +10,12 @@ class BasePageException(Exception):
 class BasePage:
 
     def __init__(self, testing_page):
-        self.testing_page = testing_page
+        self._testing_page = YamlManager.get_yaml_file_data(testing_page)
 
     @property
     def testing_page(self):
-        return self.testing_page 
+        return self._testing_page
+    
+    @testing_page.setter
+    def testing_page(self, new_value):
+        self._testing_page = new_value
