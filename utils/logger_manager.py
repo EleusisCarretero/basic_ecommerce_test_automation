@@ -1,6 +1,8 @@
 import os
 import logging
 from datetime import datetime
+from pathlib import Path
+import subprocess
 
 
 class LoggerManager:
@@ -20,8 +22,8 @@ class LoggerManager:
     def _setup_logger(self, default_log_folder):
         current_file_path  = os.path.abspath(__file__)
         caller_file_name = current_file_path.split("\\")[-1].strip(".py")
-        current_dir = os.path.dirname(current_file_path)
-        default_log_folder_path = os.path.join(os.path.abspath(os.path.join(current_dir, "..", "..", "..")), default_log_folder)
+        current_dir = self._get_repo_path()
+        default_log_folder_path = os.path.join(current_dir, "test_logs_results",default_log_folder)
         try:
             os.makedirs(default_log_folder_path)
         except FileExistsError:
@@ -50,6 +52,18 @@ class LoggerManager:
             )
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
+
+    @staticmethod
+    def _get_repo_path():
+        """
+        """
+        repo_path = None
+        current_path = Path(__file__).resolve()
+        for parent in current_path.parents:
+            if (parent / "README.md").exists():
+                repo_path = parent
+                break
+        return repo_path
 
 
     def get_logger(self, name):
