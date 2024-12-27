@@ -1,6 +1,8 @@
 """
 Base test page class
 """
+from basic_ecommerce_test_automation.utils.logger_manager import LoggerManager
+
 
 class BasePageException(Exception):
     """Exception for BasePage class"""
@@ -8,9 +10,9 @@ class BasePageException(Exception):
 
 class BasePage:
 
-    def __init__(self, browser, logger_manager):
+    def __init__(self, browser):
         self.driver = browser.get_driver()
-        self.log = logger_manager.get_logger(self.__class__.__name__)
+        self.log = LoggerManager.get_logger(self.__class__.__name__)
         
 
     @property

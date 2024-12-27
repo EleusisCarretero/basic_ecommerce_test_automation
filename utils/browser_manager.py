@@ -1,6 +1,7 @@
 """
 Broser manager class
 """
+from basic_ecommerce_test_automation.utils.logger_manager import LoggerManager
 from selenium import webdriver
 from enum import Enum
 
@@ -22,8 +23,8 @@ class BrowserManagerException(Exception):
 
 class BrowserManager:
 
-    def __init__(self, logger, browser=AvailableBrowsers.CHROME, url=None, *args):
-        self.logger = logger.get_logger(self.__class__.__name__)
+    def __init__(self, browser=AvailableBrowsers.CHROME, url=None, *args):
+        self.log = LoggerManager.get_logger(self.__class__.__name__)
         self.driver = self._init_webdriver(browser, *args)
         if url:
             self.open_page(url)
@@ -31,7 +32,7 @@ class BrowserManager:
 
     def _init_webdriver(self, browser, *args):
         if browser not in AvailableBrowsers.get_available_browsers():
-            self.logger.error(f"Bowser {browser} is not available")
+            self.log.error(f"Bowser {browser} is not available")
             raise BrowserManagerException(f"Bowser {browser} is not available")
         options = getattr(webdriver, f"{browser}Options")()
         for arg in args:
@@ -39,16 +40,16 @@ class BrowserManager:
         try:
             driver = getattr(webdriver, browser)(options)
         except AttributeError as e:
-            self.logger.error(f"Error webdriver does not have attribute: {browser}")
+            self.log.error(f"Error webdriver does not have attribute: {browser}")
             raise BrowserManagerException(f"Error webdriver does not have attribute: {browser}") from e
         return driver
 
     def open_page(self, url):
         try:
             self.driver.get(url)
-            self.logger.info(f"Opening page: {url}")
+            self.log.info(f"Opening page: {url}")
         except Exception as e:
-            self.logger.error(f"Exception occurred: {e}")
+            self.log.error(f"Exception occurred: {e}")
             raise BrowserManagerException(f"Error trying to set page {url}") from e
     
     def get_driver(self):
