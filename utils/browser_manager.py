@@ -50,6 +50,12 @@ class BrowserManager:
         except Exception as e:
             self.logger.error(f"Exception occurred: {e}")
             raise BrowserManagerException(f"Error trying to set page {url}") from e
+    
+    def get_driver(self):
+        return self.driver
+    
+    def driver_down(self):
+        self.driver.quit()
         
 
 
