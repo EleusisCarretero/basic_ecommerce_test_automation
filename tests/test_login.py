@@ -1,12 +1,16 @@
-from basic_ecommerce_test_automation.pages.base_pages import BasePage
-from basic_ecommerce_test_automation.utils.tools import YamlManager
+from basic_ecommerce_test_automation.pages.login_page import LoginPage
 import pytest
 
-class TestPositiveFlows(BasePage):
 
-    def __init__(self):
-        testing_page = YamlManager.get_yaml_file_data("basic_ecommerce_test_automation/tests/test_inputs/sauce_demo.yaml")
-        super().__init__(testing_page)
 
+
+class TestPositiveFlows:
+
+
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.login_page = LoginPage("E:/11)_Eleusis_Git_Stuf/basic_ecommerce_test_automation/tests/test_inputs/sauce_demo.yaml")
+
+    
     def test_valid_login(self):
-        print(f"Content from source demo file: {self.testing_page}")
+        print(f"Content from source demo file: {self.login_page.testing_page}")
