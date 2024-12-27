@@ -6,6 +6,7 @@ from pathlib import Path
 
 class LoggerManager:
     LOG_COUNTER = 0
+    _loggers = {}
     def __init__(self, active_logs=True, default_log_folder="DEFAULT_LOG_FOLDER"):
         self.active_logs = active_logs
         self._setup_logger(default_log_folder)
@@ -43,7 +44,6 @@ class LoggerManager:
             console_handler.setFormatter(formatter)
             logger.addHandler(console_handler)
 
-            # Configurar file handler
             current_datetime = datetime.now()
             formatted_datetime = current_datetime.strftime("%Y_%m_%d_%H_%M_%S")
             file_handler = logging.FileHandler(
@@ -66,7 +66,10 @@ class LoggerManager:
 
 
     def get_logger(self, name):
-        return logging.getLogger(name)
+        if name in LoggerManager._loggers:
+            return LoggerManager._loggers[name]
+        LoggerManager._loggers[name] = logging.getLogger(name)
+        return LoggerManager._loggers[name]
 
 if __name__ == '__main__':
     # test the logger
