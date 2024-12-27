@@ -32,13 +32,15 @@ class BrowserManager:
     def _init_webdriver(self, browser, *args):
         if browser not in AvailableBrowsers.get_available_browsers():
             self.logger.error(f"Bowser {browser} is not available")
+            raise BrowserManagerException(f"Bowser {browser} is not available")
         options = getattr(webdriver, f"{browser}Options")()
         for arg in args:
             options.add_argument(arg)
         try:
             driver = getattr(webdriver, browser)(options)
-        except AttributeError:
+        except AttributeError as e:
             self.logger.error(f"Error webdriver does not have attribute: {browser}")
+            raise BrowserManagerException(f"Error webdriver does not have attribute: {browser}") from e
         return driver
 
     def open_page(self, url):
