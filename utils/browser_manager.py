@@ -22,11 +22,11 @@ class BrowserManagerException(Exception):
 
 class BrowserManager:
 
-    def __init__(self, logger, browser=AvailableBrowsers.CHROME, path_page=None, *args):
+    def __init__(self, logger, browser=AvailableBrowsers.CHROME, url=None, *args):
         self.logger = logger.get_logger(self.__class__.__name__)
         self.driver = self._init_webdriver(browser, *args)
-        if path_page:
-            self.open_page(path_page)
+        if url:
+            self.open_page(url)
 
 
     def _init_webdriver(self, browser, *args):
@@ -41,13 +41,13 @@ class BrowserManager:
             self.logger.error(f"Error webdriver does not have attribute: {browser}")
         return driver
 
-    def open_page(self, path_page):
+    def open_page(self, url):
         try:
-            self.driver.get(path_page)
-            self.logger.info(f"Opening page: {path_page}")
+            self.driver.get(url)
+            self.logger.info(f"Opening page: {url}")
         except Exception as e:
             self.logger.error(f"Exception occurred: {e}")
-            raise BrowserManagerException(f"Error trying to set page {path_page}") from e
+            raise BrowserManagerException(f"Error trying to set page {url}") from e
         
 
 
