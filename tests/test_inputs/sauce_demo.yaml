@@ -1,2 +1,18 @@
 general_inputs:
-  login_page: https://www.saucedemo.com/
+  login_page: 
+    path: https://www.saucedemo.com/
+    valid_users:
+      by: "CSS_SELECTOR"
+      element: "[data-test='login-credentials']"
+    valid_password:
+      by: "CSS_SELECTOR"
+      element: "[data-test='login-password']"
+    username:
+      by: "ID"
+      element: "user-name"
+    password:
+      by: "ID"
+      element: "password"
+    login_bttn:
+      by: "ID"
+      element: "login-button"
