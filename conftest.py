@@ -2,9 +2,10 @@
 General configuration
 """
 import pytest
-from basic_ecommerce_test_automation.utils.browser_manager import BrowserManager
 from basic_ecommerce_test_automation.utils.config import Config
 from basic_ecommerce_test_automation.utils.logger_manager import LoggerManager
+from basic_ecommerce_test_automation.utils.browser_manager import BrowserManager
+from basic_ecommerce_test_automation.utils.result_manager import ResultManagerClass
 
 
 def pytest_addoption(parser):
@@ -24,3 +25,8 @@ def browser(request):
     manager = BrowserManager(browser=request.param)
     yield manager
     manager.driver_down()
+
+
+@pytest.fixture(scope="class")
+def result():
+    return ResultManagerClass()
