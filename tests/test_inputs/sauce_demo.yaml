@@ -16,3 +16,5 @@ general_inputs:
     login_bttn:
       by: "ID"
       element: "login-button"
+  inventory_page:
+    path: inventory.html
