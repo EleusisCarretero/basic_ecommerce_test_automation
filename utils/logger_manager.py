@@ -14,12 +14,11 @@ class LoggerManager:
     def get_logger(cls, name:str):
         if name in LoggerManager._loggers:
             return LoggerManager._loggers[name]
-        cls._setup_logger()
         LoggerManager._loggers[name] = logging.getLogger(name)
         return LoggerManager._loggers[name]
 
     @classmethod
-    def _setup_logger(cls):
+    def setup_logger(cls):
         current_file_path  = os.path.abspath(__file__)
         caller_file_name = current_file_path.split("\\")[-1].strip(".py")
         current_dir = cls._get_repo_path()
