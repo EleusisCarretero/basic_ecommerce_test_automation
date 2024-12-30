@@ -23,7 +23,6 @@ class LoginPage(BasePage):
         super().__init__(browser)
         self.login_page_dict = YamlManager.get_yaml_file_data(testing_page)["general_inputs"]["login_page"]
         self.testing_page = self.login_page_dict["path"]
-        browser.open_page(self.testing_page)
 
     def get_valid_credentials(self):
         """
@@ -46,8 +45,8 @@ class LoginPage(BasePage):
             returns the text values in list format
             """
             by = self.login_page_dict[key]["by"]
-            ele = self.login_page_dict[key]["element"]
-            return self._convert_text_to_list(self.get_text_element(by, ele), "\n", init, end)
+            value = self.login_page_dict[key]["value"]
+            return self._convert_text_to_list(self.get_text_element(by, value), "\n", init, end)
 
         users = get_credential("valid_users", 1)
         passwords = get_credential("valid_password", 1, 2)
@@ -87,24 +86,24 @@ class LoginPage(BasePage):
             user (str): User name
             password (str): corresponding password
         """
-        def set_credentials(key, value):
+        def set_credentials(key, keys_value):
             """
             Set the specific credential, username or password, in the corresponding field.
             """
             by = self.login_page_dict[key]["by"]
-            ele = self.login_page_dict[key]["element"]
-            self.set_element_value(by, ele, value)
+            value = self.login_page_dict[key]["value"]
+            self.set_element_value(by, value, keys_value)
 
-        for key, value in {"username": user, "password": password}.items():
-            set_credentials(key, value)
+        for key, keys_value in {"username": user, "password": password}.items():
+            set_credentials(key, keys_value)
 
     def click_login_btn(self):
         """
         Clicks on the login button form login page.
         """
         by = self.login_page_dict["login_bttn"]["by"]
-        ele = self.login_page_dict["login_bttn"]["element"]
-        self.click_on_element(by, ele)
+        value = self.login_page_dict["login_bttn"]["value"]
+        self.click_on_element(by, value)
 
     def login_page(self, user=None, password=None, credentials=True):
         """

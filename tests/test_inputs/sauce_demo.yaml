@@ -3,18 +3,29 @@ general_inputs:
     path: https://www.saucedemo.com/
     valid_users:
       by: "CSS_SELECTOR"
-      element: "[data-test='login-credentials']"
+      value: "[data-test='login-credentials']"
     valid_password:
       by: "CSS_SELECTOR"
-      element: "[data-test='login-password']"
+      value: "[data-test='login-password']"
     username:
       by: "ID"
-      element: "user-name"
+      value: "user-name"
     password:
       by: "ID"
-      element: "password"
+      value: "password"
     login_bttn:
       by: "ID"
-      element: "login-button"
+      value: "login-button"
   inventory_page:
     path: inventory.html
+    lateral_menu:
+      by: "ID"
+      value: "react-burger-menu-btn"
+    lateral_menu_items:
+      by: "XPATH"
+      value: "//div[@class='bm-menu-wrap']//div[@class='bm-menu']//nav[@class='bm-item-list']"
+    logout:
+      by: "XPATH"
+      # value: "//a[@id='logout_sidebar_link']"
+      value: "//a[@id='logout_sidebar_link' and contains(@class, 'bm-item')]"
+
