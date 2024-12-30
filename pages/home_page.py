@@ -21,7 +21,7 @@ class HomePage(BasePage):
             *self._get_element_params(key="lateral_menu"))
     
     def get_lateral_menu_items(self):
-        return self._get_webdriver_element_obj(*self._get_element_params(key="lateral_menu_items"))
+        return self.get_webdriver_element_obj(*self._get_element_params(key="lateral_menu_items"))
     
     def click_on_log_out(self):
         all_menu_items = self.get_lateral_menu_items()
