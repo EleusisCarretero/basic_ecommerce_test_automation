@@ -1,6 +1,7 @@
 """
 Contents the ResultManager Class and its corresponding exception
 """
+from typing import Callable, Union
 from basic_ecommerce_test_automation.utils.logger_manager import LoggerManager
 
 
@@ -42,7 +43,7 @@ class ResultManagerClass:
             if details:
                 self.log.error(details)
 
-    def check_equals_to(self, actual_value, expected_value, step_msg) -> None:
+    def check_equals_to(self, actual_value: any, expected_value: any, step_msg: str) -> None:
         """
         Validates that two values are equals and tracks the result.
 
@@ -60,7 +61,7 @@ class ResultManagerClass:
                 details += f" Different types variables, actual_value type {type(actual_value)} != expected_value {type(expected_value)}"
             self._log_result(False, step_msg, details)
 
-    def check_not_equals_to(self, actual_value, expected_value, step_msg):
+    def check_not_equals_to(self, actual_value: any, expected_value: any, step_msg: str) -> None:
         """
         Validates that two values are NOT equals and tracks the result.
 
@@ -76,7 +77,7 @@ class ResultManagerClass:
             details = f"Expected NOT to be: '{expected_value}', but got: '{actual_value}'."
             self._log_result(False, step_msg, details)
 
-    def check_not_raises_any_exception(self, method, step_msg, *args, **kwargs):
+    def check_not_raises_any_exception(self, method: Callable, step_msg: str, *args, **kwargs) -> None:
         """
         Validates that when a function/method is executed ANY type of exception is not raised.
 
@@ -91,6 +92,28 @@ class ResultManagerClass:
             self._log_result(True, step_msg)
             return response
         except Exception as e:
+            details = f"The method '{method.__name__}' raised an exception: {e}."
+            self._log_result(False, step_msg, details)
+            self.step_status = False
+    
+    def check_not_raises_any_given_exception(self, method: Callable, exceptions: Union [Exception, tuple], step_msg: str, *args, **kwargs) -> None:
+        """
+        Validates that any of the 'given' exceptions is NOT raise, otherwise the validations fails.
+
+        Args:
+            method(func): The callback function to execute.
+            exceptions (Exception): Exceptions, or tuple of exceptions to validate is/are NOT raised.
+            step_msg(str): Step message to give details of the assertion.
+            args(list): arguments for 'method'.
+            kwargs(dict): arguments for 'method'.
+        """
+        if not isinstance(exceptions, tuple):
+            exceptions = (exceptions,)
+        try:
+            response = method(*args, **kwargs)
+            self._log_result(True, step_msg)
+            return response
+        except exceptions as e:
             details = f"The method '{method.__name__}' raised an exception: {e}."
             self._log_result(False, step_msg, details)
             self.step_status = False
