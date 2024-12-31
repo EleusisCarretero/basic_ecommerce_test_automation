@@ -41,7 +41,7 @@ class BasePage:
         """
         self.browser.open_page(self.testing_page)
 
-    def get_webdriver_element_obj(self, by, value, driver, timeout=5):
+    def get_webdriver_element_obj(self, by, value, driver=None, timeout=5):
         """
         Wrapper method to get a webdriver element from browser manager.
 
@@ -56,7 +56,7 @@ class BasePage:
         """
         return self.browser.get_present_element(by=by, value=value, driver=driver, timeout=timeout)
         
-    def click_on_element(self, by, value, driver):
+    def click_on_element(self, by, value, driver=None):
         """
         Wrapper method to click on a webdriver element.
 
@@ -67,7 +67,7 @@ class BasePage:
         """
         self.browser.click_wait_clickable_element(by=by, value=value, driver=driver)
     
-    def get_text_element(self, by, value, driver, timeout=5):
+    def get_text_element(self, by, value, driver=None, timeout=5):
         """
         Wrapper method to get the text from webdriver element.
 
@@ -82,7 +82,7 @@ class BasePage:
         """
         return self.browser.get_element_text(by=by, value=value, driver=driver, timeout=timeout)
 
-    def set_element_value(self, by, value, keys_value, driver, timeout=5):
+    def set_element_value(self, by, value, keys_value, driver=None, timeout=5):
         """
         Wrapper method to send a desired text to webdriver element.
 
