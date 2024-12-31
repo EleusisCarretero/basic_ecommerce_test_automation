@@ -31,8 +31,11 @@ general_inputs:
       by: "XPATH"
       value: "//a[@id='logout_sidebar_link' and contains(@class, 'bm-item')]"
     inventory_items:
-      by: "CLASS_NAME"
-      value: "inventory_list"
+      by: "CSS_SELECTOR"
+      value: "div.inventory_list"
+    items_list:
+      by: "CSS_SELECTOR"
+      value: ".inventory_item"
     single_item:
       by: "XPATH"
       value: "//div[@class='inventory_item']//div[@class='inventory_item_description']//div[@class='inventory_item_label']//a"
