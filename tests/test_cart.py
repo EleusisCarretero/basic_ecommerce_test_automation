@@ -1,6 +1,7 @@
 """
 Contains the test classes and test methods related to cart validations
 """
+import pytest
 from basic_ecommerce_test_automation.tests.base_test import BaseTest
 from basic_ecommerce_test_automation.pages.home_page import HomePage
 from basic_ecommerce_test_automation.pages.login_page import LoginPage
@@ -31,6 +32,16 @@ class TestPositiveFlows(BaseTestCart):
         super().setup(browser, result)
         self.login_page.open_page()
 
-    def test_add_and_remove_items(self, items):
+    @pytest.mark.parametrize(
+            ("items_text"), 
+            [
+                (["Sauce Labs Backpack"] ), 
+                # (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]), 
+            ]
+    )
+    def test_add_and_remove_items(self, items_text):
+        self.login_page.login_page(**self.login_page.get_just_specific_user("standard_user"))
         # 1 add item to the cart
-        
+        for item_text in items_text:
+            item = self.home_page.get_single_inventory_item(item_text)
+            self.home_page.add_item_to_cart(item)
