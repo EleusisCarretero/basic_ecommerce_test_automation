@@ -30,3 +30,12 @@ general_inputs:
     logout:
       by: "XPATH"
       value: "//a[@id='logout_sidebar_link' and contains(@class, 'bm-item')]"
+    inventory_items:
+      by: "CLASS_NAME"
+      value: "inventory_list"
+    single_item:
+      by: "XPATH"
+      value: "//div[@class='inventory_item']//div[@class='inventory_item_description']//div[@class='inventory_item_label']//a"
+    button-item:
+      by: "XPATH"
+      value: "//[text()='Add to cart']"
