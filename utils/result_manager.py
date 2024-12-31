@@ -117,3 +117,19 @@ class ResultManagerClass:
             details = f"The method '{method.__name__}' raised an exception: {e}."
             self._log_result(False, step_msg, details)
             self.step_status = False
+
+    def check_less_equals(self, actual_value: Union[int:float], expected_less_equals: Union[int:float], step_msg: str):
+        """
+        Validates that two values are equals and tracks the result.
+
+        Args:
+            actual_value(any): The result value gotten from a response.
+            expected_less_equals(any): The value to compare the results and ensure it is less or equals.
+            step_msg(str): Step message to give details of the assertion
+        """
+        try:
+            assert actual_value <= expected_less_equals
+            self._log_result(True, step_msg)
+        except AssertionError:
+            details = f"Expected NOT to be: '{expected_less_equals}', but got: '{actual_value}'."
+            self._log_result(False, step_msg, details)
