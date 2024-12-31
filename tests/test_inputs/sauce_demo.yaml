@@ -16,6 +16,9 @@ general_inputs:
     login_bttn:
       by: "ID"
       value: "login-button"
+    wrong_credential_error:
+      by: "CSS_SELECTOR"
+      value: "div.error-message-container.error h3"
   inventory_page:
     path: inventory.html
     lateral_menu:
@@ -26,5 +29,4 @@ general_inputs:
       value: "//div[@class='bm-menu-wrap']//div[@class='bm-menu']//nav[@class='bm-item-list']"
     logout:
       by: "XPATH"
-      # value: "//a[@id='logout_sidebar_link']"
       value: "//a[@id='logout_sidebar_link' and contains(@class, 'bm-item')]"
