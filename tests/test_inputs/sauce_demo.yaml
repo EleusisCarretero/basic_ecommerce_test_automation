@@ -28,4 +28,3 @@ general_inputs:
       by: "XPATH"
       # value: "//a[@id='logout_sidebar_link']"
       value: "//a[@id='logout_sidebar_link' and contains(@class, 'bm-item')]"
-
