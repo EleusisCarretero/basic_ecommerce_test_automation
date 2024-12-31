@@ -121,9 +121,3 @@ class LoginPage(BasePage):
             self.write_credentials(user, password)
         # Click on login button
         self.click_login_btn()
-
-    def get_alert_text(self):
-        return super().get_alert_text
-
-    def acpet_alert(self):
-        super().acpet_alert()
