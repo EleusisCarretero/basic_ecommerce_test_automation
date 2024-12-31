@@ -53,7 +53,8 @@ class HomePage(BasePage):
         self.click_on_element(*self._get_element_params(key="logout"), all_menu_items)
     
     def get_inventory_items(self):
-        return self.get_webdriver_list_element_obj(*self._get_element_params(key="inventory_items"))
+        items_list = self.get_webdriver_element_obj(*self._get_element_params(key="inventory_items"))
+        return self.get_webdriver_list_element_obj(*self._get_element_params(key="items_list"),items_list)
     
     def get_single_inventory_item(self, expected_item_text):
         list_of_items = self.get_inventory_items()
