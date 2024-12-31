@@ -7,6 +7,13 @@ from basic_ecommerce_test_automation.utils.config import Config
 
 
 class LoggerManager:
+    """"
+    Class logger manager is responsible of setting the logger setup and handle all the logger used in the repo.
+
+    Attributes:
+        LOG_COUNTER(int): saves the current log value created in the run.
+        _loggers(dict): internal dictionary to manage all the loggers created and assigned.
+    """
     LOG_COUNTER = 0
     _loggers = {}
 
@@ -19,6 +26,10 @@ class LoggerManager:
 
     @classmethod
     def setup_logger(cls):
+        """
+        Method to setup the logger. Creates the test folder to save the logs and controls the name
+        and enumeration of the log file. As well as setup the format and level.
+        """
         current_file_path  = os.path.abspath(__file__)
         caller_file_name = current_file_path.split("\\")[-1].strip(".py")
         current_dir = cls._get_repo_path()
@@ -28,7 +39,7 @@ class LoggerManager:
             os.makedirs(default_log_folder_path)
         except FileExistsError:
             print("Folder already exists")
-        
+
         cls.LOG_COUNTER = cls._count_files_with_extension(default_log_folder_path)
 
         logger = logging.getLogger()
@@ -60,8 +71,6 @@ class LoggerManager:
 
     @staticmethod
     def _get_repo_path():
-        """
-        """
         repo_path = None
         current_path = Path(__file__).resolve()
         for parent in current_path.parents:
@@ -69,7 +78,6 @@ class LoggerManager:
                 repo_path = parent
                 break
         return repo_path
-
 
 if __name__ == '__main__':
     # test the logger
