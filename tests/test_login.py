@@ -1,6 +1,8 @@
 """
 Contains all login test cases
 """
+from datetime import datetime
+import time
 import pytest
 from selenium.common.exceptions import ElementClickInterceptedException, InvalidElementStateException, NoSuchElementException
 from basic_ecommerce_test_automation.pages.home_page import HomePage
@@ -97,3 +99,24 @@ class TestPositiveFlows(BaseLogIn):
             step_msg="Check Logout successfully"
         )
         assert self.result.step_status
+    
+    @pytest.mark.parametrize(
+            ("timeout"), [(5), (10), (20)]
+    )
+    def test_login_timeout(self, timeout):
+        """Test that login page takes the timeout to login"""
+        self.log.info(f"Testing login page with a timeout of {timeout}s")
+        # 1. Get the user credentials.
+        user_credential = self.login_page.get_just_specific_user("standard_user")
+        start_time = time.time()
+        self.step_check_login_successfully(user_credential)
+        end_time = time.time()
+        # 2. Check time take is less that the timeout
+        self.result.check_less_equals(
+            end_time - start_time,
+            timeout,
+            f"Check the login page takes less equals to {timeout}s"
+        )
+        assert self.result.step_status
+
+
