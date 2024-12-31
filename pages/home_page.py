@@ -45,7 +45,7 @@ class HomePage(BasePage):
         """
         return self.get_webdriver_element_obj(*self._get_element_params(key="lateral_menu_items"))
     
-    def click_on_log_out(self):
+    def click_on_logout(self):
         """
         Clicks on the logout button, which is part of the lateral menu.
         """
