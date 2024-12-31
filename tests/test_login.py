@@ -69,7 +69,7 @@ class TestPositiveFlows(BaseLogIn):
 
     def test_login_logout(self):
         """
-        
+        Validate the correct login and logout
         """
         # 1. Get the user credentials.
         user_credential = self.login_page.get_just_specific_user("standard_user")
@@ -84,7 +84,7 @@ class TestPositiveFlows(BaseLogIn):
         assert self.result.step_status
         # 4. Click on logout
         self.result.check_not_raises_any_given_exception(
-            method=self.home_page.click_on_log_out,
+            method=self.home_page.click_on_logout,
             exceptions=(InvalidElementStateException, ElementClickInterceptedException, NoSuchElementException),
             step_msg="Check Logout successfully"
         )
