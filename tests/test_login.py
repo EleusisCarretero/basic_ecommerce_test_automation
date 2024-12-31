@@ -47,6 +47,31 @@ class BaseLogIn(BaseTest):
               **user_credential
         )
         assert self.result.step_status
+    
+    def step_check_login_unsuccessfully(self, user_credential:dict, expected_error_msg, timeout=2) -> None:
+        """
+        Step function to validate incorrect login.
+
+        Args:
+            user_credential (dict): username: password, credentials to login.
+        """
+        # 1. correct login
+        step_msg = f"Check using credentials {user_credential} we are able to login unsuccessfully."
+        self.result.check_not_raises_any_exception(
+            self.login_page.login_page,
+              step_msg,
+              **user_credential
+        )
+        assert self.result.step_status
+        # 2. validate error message
+        step_msg = "Check the error message is displayed as expected"
+        current_error_msg = self.login_page.get_login_error_text(timeout=timeout)
+        self.result.check_equals_to(
+            actual_value=current_error_msg,
+            expected_value=expected_error_msg,
+            step_msg=step_msg
+        )
+        assert self.result.step_status
 
 
 class TestPositiveFlows(BaseLogIn):
@@ -120,3 +145,35 @@ class TestPositiveFlows(BaseLogIn):
         assert self.result.step_status
 
 
+class TestNegativeFlows(BaseLogIn):
+    """
+    Test class to validate negative flows.
+    """
+
+    @pytest.fixture(autouse=True)
+    def setup(self, browser, result):
+        super().setup(browser, result)
+        self.login_page.open_page()
+
+    @pytest.mark.parametrize(
+            ("user", "password", "expected_error_mgs"), 
+            [
+                ("Juan_Camaney", "12345", "Epic sadface: Username and password do not match any user in this service"),  # Invalid user, invalid password
+                ("standard_user", "soy_123_wers", "Epic sadface: Username and password do not match any user in this service"),  # valid user, invalid password
+                ("Uknowd_123_t", "secret_sauce", "Epic sadface: Username and password do not match any user in this service")  # invalid user, 'valid' password
+            ]
+    )
+
+    def test_invalid_credentials(self, user, password, expected_error_mgs):
+        """
+        Validate invalid credentials
+
+        Args:
+            user(str): user credential.
+            password(str): password credentials.
+            expected_error_mgs(str): expected error message shown when a wrong user tries to login.
+        """
+        self.step_check_login_unsuccessfully(
+            user_credential={"user":user,"password":password},
+            expected_error_msg=expected_error_mgs
+        )
