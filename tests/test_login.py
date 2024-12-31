@@ -177,3 +177,25 @@ class TestNegativeFlows(BaseLogIn):
             user_credential={"user":user,"password":password},
             expected_error_msg=expected_error_mgs
         )
+
+    @pytest.mark.parametrize(
+            ("user", "password", "expected_error_msg"), 
+            [
+                ("standard_user", "", "Epic sadface: Username is required"),  # Empty password
+                ("", "secret_sauce", "Epic sadface: Password is required"),  # Empty user
+                ("", "", "Epic sadface: Username is required")  # Empty user and empty password
+            ]
+    )
+    def test_empty_credentials(self, user, password, expected_error_msg):
+        """
+        Validate empty credentials, user, password or both.
+
+        Args:
+            user(str): user credential.
+            password(str): password credentials.
+            expected_error_mgs(str): expected error message shown when a wrong user tries to login.
+        """
+        self.step_check_login_unsuccessfully(
+            user_credential={"user":user,"password":password},
+            expected_error_msg=expected_error_msg
+        )
