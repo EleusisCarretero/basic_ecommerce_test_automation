@@ -2,16 +2,19 @@
 Browser manager class
 """
 from typing import Union
-from basic_ecommerce_test_automation.utils.logger_manager import LoggerManager
-from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException, NoSuchElementException
+from enum import Enum
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium import webdriver
-from enum import Enum
+from basic_ecommerce_test_automation.utils.logger_manager import LoggerManager
 
 
 class AvailableBrowsers(str, Enum):
+    """
+    Enum class to control available browsers
+    """
     CHROME = "Chrome"
     FIREFOX = "Firefox"
     EDGE = "Edge"
@@ -24,33 +27,8 @@ class AvailableBrowsers(str, Enum):
         return [browser for browser in cls]
 
 
-def wait_for_element():
-    """
-    """
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            driver = kwargs.get("driver")
-            timeout = kwargs.get("timeout", 10)
-            by = kwargs.get("by")
-            value = kwargs.get("value")
-            if not (driver and by and value):
-                raise ValueError("driver, by, and value must be provided as kwargs.")
-            try:
-                element = WebDriverWait(driver, timeout).until(
-                    EC.visibility_of_element_located((getattr(By, by), value))
-                )
-                return func(*args, element=element, **kwargs)
-            except TimeoutError as e:
-                raise BrowserManagerException(
-                    f"Timeout of {timeout}s exceeded while locating element: {value}"
-                ) from e
-        return wrapper
-    return decorator
-
-
 class BrowserManagerException(Exception):
     """BrowserManager Exception class"""
-    pass
 
 
 class BrowserManager:
@@ -84,14 +62,12 @@ class BrowserManager:
     
     @property
     def driver(self):
+        """Property method to get _driver value"""
         return self._driver
     
     @driver.setter
     def driver(self, new_driver):
         self._driver = new_driver
-
-    # def get_driver(self) -> None:
-    #     return self.driver
 
     def open_page(self, url:str, driver=None) -> None:
         """
