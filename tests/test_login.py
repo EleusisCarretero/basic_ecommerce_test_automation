@@ -10,6 +10,14 @@ from basic_ecommerce_test_automation.utils.tools import YamlManager
 
 
 class BaseLogIn(BaseTest):
+    """
+    Common login class handles the common stuff shared for all login test classes.
+
+    Attributes:
+        inventory_page_dict(dict): dictionary which saves the common inputs for login test classes.
+        login_page(LoginPage): interface login page stuff.
+        home_page(HomePage): interface home page stuff.
+    """
     TESTING_PAGE =  "E:/11)_Eleusis_Git_Stuf/basic_ecommerce_test_automation/tests/test_inputs/sauce_demo.yaml"
     def setup(self, browser, result):
         super().setup(browser, result)
