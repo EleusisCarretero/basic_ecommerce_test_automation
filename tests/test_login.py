@@ -181,8 +181,8 @@ class TestNegativeFlows(BaseLogIn):
     @pytest.mark.parametrize(
             ("user", "password", "expected_error_msg"), 
             [
-                ("standard_user", "", "Epic sadface: Username is required"),  # Empty password
-                ("", "secret_sauce", "Epic sadface: Password is required"),  # Empty user
+                ("standard_user", "", "Epic sadface: Password is required"),  # Empty password
+                ("", "secret_sauce", "Epic sadface: Username is required"),  # Empty user
                 ("", "", "Epic sadface: Username is required")  # Empty user and empty password
             ]
     )
