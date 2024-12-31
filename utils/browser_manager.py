@@ -160,6 +160,29 @@ class BrowserManager:
             self.log.error(f"Unable get the element using parameters '({by}, {value})' within {timeout}s")
             raise BrowserManagerException("Unable to write on element") from e
 
+    def get_present_list_element(self, by:By, value:str, driver):
+        """
+        Waits until the element which matches with the 'by' and ' value' within a timeout, (it does not means it is visible)
+        otherwise the BrowserManagerException is raised.
+
+        Args:
+            by(By): By enum, ID, XPATH, etc.
+            value:(str): pattern to find the element.
+            driver:(webdriver obj:Optional, Default=None): webdriver object.
+
+        Returns:
+            Element: Element found which matches within timeout.
+
+        Raises:
+            BrowserManagerException: In case the timeout has been reached and the element is still not present.
+        """
+        driver = driver or self.driver
+        try:
+            return driver.find_elements(getattr(By, by), value)
+        except TimeoutException as e:
+            self.log.error(f"Unable get the element using parameters '({by}, {value})'")
+            raise BrowserManagerException("Unable to write on element") from e
+
     def get_visible_element(self, by:By, value:str, driver, timeout: Union[int, float]):
         """
         Waits until the element which matches with the 'by' and ' value' within a timeout, (the element should be visible)
