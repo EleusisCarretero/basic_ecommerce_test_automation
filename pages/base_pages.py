@@ -55,6 +55,21 @@ class BasePage:
             Webdriver obj: Element which matches the given seek parameters
         """
         return self.browser.get_present_element(by=by, value=value, driver=driver, timeout=timeout)
+
+    def get_webdriver_list_element_obj(self, by, value, driver=None):
+        """
+        Wrapper method to get a webdriver element from browser manager.
+
+        Args:
+            by(By): By enum, ID, XPATH, etc.
+            value:(str): pattern to find the element.
+            driver:(webdriver obj:Optional, Default=None): webdriver object.
+            timeout: (int/float): Timeout in seconds to wait.
+        
+        Returns
+            Webdriver obj: Element which matches the given seek parameters
+        """
+        return self.browser.get_present_list_element(by=by, value=value, driver=driver)
         
     def click_on_element(self, by, value, driver=None):
         """
