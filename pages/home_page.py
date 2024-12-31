@@ -51,3 +51,17 @@ class HomePage(BasePage):
         """
         all_menu_items = self.get_lateral_menu_items()
         self.click_on_element(*self._get_element_params(key="logout"), all_menu_items)
+    
+    def get_inventory_items(self):
+        return self.get_webdriver_element_obj(*self._get_element_params(key="inventory_items"))
+    
+    def get_single_inventory_item(self, expected_item_text):
+        list_of_items = self.get_inventory_items()
+        for item in list_of_items:
+            item_text = self.get_text_element(*self._get_element_params(key="single_item"), item)
+            if expected_item_text == item_text:
+                return item
+        raise HomePageException(f"Item wasn't found using text {expected_item_text}")
+
+    def add_item_to_cart(self, item):
+        self.click_on_element(*self._get_element_params(key="button-item"), item)
