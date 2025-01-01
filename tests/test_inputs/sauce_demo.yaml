@@ -39,6 +39,9 @@ general_inputs:
     single_item:
       by: "XPATH"
       value: "//div[@class='inventory_item']//div[@class='inventory_item_description']//div[@class='inventory_item_label']//a"
-    button-item:
+    add_to_cart_button:
       by: "XPATH"
-      value: "//[text()='Add to cart']"
+      value: "//button[text()='Add to cart']"
+    remove_button:
+      by: "XPATH"
+      value: "//button[text()='Remove']"
