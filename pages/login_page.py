@@ -116,8 +116,10 @@ class LoginPage(BasePage):
             password (str:optional): corresponding password
             credentials (bool:optional:default=True): Flag to try to login with or without
         """
+        self.log.info("Tying to login")
         # Write credentials if it is requested
         if credentials:
+            self.log.info(f"Writing credentials: user name {user}, password: {password}")
             self.write_credentials(user, password)
         # Click on login button
         self.click_login_btn()
