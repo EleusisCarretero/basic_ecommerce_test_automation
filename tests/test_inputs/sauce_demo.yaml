@@ -45,3 +45,6 @@ general_inputs:
     remove_button:
       by: "XPATH"
       value: "//button[text()='Remove']"
+    cart_icon:
+      by: "CSS_SELECTOR"
+      value: "[data-test='shopping-cart-link']"
