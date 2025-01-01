@@ -36,15 +36,15 @@ class TestPositiveFlows(BaseTestCart):
     @pytest.mark.parametrize(
             ("items_text"), 
             [
-                (["Sauce Labs Backpack"] ), 
-                # (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]), 
+                # (["Sauce Labs Backpack"] ), 
+                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]), 
             ]
     )
     def test_add_and_remove_items(self, items_text):
         self.login_page.login_page(**self.login_page.get_just_specific_user("standard_user"))
         # 1 add item to the cart
-        for item_text in items_text:
+        for idx, item_text in enumerate(items_text):
             item = self.home_page.get_single_inventory_item(item_text)
             self.home_page.add_item_to_cart(item)
-            time.sleep(4)
-            self.home_page.remove_item_from_cart(item)
+            current_items_added = self.home_page.get_num_items_in_cart()
+            assert idx + 1 == current_items_added

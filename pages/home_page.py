@@ -74,8 +74,7 @@ class HomePage(BasePage):
         """
         list_of_items = self.get_inventory_items()
         for item in list_of_items:
-            item_text = self.get_text_element(*self._get_element_params(key="single_item"), item)
-            if expected_item_text == item_text:
+            if expected_item_text in item.text:
                 return item
         raise HomePageException(f"Item wasn't found using text {expected_item_text}")
 
@@ -96,3 +95,7 @@ class HomePage(BasePage):
             item(Webdriver obj): ite to add to checkout cart.
         """
         self.click_on_element(*self._get_element_params(key="remove_button"), item)
+    
+    def get_num_items_in_cart(self):
+
+        return int(self.get_text_element(*self._get_element_params(key="cart_icon"), timeout=1))
