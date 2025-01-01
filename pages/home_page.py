@@ -51,12 +51,27 @@ class HomePage(BasePage):
         """
         all_menu_items = self.get_lateral_menu_items()
         self.click_on_element(*self._get_element_params(key="logout"), all_menu_items)
-    
+
     def get_inventory_items(self):
+        """
+        Gets the list of items from the home page inventory.
+
+        Returns:
+            list: List of items which are part of the inventory.
+        """
         items_list = self.get_webdriver_element_obj(*self._get_element_params(key="inventory_items"))
         return self.get_webdriver_list_element_obj(*self._get_element_params(key="items_list"),items_list)
-    
+
     def get_single_inventory_item(self, expected_item_text):
+        """
+        Looks into the inventory list based on its text, and gives back the item obj.
+
+        Args:
+            expected_item_text(str): expected text item
+        
+        Returns:
+            Webdriver obj: the items which matches the text
+        """
         list_of_items = self.get_inventory_items()
         for item in list_of_items:
             item_text = self.get_text_element(*self._get_element_params(key="single_item"), item)
@@ -65,4 +80,19 @@ class HomePage(BasePage):
         raise HomePageException(f"Item wasn't found using text {expected_item_text}")
 
     def add_item_to_cart(self, item):
-        self.click_on_element(*self._get_element_params(key="button-item"), item)
+        """
+        Adds the given 'item' to the checkout cart by click its 'Add to cart' button.
+
+        Args:
+            item(Webdriver obj): ite to add to checkout cart.
+        """
+        self.click_on_element(*self._get_element_params(key="add_to_cart_button"), item)
+
+    def remove_item_from_cart(self, item):
+        """
+        Removes the given 'item' from the checkout cart by click its 'Remove' button.
+
+        Args:
+            item(Webdriver obj): ite to add to checkout cart.
+        """
+        self.click_on_element(*self._get_element_params(key="remove_button"), item)
