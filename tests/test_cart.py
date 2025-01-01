@@ -1,6 +1,7 @@
 """
 Contains the test classes and test methods related to cart validations
 """
+import time
 import pytest
 from basic_ecommerce_test_automation.tests.base_test import BaseTest
 from basic_ecommerce_test_automation.pages.home_page import HomePage
@@ -45,3 +46,5 @@ class TestPositiveFlows(BaseTestCart):
         for item_text in items_text:
             item = self.home_page.get_single_inventory_item(item_text)
             self.home_page.add_item_to_cart(item)
+            time.sleep(4)
+            self.home_page.remove_item_from_cart(item)
