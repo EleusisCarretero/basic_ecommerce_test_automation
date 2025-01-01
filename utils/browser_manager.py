@@ -207,7 +207,7 @@ class BrowserManager:
             )
         except TimeoutException as e:
             self.log.error(f"Unable get the element using parameters '({by}, {value})' within {timeout}s")
-            raise BrowserManagerException("Unable to write on element") from e
+            raise BrowserManagerException("Unable to get element") from e
 
     def enter_text_to_present_element(self, by:By, value:str, keys_value:str, driver, timeout: Union[int, float]) -> None:
         """

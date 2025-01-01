@@ -47,4 +47,4 @@ general_inputs:
       value: "//button[text()='Remove']"
     cart_icon:
       by: "CSS_SELECTOR"
-      value: "[data-test='shopping-cart-link']"
+      value: "[data-test='shopping-cart-badge']"

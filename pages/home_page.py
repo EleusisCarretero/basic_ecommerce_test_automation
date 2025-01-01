@@ -2,6 +2,7 @@
 Home page class
 """
 from basic_ecommerce_test_automation.pages.base_pages import BasePage
+from basic_ecommerce_test_automation.utils.browser_manager import BrowserManagerException
 from basic_ecommerce_test_automation.utils.tools import YamlManager
 
 
@@ -97,5 +98,16 @@ class HomePage(BasePage):
         self.click_on_element(*self._get_element_params(key="remove_button"), item)
     
     def get_num_items_in_cart(self):
+        """
+        Gets the current items included in the cart.
 
-        return int(self.get_text_element(*self._get_element_params(key="cart_icon"), timeout=1))
+        Returns:
+            int: current quantity of items in the cart.
+        """
+        try:
+            q_items = int(self.get_text_element(*self._get_element_params(key="cart_icon"), timeout=1))
+            self.log.info(f"The cart has currently {q_items} items")
+        except BrowserManagerException:
+            self.log.info("There is no item added in the cart")
+            q_items = 0
+        return q_items
