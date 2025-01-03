@@ -124,6 +124,25 @@ class BasePage:
             self.browser.switch_window()
         return self.browser.get_current_driver_url()
 
+    def get_inventory_items(self):
+        """
+        Gets the list of items from the home page inventory.
+
+        Returns:
+            list: List of items which are part of the inventory.
+        """
+        items_list = self.get_webdriver_element_obj(*self._get_element_params(key="inventory_items"))
+        return self.get_webdriver_list_element_obj(*self._get_element_params(key="items_list"),items_list)
+
+    def get_item_prices(self):
+        prices_dict = {}
+        list_of_items = self.get_inventory_items()
+        for item in list_of_items:
+            tmp_price = self.get_text_element(*self._get_element_params(key="item_price"), item).split('\n')[0]
+            tmp_name = self.get_text_element(*self._get_element_params(key="item_name"), item)
+            prices_dict.update({tmp_name:tmp_price})
+        return prices_dict
+
     @staticmethod
     def _convert_text_to_list(text, spliter, ini=0, end=-1):
         return text.split(spliter)[ini:end]

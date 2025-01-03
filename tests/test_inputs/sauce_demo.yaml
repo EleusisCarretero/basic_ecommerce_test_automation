@@ -34,8 +34,8 @@ general_inputs:
       by: "CSS_SELECTOR"
       value: "div.inventory_list"
     items_list:
-      by: "CSS_SELECTOR"
-      value: ".inventory_item"
+      by: "CLASS_NAME"
+      value: "inventory_item"
     single_item:
       by: "XPATH"
       value: "//div[@class='inventory_item']//div[@class='inventory_item_description']//div[@class='inventory_item_label']//a"
@@ -51,17 +51,23 @@ general_inputs:
     cart_button:
       by: "CSS_SELECTOR"
       value: "[data-test='shopping-cart-link']"
+    item_price:
+      by: "CLASS_NAME"
+      value: "inventory_item_price"
+    item_name:
+      by: "CLASS_NAME"
+      value: "inventory_item_name"
   cart_page:
     path: cart.html
-    cart_list:
+    inventory_items:
       by: "XPATH"
       value: "//div[@class='cart_list']"
-    cart_item:
+    items_list:
       by: "CSS_SELECTOR"
       value: "[data-test='inventory-item']"
     item_price:
-      by: "CSS_SELECTOR"
-      value: "[data-test='inventory_item_price']"
+      by: "CLASS_NAME"
+      value: "inventory_item_price"
     item_name:
-      by: "XPATH"
-      value: "//a[@href='#']//div[@class='inventory_item_name']"
+      by: "CLASS_NAME"
+      value: "inventory_item_name"

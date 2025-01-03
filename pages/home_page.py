@@ -53,16 +53,6 @@ class HomePage(BasePage):
         all_menu_items = self.get_lateral_menu_items()
         self.click_on_element(*self._get_element_params(key="logout"), all_menu_items)
 
-    def get_inventory_items(self):
-        """
-        Gets the list of items from the home page inventory.
-
-        Returns:
-            list: List of items which are part of the inventory.
-        """
-        items_list = self.get_webdriver_element_obj(*self._get_element_params(key="inventory_items"))
-        return self.get_webdriver_list_element_obj(*self._get_element_params(key="items_list"),items_list)
-
     def get_single_inventory_item(self, expected_item_text):
         """
         Looks into the inventory list based on its text, and gives back the item obj.
@@ -96,7 +86,7 @@ class HomePage(BasePage):
             item(Webdriver obj): ite to add to checkout cart.
         """
         self.click_on_element(*self._get_element_params(key="remove_button"), item)
-    
+
     def get_num_items_in_cart(self):
         """
         Gets the current items included in the cart.
@@ -113,5 +103,7 @@ class HomePage(BasePage):
         return q_items
 
     def move_to_cart_page(self):
+        """
+        Click on cart button to move to 'Cart' page.
+        """
         self.click_on_element(*self._get_element_params(key="cart_button"))
-

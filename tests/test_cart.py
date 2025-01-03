@@ -174,10 +174,18 @@ class TestPositiveFlows(BaseTestCart):
         """
         # 1 . include itesm to the cart
         self.iterate_items_list(items_text, self.step_include_item_in_cart, "including")
+        it_home_page = {key:value for key, value in self.home_page.get_item_prices().items() if key in items_text}
+        self.log.info(f"Items included in the cart viewed in the home page: {it_home_page}")
         # 2. Click on cart item
         self.step_move_to_checkout()
         # 3. Get inventory items included in cart page
-        tmp_variable = self.cart_page.get_item_prices("Sauce Labs Backpack")
-        print(tmp_variable)
-
-
+        it_cart_page = self.cart_page.get_item_prices()
+        # 4. for item_text in items_text:
+        self.log.info(f"items included in Cart page: {it_cart_page}")
+        # 5. compare the items are the same:
+        if len(it_home_page) != len(it_cart_page):
+            self.log.error(f"Home page items {len(it_home_page)}: {it_home_page}. Cart page items {len(it_cart_page)}: {it_cart_page}")
+            raise BaseTestCartError("The items from home page and cart page are the same quantity")
+        for h_name, h_price, in it_home_page.items():
+            assert h_price == it_cart_page[h_name], "Wrong price"
+        
