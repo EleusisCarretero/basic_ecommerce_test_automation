@@ -111,3 +111,7 @@ class HomePage(BasePage):
             self.log.info("There is no item added in the cart")
             q_items = 0
         return q_items
+
+    def move_to_cart_page(self):
+        self.click_on_element(*self._get_element_params(key="cart_button"))
+
