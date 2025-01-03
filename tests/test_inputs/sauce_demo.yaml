@@ -31,15 +31,21 @@ general_inputs:
       by: "XPATH"
       value: "//a[@id='logout_sidebar_link' and contains(@class, 'bm-item')]"
     inventory_items:
-      by: "CSS_SELECTOR"
-      value: "div.inventory_list"
+      by: "XPATH"
+      value: "//div[@class='cart_list']"
     items_list:
       by: "CLASS_NAME"
       value: "inventory_item"
+    item_name:
+      by: "CLASS_NAME"
+      value: "inventory_item_name"
     single_item:
       by: "XPATH"
       value: "//div[@class='inventory_item']//div[@class='inventory_item_description']//div[@class='inventory_item_label']//a"
     add_to_cart_button:
+      by: "CLASS_NAME"
+      value: "btn_inventory"
+    add_to_cart_button_order:
       by: "XPATH"
       value: "//button[text()='Add to cart']"
     remove_button:
