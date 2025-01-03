@@ -59,3 +59,9 @@ general_inputs:
     cart_item:
       by: "CSS_SELECTOR"
       value: "[data-test='inventory-item']"
+    item_price:
+      by: "CSS_SELECTOR"
+      value: "[data-test='inventory_item_price']"
+    item_name:
+      by: "XPATH"
+      value: "//a[@href='#']//div[@class='inventory_item_name']"

@@ -115,6 +115,14 @@ class BaseTestCart(BaseTest):
                 step_msg=f"Check the quantity of items matches the expected after {msg} {item_text} to the cart")
             assert self.result.step_status
 
+    def step_move_to_checkout(self):
+        self.log.info("Moving to checkout page")
+        self.result.check_not_raises_any_given_exception(
+            method=self.home_page.move_to_cart_page,
+            exceptions=BrowserManagerException,
+            step_msg="Check moving to checkout page successfully",
+        )
+
 
 class TestPositiveFlows(BaseTestCart):
     """
@@ -167,8 +175,9 @@ class TestPositiveFlows(BaseTestCart):
         # 1 . include itesm to the cart
         self.iterate_items_list(items_text, self.step_include_item_in_cart, "including")
         # 2. Click on cart item
-        self.home_page.move_to_cart_page()
-        # 3. Get inventory items includded in cart page
-        tmp_variable = self.cart_page.get_inventory_items()
+        self.step_move_to_checkout()
+        # 3. Get inventory items included in cart page
+        tmp_variable = self.cart_page.get_item_prices("Sauce Labs Backpack")
+        print(tmp_variable)
 
 
