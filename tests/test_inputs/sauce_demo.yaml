@@ -48,3 +48,14 @@ general_inputs:
     cart_icon:
       by: "CSS_SELECTOR"
       value: "[data-test='shopping-cart-badge']"
+    cart_button:
+      by: "CSS_SELECTOR"
+      value: "[data-test='shopping-cart-link']"
+  cart_page:
+    path: cart.html
+    cart_list:
+      by: "XPATH"
+      value: "//div[@class='cart_list']"
+    cart_item:
+      by: "CSS_SELECTOR"
+      value: "[data-test='inventory-item']"
