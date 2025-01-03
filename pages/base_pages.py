@@ -131,10 +131,15 @@ class BasePage:
         Returns:
             list: List of items which are part of the inventory.
         """
-        items_list = self.get_webdriver_element_obj(*self._get_element_params(key="inventory_items"))
-        return self.get_webdriver_list_element_obj(*self._get_element_params(key="items_list"),items_list)
+        return self.get_webdriver_list_element_obj(*self._get_element_params(key="items_list"))
 
     def get_item_prices(self):
+        """
+        It gets the available elements in the page (home, or cath page) with names and prices.
+
+        Returns:
+            dict: {name1:price1, name2:price2, }
+        """
         prices_dict = {}
         list_of_items = self.get_inventory_items()
         for item in list_of_items:
