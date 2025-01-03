@@ -188,4 +188,3 @@ class TestPositiveFlows(BaseTestCart):
             raise BaseTestCartError("The items from home page and cart page are the same quantity")
         for h_name, h_price, in it_home_page.items():
             assert h_price == it_cart_page[h_name], "Wrong price"
-        
