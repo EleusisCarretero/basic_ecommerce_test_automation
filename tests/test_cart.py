@@ -8,6 +8,7 @@ from basic_ecommerce_test_automation.pages.home_page import HomePage, HomePageEx
 from basic_ecommerce_test_automation.pages.login_page import LoginPage
 from basic_ecommerce_test_automation.utils.tools import YamlManager
 from basic_ecommerce_test_automation.utils.browser_manager import BrowserManagerException
+from basic_ecommerce_test_automation.pages.cart_page import CartPage
 
 
 class BaseTestCartError(Exception):
@@ -28,6 +29,16 @@ class BaseTestCart(BaseTest):
             browser,
             self.TESTING_PAGE
         )
+        self.cart_page = CartPage(
+            browser,
+            self.TESTING_PAGE
+        )
+        try:
+            self.login_page.open_page()
+            self.login_page.login_page(**self.login_page.get_just_specific_user("standard_user"))
+        except BrowserManagerException as e:
+            self.log.error("Unable to login using standard user credentials")
+            raise BaseTestCartError("Login has failed") from e
     
     def step_check_look_for_item(self, item_name):
         """
@@ -90,6 +101,20 @@ class BaseTestCart(BaseTest):
         assert self.result.step_status
         return self.home_page.get_num_items_in_cart()
 
+    def iterate_items_list(self, item_list, callback, msg):
+        add_sub = {
+            "including": lambda a, b: a + b,
+            "removing": lambda a, b: abs(a - b),
+        } 
+        for idx, item_text in enumerate(item_list):
+            current_items_added = callback(item_text)
+            inc_dec = idx if msg == "including" else len(item_list) - idx
+            self.result.check_equals_to(
+                actual_value=current_items_added,
+                expected_value=add_sub[msg](inc_dec, 1),
+                step_msg=f"Check the quantity of items matches the expected after {msg} {item_text} to the cart")
+            assert self.result.step_status
+
 
 class TestPositiveFlows(BaseTestCart):
     """
@@ -99,7 +124,6 @@ class TestPositiveFlows(BaseTestCart):
     @pytest.fixture(autouse=True)
     def setup(self, browser, result):
         super().setup(browser, result)
-        self.login_page.open_page()
 
     @pytest.mark.parametrize(
             ("items_text"), 
@@ -117,25 +141,34 @@ class TestPositiveFlows(BaseTestCart):
         Args:
             items_text(list): List of string with the names of the items to test, added and removed
         """
-        add_sub = {
-            "including": lambda a, b: a + b,
-            "removing": lambda a, b: abs(a - b),
-        }
-        def iterate_items_list(item_list, callback, msg):
-            
-            for idx, item_text in enumerate(item_list):
-                current_items_added = callback(item_text)
-                inc_dec = idx if msg == "including" else len(item_list) - idx
-                self.result.check_equals_to(
-                    actual_value=current_items_added,
-                    expected_value=add_sub[msg](inc_dec, 1),
-                    step_msg=f"Check the quantity of items matches the expected after {msg} {items_text} to the cart")
-                assert self.result.step_status
-
-        self.login_page.login_page(**self.login_page.get_just_specific_user("standard_user"))
         # 1. Add items to the cart
-        iterate_items_list(items_text, self.step_include_item_in_cart, "including")
+        self.iterate_items_list(items_text, self.step_include_item_in_cart, "including")
         # 2. Reorder items list
         random.shuffle(items_text)
         # 3. Remove item from cart
-        iterate_items_list(items_text, self.step_remove_item_in_cart, "removing")
+        self.iterate_items_list(items_text, self.step_remove_item_in_cart, "removing")
+
+    @pytest.mark.parametrize(
+            ("items_text"), 
+            [
+                (["Sauce Labs Backpack"]), 
+                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]), 
+                (["Sauce Labs Onesie","Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]), 
+                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt", "Sauce Labs Backpack", "Sauce Labs Onesie"]), 
+            ]
+    )
+    def test_validate_prices(self, items_text):
+        """
+        Test case validates the items in the cart page corresponds to the items previously selected, as well as their prices.
+
+        Args:
+            items_text(list): List of string with the names of the items to test, added and removed
+        """
+        # 1 . include itesm to the cart
+        self.iterate_items_list(items_text, self.step_include_item_in_cart, "including")
+        # 2. Click on cart item
+        self.home_page.move_to_cart_page()
+        # 3. Get inventory items includded in cart page
+        tmp_variable = self.cart_page.get_inventory_items()
+
+
