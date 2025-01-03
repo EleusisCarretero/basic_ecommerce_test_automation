@@ -65,7 +65,8 @@ class HomePage(BasePage):
         """
         list_of_items = self.get_inventory_items()
         for item in list_of_items:
-            if expected_item_text in item.text:
+            name = self.get_text_element(*self._get_element_params(key="item_name"), driver=item)
+            if expected_item_text == name:
                 return item
         raise HomePageException(f"Item wasn't found using text {expected_item_text}")
 
