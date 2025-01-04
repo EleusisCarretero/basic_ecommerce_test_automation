@@ -108,3 +108,22 @@ class HomePage(BasePage):
         Click on cart button to move to 'Cart' page.
         """
         self.click_on_element(*self._get_element_params(key="cart_button"))
+
+    def move_item_page(self, item_name):
+        """
+        click on a determinate item in home page and goes to the item page.
+
+        Args:
+            item_name(str): name of the item we want to move to its page
+        """
+        item = None
+        list_of_items = self.get_inventory_items()
+        for item in list_of_items:
+            tmp_name = self.get_text_element(*self._get_element_params(key="item_name"), item)
+            if tmp_name == item_name:
+                break
+        if item is not None:
+            self.click_on_element(*self._get_element_params(key="item_name"), item)
+        else:
+            self.log.info(f"Make sure item {item_name} is in home page")
+            raise HomePageException(f"Unable to click on {item_name}")
