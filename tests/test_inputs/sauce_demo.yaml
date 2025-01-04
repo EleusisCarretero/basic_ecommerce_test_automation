@@ -45,9 +45,6 @@ general_inputs:
     add_to_cart_button:
       by: "CLASS_NAME"
       value: "btn_inventory"
-    add_to_cart_button_order:
-      by: "XPATH"
-      value: "//button[text()='Add to cart']"
     remove_button:
       by: "XPATH"
       value: "//button[text()='Remove']"
@@ -63,6 +60,8 @@ general_inputs:
     item_name:
       by: "CLASS_NAME"
       value: "inventory_item_name"
+    item_page:
+      by:
   cart_page:
     path: cart.html
     inventory_items:
@@ -77,3 +76,11 @@ general_inputs:
     item_name:
       by: "CLASS_NAME"
       value: "inventory_item_name"
+  product_page:
+    add_to_cart_button:
+      by: "XPATH"
+      value: "//button[text()='Add to cart']"
+    back_to_products:
+      by: "CSS_SELECTOR"
+      value: "button[data-test='back-to-products']"
+    
