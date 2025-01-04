@@ -9,6 +9,7 @@ from basic_ecommerce_test_automation.pages.login_page import LoginPage
 from basic_ecommerce_test_automation.utils.tools import YamlManager
 from basic_ecommerce_test_automation.utils.browser_manager import BrowserManagerException
 from basic_ecommerce_test_automation.pages.cart_page import CartPage
+from basic_ecommerce_test_automation.pages.product_page import ProductPage
 
 
 class BaseTestCartError(Exception):
@@ -30,6 +31,10 @@ class BaseTestCart(BaseTest):
             self.TESTING_PAGE
         )
         self.cart_page = CartPage(
+            browser,
+            self.TESTING_PAGE
+        )
+        self.product_page = ProductPage(
             browser,
             self.TESTING_PAGE
         )
@@ -115,13 +120,42 @@ class BaseTestCart(BaseTest):
                 step_msg=f"Check the quantity of items matches the expected after {msg} {item_text} to the cart")
             assert self.result.step_status
 
-    def step_move_to_checkout(self):
+    def step_move_to_cart_page(self):
+        """
+        Step function to move to checkout page from home page
+        """
         self.log.info("Moving to checkout page")
         self.result.check_not_raises_any_given_exception(
             method=self.home_page.move_to_cart_page,
             exceptions=BrowserManagerException,
             step_msg="Check moving to checkout page successfully",
         )
+        assert self.result.step_status
+
+    def step_move_to_item_page(self, item_name):
+        """
+        Step function to validate the movement from home page to item page has been successfully
+        """
+        self.log.info(f"Clicking on item {item_name} and going to its page")
+        self.result.check_not_raises_any_given_exception(
+            method= self.home_page.move_item_page,
+            exceptions=BrowserManagerException,
+            step_msg=f"Check moving to {item_name} page successfully",
+            item_name=item_name
+        )
+        assert self.result.step_status
+
+    def step_move_back_to_page(self):
+        """
+        Step function to validate the movement from item page to home page has been successfully
+        """
+        self.log.info("Going back to home page")
+        self.result.check_not_raises_any_given_exception(
+            method=self.product_page.back_to_home_page,
+            exceptions=BrowserManagerException,
+            step_msg="Check moving to Home page successfully",
+        )
+        assert self.result.step_status
 
 
 class TestPositiveFlows(BaseTestCart):
@@ -177,7 +211,7 @@ class TestPositiveFlows(BaseTestCart):
         it_home_page = {key:value for key, value in self.home_page.get_item_prices().items() if key in items_text}
         self.log.info(f"Items included in the cart viewed in the home page: {it_home_page}")
         # 2. Click on cart item
-        self.step_move_to_checkout()
+        self.step_move_to_cart_page()
         # 3. Get inventory items included in cart page
         it_cart_page = self.cart_page.get_item_prices()
         # 4. for item_text in items_text:
@@ -188,3 +222,46 @@ class TestPositiveFlows(BaseTestCart):
             raise BaseTestCartError("The items from home page and cart page are the same quantity")
         for h_name, h_price, in it_home_page.items():
             assert h_price == it_cart_page[h_name], "Wrong price"
+
+    @pytest.mark.parametrize(
+            ("item_name"), 
+            [
+                ("Sauce Labs Backpack"), 
+                ("Sauce Labs Bike Light"), 
+                ("Sauce Labs Onesie")
+            ]
+    )
+    def test_add_item_in_item_page(self, item_name):
+        """
+        Validate an item page is reachable from home page and the product is able to be included
+        in the cart.
+
+        Args:
+            item_name(str): Name of the item from home page.
+        """
+        # 1. Move to item page.
+        self.step_move_to_item_page(item_name)
+        # 2. Add item to the cart since item page.
+        self.product_page.add_item_to_cart()
+        # 3. Get quantity of items in the cart
+        self.result.check_equals_to(
+            actual_value=self.home_page.get_num_items_in_cart(), 
+            expected_value=1, 
+            step_msg="Check the number of items matches the expected"
+        )
+        assert self.result.step_status
+        # 4. Move back to home page
+        self.step_move_back_to_page()
+        # 5. Get price of product
+        home_price = self.home_page.get_item_prices()[item_name]
+        # 6. Move to checkout page
+        self.step_move_to_cart_page()
+        # 7. Get price from cart page
+        cart_price = self.cart_page.get_item_prices()[item_name]
+        self.result.check_equals_to(
+            actual_value=cart_price, 
+            expected_value=home_price, 
+            step_msg="Check the item price form home page and cart page is the same"
+        )
+        assert self.result.step_status
+
