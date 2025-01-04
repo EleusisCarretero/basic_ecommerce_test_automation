@@ -28,6 +28,8 @@ base_ecommerce_test_automation/
 │   ├── product_page.py     # Elements and methods for the product page
 │   └── checkout_page.py    # Elements and methods for the checkout process
 ├── tests/
+│   ├── test_input/         # inputs files
+|       └── source_demo.yaml       
 │   ├── test_login.py       # Login-related tests
 │   ├── test_navigation.py  # Navigation tests
 │   ├── test_cart.py        # Shopping cart tests
@@ -35,8 +37,11 @@ base_ecommerce_test_automation/
 ├── utils/
 │   ├── config.py           # Project configuration (URLs, credentials)
 │   ├── browser_manager.py  # Driver and browser setup
-│   └── logger.py           # Logging utilities
+│   ├── logger_manager.py   # Logging utilities
+│   ├── result_manager.py   # Assertion utilities
+|   └── tools.py            # Common tools
 ├── requirements.txt        # Project dependencies
+├── conftest.py             # conftest pytest file
 ├── pytest.ini              # Pytest configuration
 └── README.md               # Project documentation
 ```
