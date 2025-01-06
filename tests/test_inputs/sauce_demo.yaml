@@ -76,6 +76,12 @@ general_inputs:
     item_name:
       by: "CLASS_NAME"
       value: "inventory_item_name"
+    checkout_button:
+      by: "ID"
+      value: "checkout"
+    continues_shopping:
+      by: "ID"
+      value: "continue-shopping"
   product_page:
     add_to_cart_button:
       by: "XPATH"
