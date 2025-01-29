@@ -1,0 +1,4 @@
+cart:
+  mongo_uri: "mongodb+srv://eleusiscarretero:J8nKfYYIuPa0XcJB@cluster0.73nlx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+  db_name: "users_data"
+  collection_name: "users"
