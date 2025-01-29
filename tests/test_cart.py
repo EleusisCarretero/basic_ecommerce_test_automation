@@ -2,6 +2,8 @@
 Contains the test classes and test methods related to cart validations
 """
 import random
+import time
+from basic_ecommerce_test_automation.pages.checkout_page import CheckOutPage
 import pytest
 from basic_ecommerce_test_automation.tests.base_test import BaseTest
 from basic_ecommerce_test_automation.pages.home_page import HomePage, HomePageException
@@ -10,6 +12,15 @@ from basic_ecommerce_test_automation.utils.tools import YamlManager
 from basic_ecommerce_test_automation.utils.browser_manager import BrowserManagerException
 from basic_ecommerce_test_automation.pages.cart_page import CartPage
 from basic_ecommerce_test_automation.pages.product_page import ProductPage
+from basic_ecommerce_test_automation.utils.tools import ApiManager
+
+
+@pytest.fixture(scope="session")
+def api_settings():
+    """
+    Fixture to get the instance of ResultManagerClass, common in all tests.
+    """
+    return YamlManager.get_yaml_file_data("E:/11)_Eleusis_Git_Stuf/basic_ecommerce_test_automation/tests/test_inputs/api_config.yaml")["cart"]
 
 
 class BaseTestCartError(Exception):
@@ -19,7 +30,7 @@ class BaseTestCartError(Exception):
 class BaseTestCart(BaseTest):
 
     TESTING_PAGE =  "E:/11)_Eleusis_Git_Stuf/basic_ecommerce_test_automation/tests/test_inputs/sauce_demo.yaml"
-    def setup(self, browser, result):
+    def setup(self, browser, result, run_users_api):
         super().setup(browser, result)
         self.inventory_page_dict = YamlManager.get_yaml_file_data(self.TESTING_PAGE)["general_inputs"]["inventory_page"]
         self.login_page = LoginPage(
@@ -35,6 +46,10 @@ class BaseTestCart(BaseTest):
             self.TESTING_PAGE
         )
         self.product_page = ProductPage(
+            browser,
+            self.TESTING_PAGE
+        )
+        self.checkout_page = CheckOutPage(
             browser,
             self.TESTING_PAGE
         )
@@ -156,6 +171,17 @@ class BaseTestCart(BaseTest):
             step_msg="Check moving to Home page successfully",
         )
         assert self.result.step_status
+    
+    def step_move_to_checkout_page(self):
+        """
+        Step function to validate the movement from cart page to checkout page
+        """
+        self.result.check_not_raises_any_given_exception(
+            method=self.cart_page.move_to_checkout_page,
+            exceptions=(BrowserManagerException), 
+            step_msg="Check the it is successfully move to checkout page"
+        )
+        assert self.result.step_status
 
 
 class TestPositiveFlows(BaseTestCart):
@@ -164,8 +190,8 @@ class TestPositiveFlows(BaseTestCart):
     """
     
     @pytest.fixture(autouse=True)
-    def setup(self, browser, result):
-        super().setup(browser, result)
+    def setup(self, browser, result, run_users_api):
+        super().setup(browser, result, run_users_api)
 
     @pytest.mark.parametrize(
             ("items_text"), 
@@ -264,4 +290,26 @@ class TestPositiveFlows(BaseTestCart):
             step_msg="Check the item price form home page and cart page is the same"
         )
         assert self.result.step_status
-
+        # 8. Move to checkout button without error
+        self.step_move_to_checkout_page()
+        # 9. check and get the user data from API
+        user = self.step_execute_api_request(
+            url="http://127.0.0.1:5000/users",
+            is_random=True
+        )[0]
+        # 10. fill the checkout info
+        self.step_check_execution_events(
+            callable_event=self.checkout_page.filed_checkout_info,
+            exceptions=BrowserManagerException,
+            first_name=user["first_name"], last_name=user["last_name"], postal_code=user["zip_code"]
+        )
+        # 11. Move to checkout-two page
+        self.step_check_execution_events(
+            callable_event=self.checkout_page.continue_checkout_step_two,
+            exceptions=BrowserManagerException,
+        )
+        # 12. finish buy
+        self.step_check_execution_events(
+            callable_event=self.checkout_page.finish_buy,
+            exceptions=BrowserManagerException,
+        )
