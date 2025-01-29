@@ -1,9 +1,21 @@
+"""
+API MongoDB manager file
+"""
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
 import argparse
 
-class APIMongoDB:
 
+class APIMongoDB:
+    """
+    API MongoDB class manager
+
+    Attributes:
+        app(Flask): Flask instance
+        mongo_uri(str): mongo db uri
+        db_name(str): data base name
+        collection_name(str): collection name
+    """
     def __init__(self, app, mongo_uri, db_name, collection_name):
         self.app = app
         self.mongo_uri = mongo_uri
@@ -19,13 +31,22 @@ class APIMongoDB:
         self.app.add_url_rule("/add_user", view_func=self.add_user, methods=["POST"])
 
     def home(self):
+        """
+        Returns API message
+        """
         return jsonify({"message": "API Flask with MongoDB"})
 
     def get_users(self):
+        """
+        GET method
+        """
         users = list(self.collection.find({}, {"_id": 0}))  # Excluye _id
         return jsonify(users)
 
     def add_user(self):
+        """
+        POST method
+        """
         data = request.json
         self.collection.insert_one(data)
         return jsonify({"message": "User successfully added"}), 201
@@ -43,4 +64,3 @@ if __name__ == "__main__":
     app = Flask(__name__)
     md_db = APIMongoDB(app,args.mongo_uri, args.db_name, args.collection_name)
     app.run(debug=True)
-    
