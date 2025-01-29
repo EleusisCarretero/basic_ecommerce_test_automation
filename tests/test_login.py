@@ -83,6 +83,7 @@ class TestPositiveFlows(BaseLogIn):
         super().setup(browser, result)
         self.login_page.open_page()
 
+    @pytest.mark.Smoke
     def test_valid_login(self):
         """
         Check the valid users can access to page successfully.
@@ -162,7 +163,7 @@ class TestNegativeFlows(BaseLogIn):
                 ("Uknowd_123_t", "secret_sauce", "Epic sadface: Username and password do not match any user in this service")  # invalid user, 'valid' password
             ]
     )
-
+    @pytest.mark.Smoke
     def test_invalid_credentials(self, user, password, expected_error_mgs):
         """
         Validate invalid credentials

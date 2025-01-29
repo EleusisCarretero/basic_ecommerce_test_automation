@@ -4,13 +4,13 @@ Contains the test classes and test methods related to cart validations
 import random
 import pytest
 from pages.checkout_page import CheckOutPage
-from ..pages.home_page import HomePage, HomePageException
-from ..pages.cart_page import CartPage
-from ..pages.product_page import ProductPage
-from ..tests.base_test import BaseTest
-from ..pages.login_page import LoginPage
-from ..utils.tools import YamlManager
-from ..utils.browser_manager import BrowserManagerException
+from pages.home_page import HomePage, HomePageException
+from pages.cart_page import CartPage
+from pages.product_page import ProductPage
+from tests.base_test import BaseTest
+from pages.login_page import LoginPage
+from utils.tools import YamlManager
+from utils.browser_manager import BrowserManagerException
 
 
 @pytest.fixture(scope="session")
@@ -247,6 +247,7 @@ class TestPositiveFlows(BaseTestCart):
         for h_name, h_price, in it_home_page.items():
             assert h_price == it_cart_page[h_name], "Wrong price"
 
+    @pytest.mark.Smoke
     @pytest.mark.parametrize(
             ("item_name"), 
             [
