@@ -1,9 +1,9 @@
 """
 Home page class
 """
-from basic_ecommerce_test_automation.pages.base_pages import BasePage
-from basic_ecommerce_test_automation.utils.browser_manager import BrowserManagerException
-from basic_ecommerce_test_automation.utils.tools import YamlManager
+from pages.base_pages import BasePage
+from utils.browser_manager import BrowserManagerException
+from utils.tools import YamlManager
 
 
 class HomePageException(Exception):

@@ -2,8 +2,8 @@
 Contains the common base test classes and shared stuff
 """
 
-from basic_ecommerce_test_automation.utils.logger_manager import LoggerManager
-from basic_ecommerce_test_automation.utils.tools import ApiManager, ApiManagerError
+from utils.logger_manager import LoggerManager
+from utils.tools import ApiManager, ApiManagerError
 
 
 class BaseTest:

@@ -1,8 +1,8 @@
 """
 Cart page file related to class
 """
-from basic_ecommerce_test_automation.pages.base_pages import BasePage
-from basic_ecommerce_test_automation.utils.tools import YamlManager
+from pages.base_pages import BasePage
+from utils.tools import YamlManager
 
 
 class CartPageException(Exception):

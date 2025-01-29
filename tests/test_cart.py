@@ -2,17 +2,15 @@
 Contains the test classes and test methods related to cart validations
 """
 import random
-import time
-from basic_ecommerce_test_automation.pages.checkout_page import CheckOutPage
 import pytest
-from basic_ecommerce_test_automation.tests.base_test import BaseTest
-from basic_ecommerce_test_automation.pages.home_page import HomePage, HomePageException
-from basic_ecommerce_test_automation.pages.login_page import LoginPage
-from basic_ecommerce_test_automation.utils.tools import YamlManager
-from basic_ecommerce_test_automation.utils.browser_manager import BrowserManagerException
-from basic_ecommerce_test_automation.pages.cart_page import CartPage
-from basic_ecommerce_test_automation.pages.product_page import ProductPage
-from basic_ecommerce_test_automation.utils.tools import ApiManager
+from pages.checkout_page import CheckOutPage
+from ..pages.home_page import HomePage, HomePageException
+from ..pages.cart_page import CartPage
+from ..pages.product_page import ProductPage
+from ..tests.base_test import BaseTest
+from ..pages.login_page import LoginPage
+from ..utils.tools import YamlManager
+from ..utils.browser_manager import BrowserManagerException
 
 
 @pytest.fixture(scope="session")

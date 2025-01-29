@@ -1,17 +1,17 @@
 """
 General configuration
 """
-import multiprocessing
+import sys
+import os
 import subprocess
 import time
 import requests
 import pytest
-from basic_ecommerce_test_automation.utils.config import Config
-from basic_ecommerce_test_automation.utils.logger_manager import LoggerManager
-from basic_ecommerce_test_automation.utils.browser_manager import BrowserManager
-from basic_ecommerce_test_automation.utils.result_manager import ResultManagerClass
-from basic_ecommerce_test_automation.utils.api import APIMongoDB
-from flask import Flask
+from .utils.config import Config
+from .utils.logger_manager import LoggerManager
+from .utils.browser_manager import BrowserManager
+from .utils.result_manager import ResultManagerClass
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
 def pytest_addoption(parser):

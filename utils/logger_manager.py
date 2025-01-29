@@ -5,7 +5,7 @@ import os
 import logging
 from datetime import datetime
 from pathlib import Path
-from basic_ecommerce_test_automation.utils.config import Config
+from .config import Config
 
 
 class LoggerManager:

@@ -1,7 +1,7 @@
 """
 Base test page class
 """
-from basic_ecommerce_test_automation.utils.logger_manager import LoggerManager
+from utils.logger_manager import LoggerManager
 
 
 class BasePageException(Exception):

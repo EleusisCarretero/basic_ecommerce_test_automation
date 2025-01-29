@@ -1,14 +1,13 @@
 """
 Contains all login test cases
 """
-from datetime import datetime
 import time
 import pytest
 from selenium.common.exceptions import ElementClickInterceptedException, InvalidElementStateException, NoSuchElementException
-from basic_ecommerce_test_automation.pages.home_page import HomePage
-from basic_ecommerce_test_automation.pages.login_page import LoginPage
-from basic_ecommerce_test_automation.tests.base_test import BaseTest
-from basic_ecommerce_test_automation.utils.tools import YamlManager
+from pages.home_page import HomePage
+from pages.login_page import LoginPage
+from tests.base_test import BaseTest
+from utils.tools import YamlManager
 
 
 class BaseLogIn(BaseTest):

@@ -2,7 +2,7 @@
 Contents the ResultManager Class and its corresponding exception
 """
 from typing import Callable, Union
-from basic_ecommerce_test_automation.utils.logger_manager import LoggerManager
+from .logger_manager import LoggerManager
 
 
 class ResultManagerClassException(Exception):
@@ -95,7 +95,7 @@ class ResultManagerClass:
             details = f"The method '{method.__name__}' raised an exception: {e}."
             self._log_result(False, step_msg, details)
             self.step_status = False
-    
+
     def check_not_raises_any_given_exception(self, method: Callable, exceptions: Union [Exception, tuple], step_msg: str, *args, **kwargs) -> None:
         """
         Validates that any of the 'given' exceptions is NOT raise, otherwise the validations fails.
