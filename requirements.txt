@@ -4,3 +4,4 @@ pytest-html==3.2.0
 faker==18.11.2
 webdriver-manager==4.0.0
 pyyaml
+requests
