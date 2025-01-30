@@ -18,8 +18,18 @@ def pytest_addoption(parser):
     """
     Defines the costume console inputs to run the tests
     """
-    parser.addoption("--log_folder", action="store", default="Logs", help="Folder to store logs")
-    parser.addoption("--browser_type", action="store", default="Edge", help="Browser to execute the tests")
+    parser.addoption(
+        "--log_folder",
+        action="store",
+        default="Logs",
+        help="Folder to store logs"
+    )
+    parser.addoption(
+        "--browser_type",
+        action="store",
+        default="Edge",
+        help="Browser to execute the tests"
+    )
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -56,10 +66,12 @@ def run_users_api(api_settings):
     """
     Fixture to get the instance of ResultManagerClass, common in all tests.
     """
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, "utils/api.py")
     server = subprocess.Popen(
         [
             "python",
-            "E:\\11)_Eleusis_Git_Stuf\\basic_ecommerce_test_automation\\utils\\api.py",
+            file_path,
             "--mongo_uri",
             api_settings["mongo_uri"],
             "--db_name",
@@ -67,15 +79,15 @@ def run_users_api(api_settings):
             "--collection_name",
             api_settings["collection_name"]
         ],
-        stdout=subprocess.DEVNULL,  # Ignorar salida estándar
-        stderr=subprocess.PIPE,  # Capturar errores
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
         shell=True
         )
 
     time.sleep(3)
 
     try:
-        response = requests.get("http://127.0.0.1:5000")
+        response = requests.get("http://127.0.0.1:5000", timeout=10)
         if response.status_code != 200:
             pytest.exit(" La API Flask no se inició correctamente.")
     except requests.ConnectionError:
