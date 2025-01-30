@@ -30,6 +30,26 @@ def pytest_addoption(parser):
         default="Edge",
         help="Browser to execute the tests"
     )
+    parser.addoption(
+        "--headless",
+        action="store",
+        default=True)
+    parser.addoption(
+        "--disable-gpu",
+        action="store",
+        default=True)
+    parser.addoption(
+        "--no-sandbox",
+        action="store",
+        default=True)
+    parser.addoption(
+        "--disable-dev-shm-usage",
+        action="store",
+        default=True)
+    parser.addoption(
+        "--user-data-dir=/tmp/edge-profile",
+        action="store",
+        default=True)
 
 
 @pytest.fixture(scope="session", autouse=True)
