@@ -248,7 +248,6 @@ class TestPositiveFlows(BaseTestCart):
         for h_name, h_price, in it_home_page.items():
             assert h_price == it_cart_page[h_name], "Wrong price"
 
-    @pytest.mark.Smoke
     @pytest.mark.parametrize(
             ("item_name"), 
             [
