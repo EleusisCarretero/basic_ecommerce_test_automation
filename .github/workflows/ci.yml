@@ -36,4 +36,4 @@ jobs:
           API_URL: http://localhost:5000
         run: |
           source venv/bin/activate
-          pytest tests -s -m Smoke --headless --disable-gpu --no-sandbox --disable-dev-shm-usage --user-data-dir=/tmp/edge-profile
+          pytest tests -s -m Smoke --headless True --disable-gpu True --no-sandbox True --disable-dev-shm-usage True --user-data-dir=/tmp/edge-profile True
