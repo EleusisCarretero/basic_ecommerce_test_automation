@@ -7,10 +7,10 @@ import subprocess
 import time
 import requests
 import pytest
-from .utils.config import Config
-from .utils.logger_manager import LoggerManager
-from .utils.browser_manager import BrowserManager
-from .utils.result_manager import ResultManagerClass
+from utils.config import Config
+from utils.logger_manager import LoggerManager
+from utils.browser_manager import BrowserManager
+from utils.result_manager import ResultManagerClass
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
