@@ -1,6 +1,7 @@
 """
 Contains the test classes and test methods related to cart validations
 """
+import os
 import random
 import pytest
 from pages.checkout_page import CheckOutPage
@@ -292,8 +293,9 @@ class TestPositiveFlows(BaseTestCart):
         # 8. Move to checkout button without error
         self.step_move_to_checkout_page()
         # 9. check and get the user data from API
+        API_URL = os.getenv("API_URL", "http://127.0.0.1:5000")
         user = self.step_execute_api_request(
-            url="http://127.0.0.1:5000/users",
+            url=f"{API_URL}/users",
             is_random=True
         )[0]
         # 10. fill the checkout info
