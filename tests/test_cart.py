@@ -18,7 +18,7 @@ def api_settings():
     """
     Fixture to get the instance of ResultManagerClass, common in all tests.
     """
-    return YamlManager.get_yaml_file_data("E:/11)_Eleusis_Git_Stuf/basic_ecommerce_test_automation/tests/test_inputs/api_config.yaml")["cart"]
+    return YamlManager.get_yaml_file_data("tests/test_inputs/api_config.yaml")["cart"]
 
 
 class BaseTestCartError(Exception):
@@ -27,7 +27,7 @@ class BaseTestCartError(Exception):
 
 class BaseTestCart(BaseTest):
 
-    TESTING_PAGE =  "E:/11)_Eleusis_Git_Stuf/basic_ecommerce_test_automation/tests/test_inputs/sauce_demo.yaml"
+    TESTING_PAGE =  "tests/test_inputs/sauce_demo.yaml"
     def setup(self, browser, result, run_users_api):
         super().setup(browser, result)
         self.inventory_page_dict = YamlManager.get_yaml_file_data(self.TESTING_PAGE)["general_inputs"]["inventory_page"]

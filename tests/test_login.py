@@ -19,7 +19,7 @@ class BaseLogIn(BaseTest):
         login_page(LoginPage): interface login page stuff.
         home_page(HomePage): interface home page stuff.
     """
-    TESTING_PAGE =  "E:/11)_Eleusis_Git_Stuf/basic_ecommerce_test_automation/tests/test_inputs/sauce_demo.yaml"
+    TESTING_PAGE =  "tests/test_inputs/sauce_demo.yaml"
     def setup(self, browser, result):
         super().setup(browser, result)
         self.inventory_page_dict = YamlManager.get_yaml_file_data(self.TESTING_PAGE)["general_inputs"]["inventory_page"]
