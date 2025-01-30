@@ -108,3 +108,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ---
 
 Happy testing! 🚀
+
+### CI TEST
+[![CI](https://github.com/tu-usuario/basic_ecommerce_test_automation/actions/workflows/ci.yml/badge.svg)](https://github.com/tu-usuario/basic_ecommerce_test_automation/actions/workflows/ci.yml)
