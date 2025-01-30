@@ -27,7 +27,9 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-          .\set_pythonpath.bat
+          chmod +x set_pythonpath.sh
+          ./set_pythonpath.sh
+
 
       - name: Run tests
         run: |
