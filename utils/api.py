@@ -1,9 +1,9 @@
 """
 API MongoDB manager file
 """
+import argparse
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
-import argparse
 
 
 class APIMongoDB:
@@ -23,7 +23,7 @@ class APIMongoDB:
         self.db = self.client[db_name]
         self.collection = self.db[collection_name]
         self.add_routes()
-    
+
     def add_routes(self):
         """Register API routs"""
         self.app.add_url_rule("/", view_func=self.home)
@@ -57,9 +57,25 @@ if __name__ == "__main__":
                     prog='ProgramName',
                     description='What the program does',
                     epilog='Text at the bottom of help')
-    parser.add_argument("-m", "--mongo_uri", help="The MongoDB URI", default="mongodb+srv://eleusiscarretero:J8nKfYYIuPa0XcJB@cluster0.73nlx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-    parser.add_argument("-d", "--db_name",  help="The Name of the desired database", default="users_data")
-    parser.add_argument("-c", "--collection_name",  help="The Name of the desired collection", default="users")
+    parser.add_argument(
+        "-m",
+        "--mongo_uri",
+        help="The MongoDB URI",
+        default="mongodb+srv://eleusiscarretero:J8nKfYYIuPa0XcJB@"
+        "cluster0.73nlx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    )
+    parser.add_argument(
+        "-d",
+        "--db_name",
+        help="The Name of the desired database",
+        default="users_data"
+    )
+    parser.add_argument(
+        "-c",
+        "--collection_name",
+        help="The Name of the desired collection",
+        default="users"
+    )
     args = parser.parse_args()
     app = Flask(__name__)
     md_db = APIMongoDB(app,args.mongo_uri, args.db_name, args.collection_name)

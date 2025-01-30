@@ -6,11 +6,12 @@ from utils.logger_manager import LoggerManager
 
 class BasePageException(Exception):
     """Exception for BasePage class"""
-    pass
+
 
 class BasePage:
     """
-    This is a basic page class which share all the common and more abstract methods for the rest of pages
+    This is a basic page class which share all the common and more
+    abstract methods for the rest of pages
     Attributes:
         browser (BrowserManager): interface of the browser manager
         log (logger): Logger instance
@@ -70,7 +71,7 @@ class BasePage:
             Webdriver obj: Element which matches the given seek parameters
         """
         return self.browser.get_present_list_element(by=by, value=value, driver=driver)
-        
+
     def click_on_element(self, by, value, driver=None):
         """
         Wrapper method to click on a webdriver element.
@@ -81,7 +82,7 @@ class BasePage:
             driver:(webdriver obj:Optional, Default=None): webdriver object.
         """
         self.browser.click_wait_clickable_element(by=by, value=value, driver=driver)
-    
+
     def get_text_element(self, by, value, driver=None, timeout=5):
         """
         Wrapper method to get the text from webdriver element.
@@ -108,7 +109,13 @@ class BasePage:
             timeout: (int/float): Timeout in seconds to wait.
 
         """
-        self.browser.enter_text_to_present_element(by=by, value=value, driver=driver, keys_value=keys_value, timeout=timeout)
+        self.browser.enter_text_to_present_element(
+            by=by,
+            value=value,
+            driver=driver,
+            keys_value=keys_value,
+            timeout=timeout
+        )
 
     def get_current_url(self, switch=False):
         """
@@ -143,7 +150,10 @@ class BasePage:
         prices_dict = {}
         list_of_items = self.get_inventory_items()
         for item in list_of_items:
-            tmp_price = self.get_text_element(*self._get_element_params(key="item_price"), item).split('\n')[0]
+            tmp_price = self.get_text_element(
+                *self._get_element_params(key="item_price"),
+                item
+            ).split('\n')[0]
             tmp_name = self.get_text_element(*self._get_element_params(key="item_name"), item)
             prices_dict.update({tmp_name:tmp_price})
         return prices_dict

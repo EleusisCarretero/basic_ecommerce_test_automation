@@ -21,7 +21,9 @@ class CheckOutPage(BasePage):
     """
     def __init__(self, browser, testing_page):
         super().__init__(browser)
-        self.page_dict = YamlManager.get_yaml_file_data(testing_page)["general_inputs"]["checkout_page"]
+        self.page_dict = YamlManager.get_yaml_file_data(
+            testing_page
+        )["general_inputs"]["checkout_page"]
         self.testing_page = self.page_dict["path"]
 
     def continue_checkout_step_two(self):

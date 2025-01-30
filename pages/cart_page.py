@@ -29,7 +29,7 @@ class CartPage(BasePage):
         Method to move from cart page to checkout page
         """
         self.click_on_element(*self._get_element_params(key="checkout_button"))
-    
+
     def continues_shopping(self):
         """
         Method to come back from cart page to home page

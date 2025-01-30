@@ -93,7 +93,7 @@ def run_users_api(api_settings):
     except requests.ConnectionError:
         pytest.exit(" No se pudo conectar a la API Flask.")
 
-    yield 
+    yield
 
     server.terminate()
     server.wait()

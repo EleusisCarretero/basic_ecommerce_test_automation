@@ -23,15 +23,19 @@ def api_settings():
 
 
 class BaseTestCartError(Exception):
-    pass
+    """BaseTestCart Error"""
 
 
 class BaseTestCart(BaseTest):
-
+    """
+    Base test cart
+    """
     TESTING_PAGE =  "tests/test_inputs/sauce_demo.yaml"
     def setup(self, browser, result, run_users_api):
         super().setup(browser, result)
-        self.inventory_page_dict = YamlManager.get_yaml_file_data(self.TESTING_PAGE)["general_inputs"]["inventory_page"]
+        self.inventory_page_dict = YamlManager.get_yaml_file_data(
+            self.TESTING_PAGE
+        )["general_inputs"]["inventory_page"]
         self.login_page = LoginPage(
             browser,
             self.TESTING_PAGE
@@ -58,7 +62,7 @@ class BaseTestCart(BaseTest):
         except BrowserManagerException as e:
             self.log.error("Unable to login using standard user credentials")
             raise BaseTestCartError("Login has failed") from e
-    
+
     def step_check_look_for_item(self, item_name):
         """
         Step function to check the 'item_name' has been successfully added to the cart.
@@ -88,7 +92,8 @@ class BaseTestCart(BaseTest):
         Returns:
             int: quantity of items included in the cart after this last one has been added.
         """
-        self.log.info(f"trying to add item {item_name} to cart and returning its current num of items")
+        self.log.info(f"trying to add item {item_name} to cart "
+                      "and returning its current num of items")
         item = self.step_check_look_for_item(item_name)
         self.result.check_not_raises_any_given_exception(
             method=self.home_page.add_item_to_cart,
@@ -98,7 +103,7 @@ class BaseTestCart(BaseTest):
         )
         assert self.result.step_status
         return self.home_page.get_num_items_in_cart()
-    
+
     def step_remove_item_in_cart(self, item_name):
         """
         Step to validate that the remotion of some item has been successfully.
@@ -109,7 +114,8 @@ class BaseTestCart(BaseTest):
         Returns:
             int: quantity of items included in the cart after this last one has been added.
         """
-        self.log.info(f"trying to add item {item_name} to cart and returning its current num of items")
+        self.log.info(f"trying to add item {item_name} to cart "
+                      "and returning its current num of items")
         item = self.step_check_look_for_item(item_name)
         self.result.check_not_raises_any_given_exception(
             method=self.home_page.remove_item_from_cart,
@@ -121,6 +127,9 @@ class BaseTestCart(BaseTest):
         return self.home_page.get_num_items_in_cart()
 
     def iterate_items_list(self, item_list, callback, msg):
+        """
+        Method to iterate the list of items of the cart page
+        """
         add_sub = {
             "including": lambda a, b: a + b,
             "removing": lambda a, b: abs(a - b),
@@ -131,7 +140,8 @@ class BaseTestCart(BaseTest):
             self.result.check_equals_to(
                 actual_value=current_items_added,
                 expected_value=add_sub[msg](inc_dec, 1),
-                step_msg=f"Check the quantity of items matches the expected after {msg} {item_text} to the cart")
+                step_msg=f"Check the quantity of items matches the expected "
+                f"after {msg} {item_text} to the cart")
             assert self.result.step_status
 
     def step_move_to_cart_page(self):
@@ -170,7 +180,7 @@ class BaseTestCart(BaseTest):
             step_msg="Check moving to Home page successfully",
         )
         assert self.result.step_status
-    
+
     def step_move_to_checkout_page(self):
         """
         Step function to validate the movement from cart page to checkout page
@@ -187,23 +197,23 @@ class TestPositiveFlows(BaseTestCart):
     """
     Test class to validate positive login flows
     """
-    
     @pytest.fixture(autouse=True)
     def setup(self, browser, result, run_users_api):
         super().setup(browser, result, run_users_api)
 
     @pytest.mark.parametrize(
-            ("items_text"), 
+            ("items_text"),
             [
-                (["Sauce Labs Backpack"]), 
-                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]), 
-                (["Sauce Labs Onesie","Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]), 
-                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt", "Sauce Labs Backpack", "Sauce Labs Onesie"]), 
+                (["Sauce Labs Backpack"]),
+                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]),
+                (["Sauce Labs Onesie","Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]),
+                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt", "Sauce Labs Backpack", "Sauce Labs Onesie"]),
             ]
     )
     def test_add_and_remove_items(self, items_text):
         """
-        Test case validates adding and removing items, as well as ensure the quantity of items is the expected.
+        Test case validates adding and removing items,
+        as well as ensure the quantity of items is the expected.
 
         Args:
             items_text(list): List of string with the names of the items to test, added and removed
@@ -218,22 +228,24 @@ class TestPositiveFlows(BaseTestCart):
     @pytest.mark.parametrize(
             ("items_text"), 
             [
-                (["Sauce Labs Backpack"]), 
-                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]), 
-                (["Sauce Labs Onesie","Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]), 
-                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt", "Sauce Labs Backpack", "Sauce Labs Onesie"]), 
+                (["Sauce Labs Backpack"]),
+                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]),
+                (["Sauce Labs Onesie","Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]),
+                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt", "Sauce Labs Backpack", "Sauce Labs Onesie"]),
             ]
     )
     def test_validate_prices(self, items_text):
         """
-        Test case validates the items in the cart page corresponds to the items previously selected, as well as their prices.
+        Test case validates the items in the cart page corresponds to
+        the items previously selected, as well as their prices.
 
         Args:
             items_text(list): List of string with the names of the items to test, added and removed
         """
         # 1 . include itesm to the cart
         self.iterate_items_list(items_text, self.step_include_item_in_cart, "including")
-        it_home_page = {key:value for key, value in self.home_page.get_item_prices().items() if key in items_text}
+        it_home_page = \
+            {key:value for key, value in self.home_page.get_item_prices().items() if key in items_text}
         self.log.info(f"Items included in the cart viewed in the home page: {it_home_page}")
         # 2. Click on cart item
         self.step_move_to_cart_page()
@@ -243,16 +255,18 @@ class TestPositiveFlows(BaseTestCart):
         self.log.info(f"items included in Cart page: {it_cart_page}")
         # 5. compare the items are the same:
         if len(it_home_page) != len(it_cart_page):
-            self.log.error(f"Home page items {len(it_home_page)}: {it_home_page}. Cart page items {len(it_cart_page)}: {it_cart_page}")
+            self.log.error(
+                f"Home page items {len(it_home_page)}: "
+                f"{it_home_page}. Cart page items {len(it_cart_page)}: {it_cart_page}")
             raise BaseTestCartError("The items from home page and cart page are the same quantity")
         for h_name, h_price, in it_home_page.items():
             assert h_price == it_cart_page[h_name], "Wrong price"
 
     @pytest.mark.parametrize(
-            ("item_name"), 
+            ("item_name"),
             [
-                ("Sauce Labs Backpack"), 
-                ("Sauce Labs Bike Light"), 
+                ("Sauce Labs Backpack"),
+                ("Sauce Labs Bike Light"),
                 ("Sauce Labs Onesie")
             ]
     )
@@ -271,7 +285,7 @@ class TestPositiveFlows(BaseTestCart):
         # 3. Get quantity of items in the cart
         self.result.check_equals_to(
             actual_value=self.home_page.get_num_items_in_cart(), 
-            expected_value=1, 
+            expected_value=1,
             step_msg="Check the number of items matches the expected"
         )
         assert self.result.step_status
@@ -292,9 +306,9 @@ class TestPositiveFlows(BaseTestCart):
         # 8. Move to checkout button without error
         self.step_move_to_checkout_page()
         # 9. check and get the user data from API
-        API_URL = os.getenv("API_URL", "http://127.0.0.1:5000")
+        api_url = os.getenv("API_URL", "http://127.0.0.1:5000")
         user = self.step_execute_api_request(
-            url=f"{API_URL}/users",
+            url=f"{api_url}/users",
             is_random=True
         )[0]
         # 10. fill the checkout info

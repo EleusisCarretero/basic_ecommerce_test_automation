@@ -21,15 +21,18 @@ class LoginPage(BasePage):
     """
     def __init__(self, browser, testing_page):
         super().__init__(browser)
-        self.page_dict = YamlManager.get_yaml_file_data(testing_page)["general_inputs"]["login_page"]
+        self.page_dict = YamlManager.get_yaml_file_data(
+            testing_page
+        )["general_inputs"]["login_page"]
         self.testing_page = self.page_dict["path"]
 
     def get_valid_credentials(self):
         """
         Gives back a list with all the available user credentials from https://www.saucedemo.com/
 
-        It uses the internal method get_credential to specifically read the users from "Accepted usernames are",
-        and the uniq valid password for all of them from  "Password for all users".
+        It uses the internal method get_credential to specifically read
+        the users from "Accepted usernames are", and the uniq valid password
+        for all of them from  "Password for all users".
 
         Returns:
             List: Dictionaries with valid user and its corresponding password.

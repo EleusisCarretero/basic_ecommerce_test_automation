@@ -3,7 +3,10 @@ Contains all login test cases
 """
 import time
 import pytest
-from selenium.common.exceptions import ElementClickInterceptedException, InvalidElementStateException, NoSuchElementException
+from selenium.common.exceptions import \
+(ElementClickInterceptedException,
+ InvalidElementStateException,
+ NoSuchElementException)
 from pages.home_page import HomePage
 from pages.login_page import LoginPage
 from tests.base_test import BaseTest
@@ -22,7 +25,9 @@ class BaseLogIn(BaseTest):
     TESTING_PAGE =  "tests/test_inputs/sauce_demo.yaml"
     def setup(self, browser, result):
         super().setup(browser, result)
-        self.inventory_page_dict = YamlManager.get_yaml_file_data(self.TESTING_PAGE)["general_inputs"]["inventory_page"]
+        self.inventory_page_dict = YamlManager.get_yaml_file_data(
+            self.TESTING_PAGE
+        )["general_inputs"]["inventory_page"]
         self.login_page = LoginPage(
             browser,
             self.TESTING_PAGE
@@ -46,7 +51,7 @@ class BaseLogIn(BaseTest):
               **user_credential
         )
         assert self.result.step_status
-    
+
     def step_check_login_unsuccessfully(self, user_credential:dict, expected_error_msg, timeout=2) -> None:
         """
         Step function to validate incorrect login.
@@ -77,7 +82,6 @@ class TestPositiveFlows(BaseLogIn):
     """
     Test class to validate positive login flows
     """
-    
     @pytest.fixture(autouse=True)
     def setup(self, browser, result):
         super().setup(browser, result)
@@ -94,7 +98,8 @@ class TestPositiveFlows(BaseLogIn):
         self.step_check_login_successfully(user_credential)
         # 3. Check the url correspond to the inventory url
         inventory_path = f"{self.login_page.testing_page}{self.inventory_page_dict['path']}"
-        stp_msg = "Check the expected inventory path matches with the current url from opened window."
+        stp_msg = \
+            "Check the expected inventory path matches with the current url from opened window."
         self.result.check_equals_to(
             self.login_page.get_current_url(True),
             inventory_path,
@@ -113,18 +118,24 @@ class TestPositiveFlows(BaseLogIn):
         #3. click on lateral menu
         self.result.check_not_raises_any_given_exception(
             method=self.home_page.click_on_lateral_menu,
-            exceptions=(InvalidElementStateException, ElementClickInterceptedException, NoSuchElementException),
+            exceptions=(
+                InvalidElementStateException,
+                ElementClickInterceptedException,
+                NoSuchElementException),
             step_msg=" Check lateral menu is clickable"
         )
         assert self.result.step_status
         # 4. Click on logout
         self.result.check_not_raises_any_given_exception(
             method=self.home_page.click_on_logout,
-            exceptions=(InvalidElementStateException, ElementClickInterceptedException, NoSuchElementException),
+            exceptions=(
+                InvalidElementStateException,
+                ElementClickInterceptedException,
+                NoSuchElementException),
             step_msg="Check Logout successfully"
         )
         assert self.result.step_status
-    
+
     @pytest.mark.parametrize(
             ("timeout"), [(5), (10), (20)]
     )
@@ -158,9 +169,12 @@ class TestNegativeFlows(BaseLogIn):
     @pytest.mark.parametrize(
             ("user", "password", "expected_error_mgs"), 
             [
-                ("Juan_Camaney", "12345", "Epic sadface: Username and password do not match any user in this service"),  # Invalid user, invalid password
-                ("standard_user", "soy_123_wers", "Epic sadface: Username and password do not match any user in this service"),  # valid user, invalid password
-                ("Uknowd_123_t", "secret_sauce", "Epic sadface: Username and password do not match any user in this service")  # invalid user, 'valid' password
+                ("Juan_Camaney", "12345",
+                 "Epic sadface: Username and password do not match any user in this service"),  # Invalid user, invalid password
+                ("standard_user", "soy_123_wers",
+                 "Epic sadface: Username and password do not match any user in this service"),  # valid user, invalid password
+                ("Uknowd_123_t", "secret_sauce",
+                 "Epic sadface: Username and password do not match any user in this service")  # invalid user, 'valid' password
             ]
     )
     @pytest.mark.Smoke
@@ -179,7 +193,7 @@ class TestNegativeFlows(BaseLogIn):
         )
 
     @pytest.mark.parametrize(
-            ("user", "password", "expected_error_msg"), 
+            ("user", "password", "expected_error_msg"),
             [
                 ("standard_user", "", "Epic sadface: Password is required"),  # Empty password
                 ("", "secret_sauce", "Epic sadface: Username is required"),  # Empty user

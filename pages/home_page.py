@@ -18,10 +18,11 @@ class HomePage(BasePage):
         LOGIN_PAGE_DICT (dict): Saves al the needed and/or relevant inputs for Home page
         testing_page (str): Login page path
     """
-      
     def __init__(self, browser, testing_page):
         super().__init__(browser)
-        self.page_dict = YamlManager.get_yaml_file_data(testing_page)["general_inputs"]["inventory_page"]
+        self.page_dict = YamlManager.get_yaml_file_data(
+            testing_page
+        )["general_inputs"]["inventory_page"]
         self.testing_page = self.page_dict["path"]
 
     def click_on_lateral_menu(self):
@@ -36,7 +37,7 @@ class HomePage(BasePage):
                 key="lateral_menu"
             )
         )
-    
+
     def get_lateral_menu_items(self):
         """
         Method to get all the webdriver elements that are part of the lateral menu.
@@ -45,7 +46,7 @@ class HomePage(BasePage):
             Webdriver obj: Returns the webdriver element which contains the lateral menu parts.
         """
         return self.get_webdriver_element_obj(*self._get_element_params(key="lateral_menu_items"))
-    
+
     def click_on_logout(self):
         """
         Clicks on the logout button, which is part of the lateral menu.
@@ -96,7 +97,10 @@ class HomePage(BasePage):
             int: current quantity of items in the cart.
         """
         try:
-            q_items = int(self.get_text_element(*self._get_element_params(key="cart_icon"), timeout=1))
+            q_items = int(
+                self.get_text_element(
+                    *self._get_element_params(key="cart_icon"),
+                    timeout=1))
             self.log.info(f"The cart has currently {q_items} items")
         except BrowserManagerException:
             self.log.info("There is no item added in the cart")

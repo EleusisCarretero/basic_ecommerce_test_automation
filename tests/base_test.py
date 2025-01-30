@@ -13,10 +13,10 @@ class BaseTest:
 
     Attributes:
         browser(BrowserManager): Instance of the browser manager to handle WebDriver.
-        result(ResultManager): Instance of the result manager to handle all the assertions and validations
+        result(ResultManager): Instance of the result manager to handle all
+            the assertions and validations
         log (logger): Logger instance
     """
-
     def setup(self, browser, result):
         """
         Setup the common attributes for all the test classes
@@ -24,7 +24,7 @@ class BaseTest:
         self.browser = browser
         self.result = result
         self.log = LoggerManager.get_logger(self.__class__.__name__)
-    
+
     def step_check_execution_events(self, callable_event, exceptions, *args, **kwargs):
         """
         Step function to validate the correct execution of an event like a click,
@@ -43,7 +43,8 @@ class BaseTest:
         response = self.result.check_not_raises_any_given_exception(
             callable_event,
             exceptions,
-            f"Check the {callable_event.__name__} event is secessfully executed using args {args} and kwargs {kwargs}",
+            f"Check the {callable_event.__name__} event is secessfully "
+            f"executed using args {args} and kwargs {kwargs}",
             *args, **kwargs
         )
         assert self.result.step_status
