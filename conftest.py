@@ -32,24 +32,30 @@ def pytest_addoption(parser):
     )
     parser.addoption(
         "--headless",
-        action="store",
-        default=True)
+        action="store_true",
+        help="Run browser in headless mode"
+    )
     parser.addoption(
         "--disable-gpu",
-        action="store",
-        default=True)
+        action="store_true",
+        help="Disable GPU"
+    )
     parser.addoption(
         "--no-sandbox",
-        action="store",
-        default=True)
+        action="store_true",
+        help="Disable sandbox"
+    )
     parser.addoption(
         "--disable-dev-shm-usage",
-        action="store",
-        default=True)
+        action="store_true",
+        help="Disable shared memory usage"
+    )
     parser.addoption(
-        "--user-data-dir=/tmp/edge-profile",
+        "--user-data-dir",
         action="store",
-        default=True)
+        default="",
+        help="Set user data directory"
+    )
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -67,7 +73,12 @@ def browser(pytestconfig):
     """
     Fixture to setup the instance for BrowserManager common in all test cases.
     """
+    browser_options = []
     browser_type =  pytestconfig.getoption("browser_type")
+
+    for input_browser in ["--disable-gpu", "--headless", "--no-sandbox", "--disable-dev-shm-usage", "--user-data-dir"]:
+        browser_options.append(pytestconfig.getoption(input_browser))
+
     manager = BrowserManager(browser=browser_type)
     yield manager
     manager.driver_down()
@@ -109,9 +120,9 @@ def run_users_api(api_settings):
     try:
         response = requests.get("http://127.0.0.1:5000", timeout=10)
         if response.status_code != 200:
-            pytest.exit(" La API Flask no se inició correctamente.")
+            pytest.exit("API didn't initialized")
     except requests.ConnectionError:
-        pytest.exit(" No se pudo conectar a la API Flask.")
+        pytest.exit("Unable to connected to the API")
 
     yield
 
