@@ -62,7 +62,7 @@ if __name__ == "__main__":
         "--mongo_uri",
         help="The MongoDB URI",
         default="mongodb+srv://eleusiscarretero:J8nKfYYIuPa0XcJB@"
-        "cluster0.73nlx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+        "cluster0.73nlx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&tls=true&ssl=true"
     )
     parser.add_argument(
         "-d",
