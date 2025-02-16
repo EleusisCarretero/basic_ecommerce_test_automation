@@ -297,8 +297,7 @@ class BrowserManager:
         """
         self.driver.quit()
     
-    def dropdown_element(self,  select_by, by:By, value:str, driver=None):
+    def dropdown_element(self,  select_by, found, by:By, value:str, driver=None):
         driver = driver or self.driver
         selector = Select(driver.find_element(by, value))
-        return getattr(selector, SelectBy.get_select_method_by(select_by))
-        
+        return getattr(selector, SelectBy.get_select_method_by(select_by))(found)
