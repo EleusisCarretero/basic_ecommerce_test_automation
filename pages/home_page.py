@@ -3,7 +3,7 @@ Home page class
 """
 from enum import Enum
 from pages.base_pages import BasePage
-from utils.browser_manager import BrowserManagerException
+from utils.browser_manager import BrowserManagerException, SelectBy
 from utils.tools import YamlManager
 
 
@@ -141,4 +141,5 @@ class HomePage(BasePage):
             raise HomePageException(f"Unable to click on {item_name}")
     
     def filtering_products_by(self, filtering_by):
+        return self.dropdown_element(select_by=SelectBy.VALUE,*self._get_element_params(key="filter"))
 
