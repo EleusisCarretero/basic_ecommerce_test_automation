@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from .logger_manager import LoggerManager
+from selenium.webdriver.support.select import Select
 
 
 class AvailableBrowsers(str, Enum):
@@ -25,6 +26,20 @@ class AvailableBrowsers(str, Enum):
         Returns a list with al class elements.
         """
         return [browser for browser in cls]
+
+
+class SelectBy(Enum):
+    VISIBLE_TEXT = 1
+    VALUE = 2
+    INDEX = 3
+
+    @classmethod
+    def get_select_method_by(cls, select_by):
+        return {
+            cls.VISIBLE_TEXT: "select_by_visible_text",
+            cls.VALUE: "select_by_value",
+            cls.INDEX: "select_by_index",
+        }.get(select_by, None)
 
 
 class BrowserManagerException(Exception):
@@ -281,3 +296,9 @@ class BrowserManager:
         Teardown driver.
         """
         self.driver.quit()
+    
+    def dropdown_element(self,  select_by, by:By, value:str, driver=None):
+        driver = driver or self.driver
+        selector = Select(driver.find_element(by, value))
+        return getattr(selector, SelectBy.get_select_method_by(select_by))
+        

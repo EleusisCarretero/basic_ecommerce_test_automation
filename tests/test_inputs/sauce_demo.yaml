@@ -60,8 +60,9 @@ general_inputs:
     item_name:
       by: "CLASS_NAME"
       value: "inventory_item_name"
-    item_page:
-      by:
+    filter:
+      by: "CLASS_NAME"
+      value: "product_sort_container"
   cart_page:
     path: cart.html
     inventory_items:

@@ -1,9 +1,17 @@
 """
 Home page class
 """
+from enum import Enum
 from pages.base_pages import BasePage
 from utils.browser_manager import BrowserManagerException
 from utils.tools import YamlManager
+
+
+class FilteringBy(str, Enum):
+    A_TO_Z = "Name (A to Z)"
+    Z_TO_A = "Name (A to Z)"
+    LOW_TO_HIGH = "Price (low to high)"
+    HIGH_TO_LOW = "Price (high to low)"
 
 
 class HomePageException(Exception):
@@ -131,3 +139,6 @@ class HomePage(BasePage):
         else:
             self.log.info(f"Make sure item {item_name} is in home page")
             raise HomePageException(f"Unable to click on {item_name}")
+    
+    def filtering_products_by(self, filtering_by):
+

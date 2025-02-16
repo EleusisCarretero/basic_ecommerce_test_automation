@@ -161,3 +161,6 @@ class BasePage:
     @staticmethod
     def _convert_text_to_list(text, spliter, ini=0, end=-1):
         return text.split(spliter)[ini:end]
+
+    def dropdown_element(self, select_by, by, value, driver=None):
+        self.browser.dropdown_element(select_by, by, value, driver)
