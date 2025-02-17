@@ -148,6 +148,7 @@ class BaseTestCart(BaseTest):
         """
         Step function to move to checkout page from home page
         """
+
         self.log.info("Moving to checkout page")
         self.result.check_not_raises_any_given_exception(
             method=self.home_page.move_to_cart_page,
@@ -237,7 +238,11 @@ class TestPositiveFlows(BaseTestCart):
             {key:value for key, value in self.home_page.get_item_prices().items() if key in items_text}
         self.log.info(f"Items included in the cart viewed in the home page: {it_home_page}")
         # 2. Click on cart item
-        self.step_move_to_cart_page()
+        # self.step_move_to_cart_page()
+        self.step_move_to_next_page(
+            self.home_page.move_to_cart_page,
+             self.cart_page
+        )
         # 3. Get inventory items included in cart page
         it_cart_page = self.cart_page.get_item_prices()
         # 4. for item_text in items_text:
@@ -250,6 +255,11 @@ class TestPositiveFlows(BaseTestCart):
             raise BaseTestCartError("The items from home page and cart page are the same quantity")
         for h_name, h_price, in it_home_page.items():
             assert h_price == it_cart_page[h_name], "Wrong price"
+        # 6. Reset app before go out
+        # TODO: move to base_page
+        self.home_page.click_on_lateral_menu()
+        self.home_page.click_on_reset_app()
+
 
     @pytest.mark.Sanity
     @pytest.mark.parametrize(
@@ -280,11 +290,19 @@ class TestPositiveFlows(BaseTestCart):
         )
         assert self.result.step_status
         # 4. Move back to home page
-        self.step_move_back_to_page()
+        # self.step_move_back_to_page()
+        self.step_move_to_next_page(
+            self.product_page.back_to_home_page,
+            self.home_page
+        )
         # 5. Get price of product
         home_price = self.home_page.get_item_prices()[item_name]
         # 6. Move to checkout page
-        self.step_move_to_cart_page()
+        # self.step_move_to_cart_page()
+        self.step_move_to_next_page(
+            self.home_page.move_to_cart_page,
+            self.cart_page
+        )
         # 7. Get price from cart page
         cart_price = self.cart_page.get_item_prices()[item_name]
         self.result.check_equals_to(
@@ -294,7 +312,10 @@ class TestPositiveFlows(BaseTestCart):
         )
         assert self.result.step_status
         # 8. Move to checkout button without error
-        self.step_move_to_next_page(self.cart_page.move_to_checkout_page, self.cart_page)
+        self.step_move_to_next_page(
+            self.cart_page.move_to_checkout_page,
+            self.cart_page
+        )
         # 9. check and get the user data from API
         api_url = os.getenv("API_URL", "http://127.0.0.1:5000")
         user = self.step_execute_api_request(
@@ -308,16 +329,20 @@ class TestPositiveFlows(BaseTestCart):
             first_name=user["first_name"], last_name=user["last_name"], postal_code=user["zip_code"]
         )
         # 11. Move to checkout-two page
-        self.step_check_execution_events(
-            callable_event=self.checkout_page.continue_checkout_step_two,
-            exceptions=BrowserManagerException,
+        self.step_move_to_next_page(
+            self.checkout_page.continue_checkout_step_two,
+            self.checkout_page
         )
         # 12. finish buy
-        self.step_check_execution_events(
-            callable_event=self.checkout_page.finish_buy,
-            exceptions=BrowserManagerException,
+        self.step_move_to_next_page(
+            self.checkout_page.finish_buy,
+            self.checkout_page
         )
         # 13. Checkout-complete page reached
+        self.step_move_to_next_page(
+            self.checkout_page.back_home,
+            self.home_page
+        )
         
 
 
@@ -330,7 +355,10 @@ class TestPositiveFlows(BaseTestCart):
             item_name(str): Name of the item from home page.
         """
         # 1. Move cart page.
-        self.step_move_to_cart_page()
+        self.step_move_to_next_page(
+            self.home_page.move_to_cart_page,
+             self.cart_page
+        )
         # 2. Move to checkout1 page.
         self.step_move_to_next_page(
             self.cart_page.move_to_checkout_page,

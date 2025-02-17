@@ -30,6 +30,9 @@ general_inputs:
     logout:
       by: "XPATH"
       value: "//a[@id='logout_sidebar_link' and contains(@class, 'bm-item')]"
+    reset:
+      by: "XPATH"
+      value: "//a[@id='reset_sidebar_link' and contains(@class, 'bm-item')]"
     inventory_items:
       by: "XPATH"
       value: "//div[@class='cart_list']"

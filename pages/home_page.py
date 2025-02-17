@@ -61,6 +61,13 @@ class HomePage(BasePage):
         """
         all_menu_items = self.get_lateral_menu_items()
         self.click_on_element(*self._get_element_params(key="logout"), all_menu_items)
+    
+    def click_on_reset_app(self):
+        """
+        Clicks on the logout button, which is part of the lateral menu.
+        """
+        all_menu_items = self.get_lateral_menu_items()
+        self.click_on_element(*self._get_element_params(key="reset"), all_menu_items)
 
     def get_single_inventory_item(self, expected_item_text):
         """
