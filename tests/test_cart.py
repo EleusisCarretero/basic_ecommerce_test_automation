@@ -238,7 +238,6 @@ class TestPositiveFlows(BaseTestCart):
             {key:value for key, value in self.home_page.get_item_prices().items() if key in items_text}
         self.log.info(f"Items included in the cart viewed in the home page: {it_home_page}")
         # 2. Click on cart item
-        # self.step_move_to_cart_page()
         self.step_move_to_next_page(
             self.home_page.move_to_cart_page,
              self.cart_page
@@ -290,7 +289,6 @@ class TestPositiveFlows(BaseTestCart):
         )
         assert self.result.step_status
         # 4. Move back to home page
-        # self.step_move_back_to_page()
         self.step_move_to_next_page(
             self.product_page.back_to_home_page,
             self.home_page
@@ -298,7 +296,6 @@ class TestPositiveFlows(BaseTestCart):
         # 5. Get price of product
         home_price = self.home_page.get_item_prices()[item_name]
         # 6. Move to checkout page
-        # self.step_move_to_cart_page()
         self.step_move_to_next_page(
             self.home_page.move_to_cart_page,
             self.cart_page
@@ -314,7 +311,7 @@ class TestPositiveFlows(BaseTestCart):
         # 8. Move to checkout button without error
         self.step_move_to_next_page(
             self.cart_page.move_to_checkout_page,
-            self.cart_page
+            self.checkout_page
         )
         # 9. check and get the user data from API
         api_url = os.getenv("API_URL", "http://127.0.0.1:5000")
@@ -343,16 +340,10 @@ class TestPositiveFlows(BaseTestCart):
             self.checkout_page.back_home,
             self.home_page
         )
-        
-
 
     def test_try_checkout_without_products(self):
         """
-        Validate an item page is reachable from home page and the product is able to be included
-        in the cart.
-
-        Args:
-            item_name(str): Name of the item from home page.
+        Validate a buy cannot be done without products
         """
         # 1. Move cart page.
         self.step_move_to_next_page(
