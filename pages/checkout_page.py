@@ -25,12 +25,24 @@ class CheckOutPage(BasePage):
             testing_page
         )["general_inputs"]["checkout_page"]
         self.testing_page = self.page_dict["path"]
+        self.which_checkout_page = 0
+    
+    @property
+    def testing_page(self):
+        """property method to get value from _testing_page"""
+        return self._testing_page[self.which_checkout_page]
+
+    @testing_page.setter
+    def testing_page(self, new_value):
+        self._testing_page = new_value
 
     def continue_checkout_step_two(self):
         """
         Method to move from checkout page to checkout page
         """
         self.click_on_element(*self._get_element_params(key="continue"))
+        # move testing page to checkout-step-two.html
+        self.which_checkout_page += 1
 
     def filed_checkout_info(self, **kwargs):
         """
@@ -57,9 +69,11 @@ class CheckOutPage(BasePage):
         Method to click on finish button
         """
         self.click_on_element(*self._get_element_params(key="finish"))
+        self.which_checkout_page += 1
 
     def back_home(self):
         """
         Method to click on back home button
         """
         self.click_on_element(*self._get_element_params(key="back_home"))
+        self.which_checkout_page = 0
