@@ -23,6 +23,7 @@ class BasePage:
     def __init__(self, browser):
         self.browser = browser
         self.log = LoggerManager.get_logger(self.__class__.__name__)
+        self.list_of_items = []
 
     @property
     def testing_page(self):
@@ -150,7 +151,7 @@ class BasePage:
             dict: {name1:price1, name2:price2, }
         """
         prices_dict = {}
-        list_of_items = self.get_inventory_items()
+        list_of_items = self.list_of_items or self.get_inventory_items()
         for item in list_of_items:
             tmp_price = self.get_text_element(
                 *self._get_element_params(key="item_price"),
@@ -159,6 +160,7 @@ class BasePage:
             tmp_name = self.get_text_element(*self._get_element_params(key="item_name"), item)
             prices_dict.update({tmp_name:tmp_price})
         return prices_dict
+
 
     @staticmethod
     def _convert_text_to_list(text, spliter, ini=0, end=-1):
