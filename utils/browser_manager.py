@@ -297,7 +297,19 @@ class BrowserManager:
         """
         self.driver.quit()
     
-    def dropdown_element(self,  select_by, found, by:By, value:str, driver=None):
+    def select_dropdown_option(self, method: SelectBy, option_value, by: By, value: str, driver=None):
+        """
+        Dropdown one element from web page based on the 'method' and 'option_value' to be found.
+
+        Args:
+            method(SelectBy): Selection method (e.g., "value", "index", "visible_text").
+            option_value: Selection based on static method.
+            by(By): By enum, ID, XPATH, etc.
+            value:(str): pattern to find the element.
+            driver:(webdriver obj:Optional, Default=None): webdriver object.
+        """
         driver = driver or self.driver
-        selector = Select(driver.find_element(by, value))
-        return getattr(selector, SelectBy.get_select_method_by(select_by))(found)
+        dropdown = Select(driver.find_element(getattr(By, by), value))
+        select_method = getattr(dropdown, SelectBy.get_select_method_by(method))
+        return select_method(option_value)
+

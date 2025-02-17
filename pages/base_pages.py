@@ -1,7 +1,9 @@
 """
 Base test page class
 """
+from utils.browser_manager import SelectBy
 from utils.logger_manager import LoggerManager
+from selenium.webdriver.common.by import By
 
 
 class BasePageException(Exception):
@@ -162,5 +164,15 @@ class BasePage:
     def _convert_text_to_list(text, spliter, ini=0, end=-1):
         return text.split(spliter)[ini:end]
 
-    def dropdown_element(self, select_by, by, value, driver=None):
-        self.browser.dropdown_element(select_by, by, value, driver)
+    def select_dropdown(self, method: SelectBy, option_value, by: By, value: str, driver=None):
+        """
+        Selects an option from a dropdown element.
+
+        Args:
+            method (str): Selection method ("value", "index", "visible_text").
+            option_value: Value to select based on the specified method.
+            by(By): By enum, ID, XPATH, etc.
+            value:(str): pattern to find the element.
+            driver (webdriver, optional): WebDriver instance. Defaults to self.driver.
+        """
+        return self.browser.select_dropdown_option(method, option_value, by, value, driver)

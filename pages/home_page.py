@@ -139,7 +139,16 @@ class HomePage(BasePage):
         else:
             self.log.info(f"Make sure item {item_name} is in home page")
             raise HomePageException(f"Unable to click on {item_name}")
-    
-    def filtering_products_by(self, filtering_by):
-        return self.dropdown_element(select_by=SelectBy.VALUE,*self._get_element_params(key="filter"))
 
+    def filter_products(self, filter_option:str):
+        """
+        Filters products using the dropdown menu.
+
+        Args:
+            filter_option (str): The visible text of the filter option to select.
+        """
+        return self.select_dropdown(
+            SelectBy.VISIBLE_TEXT,
+            filter_option,
+            *self._get_element_params(key="filter")
+        )
