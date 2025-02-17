@@ -94,7 +94,10 @@ general_inputs:
       by: "CSS_SELECTOR"
       value: "button[data-test='back-to-products']"
   checkout_page:
-    path: "checkout-step-one.html"
+    path: 
+      - "checkout-step-one.html"
+      - "checkout-step-two.html"
+      - "checkout-complete.html"
     first_name:
       by: "ID"
       value: "first-name"
