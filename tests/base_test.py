@@ -2,6 +2,7 @@
 Contains the common base test classes and shared stuff
 """
 
+from utils.browser_manager import BrowserManagerException
 from utils.logger_manager import LoggerManager
 from utils.tools import ApiManager, ApiManagerError
 
@@ -70,3 +71,23 @@ class BaseTest:
             url, *args, **kwargs
         )
         return response
+
+    def step_move_to_next_page(self, change_page_method, page_obj):
+        """
+        Step function to validate the movement from cart page to checkout page
+        """
+        self.result.check_not_raises_any_given_exception(
+            method=change_page_method,
+            exceptions=BrowserManagerException,
+            step_msg="Check the it is successfully move the desired page"
+        )
+        assert self.result.step_status
+        # validate the current url vs the expected
+        expected_url = page_obj.testing_page
+        current_url = page_obj.get_current_url().split("/")[-1]
+        self.result.check_equals_to(
+            actual_value=current_url,
+            expected_value=expected_url,
+            step_msg=f"Check new page url {current_url} matches with the expected {expected_url}"
+        )
+        assert self.result.step_status

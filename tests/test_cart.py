@@ -181,26 +181,6 @@ class BaseTestCart(BaseTest):
         )
         assert self.result.step_status
 
-    def step_move_to_next_page(self, change_page_method, page_obj):
-        """
-        Step function to validate the movement from cart page to checkout page
-        """
-        self.result.check_not_raises_any_given_exception(
-            method=change_page_method,
-            exceptions=(BrowserManagerException),
-            step_msg="Check the it is successfully move the desired page"
-        )
-        assert self.result.step_status
-        # validate the current url vs the expected
-        expected_url = page_obj.testing_page
-        current_url = page_obj.get_current_url().split("/")[-1]
-        self.result.check_equals_to(
-            actual_value=current_url,
-            expected_value=expected_url,
-            step_msg=f"Check new page url {current_url} matches with the expected {expected_url}"
-        )
-        assert self.result.step_status
-
 
 class TestPositiveFlows(BaseTestCart):
     """
@@ -378,4 +358,7 @@ class TestPositiveFlows(BaseTestCart):
             self.checkout_page
         )
         # 6. Go back home page
-        self.checkout_page.back_home()
+        self.step_move_to_next_page(
+            self.checkout_page.back_home,
+            self.home_page
+        )
