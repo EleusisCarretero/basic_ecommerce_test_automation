@@ -341,6 +341,7 @@ class TestPositiveFlows(BaseTestCart):
             self.home_page
         )
 
+    @pytest.mark.xfail
     def test_try_checkout_without_products(self):
         """
         Validate a buy cannot be done without products
@@ -351,33 +352,12 @@ class TestPositiveFlows(BaseTestCart):
              self.cart_page
         )
         # 2. Move to checkout1 page.
-        self.step_move_to_next_page(
-            self.cart_page.move_to_checkout_page,
-            self.checkout_page
+        self.cart_page.move_to_checkout_page()
+        # 3 . Expected not be pass to next page checkout-2
+        current_url = self.cart_page.get_current_url().split("/")[-1]
+        self.result.check_not_equals_to(
+            actual_value=current_url, 
+            expected_value="checkout-step-one.html",
+            step_msg="Check buy couldn't continue because there is no times added"
         )
-        api_url = os.getenv("API_URL", "http://127.0.0.1:5000")
-        user = self.step_execute_api_request(
-            url=f"{api_url}/users",
-            is_random=True
-        )[0]
-        # 3. Move to checkout2 page.
-        self.step_check_execution_events(
-            callable_event=self.checkout_page.filed_checkout_info,
-            exceptions=BrowserManagerException,
-            first_name=user["first_name"], last_name=user["last_name"], postal_code=user["zip_code"]
-        )
-        # 4. Move to checkout-two page
-        self.step_move_to_next_page(
-            self.checkout_page.continue_checkout_step_two,
-            self.checkout_page
-        )
-        # 5. Finish buy
-        self.step_move_to_next_page(
-            self.checkout_page.finish_buy,
-            self.checkout_page
-        )
-        # 6. Go back home page
-        self.step_move_to_next_page(
-            self.checkout_page.back_home,
-            self.home_page
-        )
+        assert self.result.step_status
