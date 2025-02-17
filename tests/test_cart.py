@@ -181,14 +181,23 @@ class BaseTestCart(BaseTest):
         )
         assert self.result.step_status
 
-    def step_move_to_checkout_page(self):
+    def step_move_to_next_page(self, change_page_method, page_obj):
         """
         Step function to validate the movement from cart page to checkout page
         """
         self.result.check_not_raises_any_given_exception(
-            method=self.cart_page.move_to_checkout_page,
-            exceptions=(BrowserManagerException), 
-            step_msg="Check the it is successfully move to checkout page"
+            method=change_page_method,
+            exceptions=(BrowserManagerException),
+            step_msg="Check the it is successfully move the desired page"
+        )
+        assert self.result.step_status
+        # validate the current url vs the expected
+        expected_url = page_obj.testing_page
+        current_url = page_obj.get_current_url().split("/")[-1]
+        self.result.check_equals_to(
+            actual_value=current_url,
+            expected_value=expected_url,
+            step_msg=f"Check new page url {current_url} matches with the expected {expected_url}"
         )
         assert self.result.step_status
 
@@ -305,7 +314,7 @@ class TestPositiveFlows(BaseTestCart):
         )
         assert self.result.step_status
         # 8. Move to checkout button without error
-        self.step_move_to_checkout_page()
+        self.step_move_to_next_page(self.cart_page.move_to_checkout_page, self.cart_page)
         # 9. check and get the user data from API
         api_url = os.getenv("API_URL", "http://127.0.0.1:5000")
         user = self.step_execute_api_request(
@@ -328,3 +337,45 @@ class TestPositiveFlows(BaseTestCart):
             callable_event=self.checkout_page.finish_buy,
             exceptions=BrowserManagerException,
         )
+        # 13. Checkout-complete page reached
+        
+
+
+    def test_try_checkout_without_products(self):
+        """
+        Validate an item page is reachable from home page and the product is able to be included
+        in the cart.
+
+        Args:
+            item_name(str): Name of the item from home page.
+        """
+        # 1. Move cart page.
+        self.step_move_to_cart_page()
+        # 2. Move to checkout1 page.
+        self.step_move_to_next_page(
+            self.cart_page.move_to_checkout_page,
+            self.checkout_page
+        )
+        api_url = os.getenv("API_URL", "http://127.0.0.1:5000")
+        user = self.step_execute_api_request(
+            url=f"{api_url}/users",
+            is_random=True
+        )[0]
+        # 3. Move to checkout2 page.
+        self.step_check_execution_events(
+            callable_event=self.checkout_page.filed_checkout_info,
+            exceptions=BrowserManagerException,
+            first_name=user["first_name"], last_name=user["last_name"], postal_code=user["zip_code"]
+        )
+        # 4. Move to checkout-two page
+        self.step_move_to_next_page(
+            self.checkout_page.continue_checkout_step_two,
+            self.checkout_page
+        )
+        # 5. Finish buy
+        self.step_move_to_next_page(
+            self.checkout_page.finish_buy,
+            self.checkout_page
+        )
+        # 6. Go back home page
+        self.checkout_page.back_home()
