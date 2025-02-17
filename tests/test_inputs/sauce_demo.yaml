@@ -63,6 +63,9 @@ general_inputs:
     filter:
       by: "CLASS_NAME"
       value: "product_sort_container"
+    filter_active_op:
+      by: "CSS_SELECTOR"
+      value: "[data-test='active-option']"
   cart_page:
     path: cart.html
     inventory_items:

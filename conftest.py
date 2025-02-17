@@ -36,6 +36,12 @@ def pytest_addoption(parser):
         help="Run browser in headless mode"
     )
     parser.addoption(
+        "--start-maximized",
+        action="store",
+        default="--start-maximized",
+        help="Set window maximized"
+    )
+    parser.addoption(
         "--disable-gpu",
         action="store_true",
         help="Disable GPU"
@@ -75,11 +81,12 @@ def browser(pytestconfig):
     """
     browser_options = []
     browser_type =  pytestconfig.getoption("browser_type")
+    maximized = pytestconfig.getoption("--start-maximized")
 
-    for input_browser in ["--disable-gpu", "--headless", "--no-sandbox", "--disable-dev-shm-usage", "--user-data-dir"]:
+    for input_browser in ["--disable-gpu", "--headless", "--no-sandbox", "--disable-dev-shm-usage", "--user-data-dir", "--start-maximized"]:
         browser_options.append(pytestconfig.getoption(input_browser))
 
-    manager = BrowserManager(browser=browser_type)
+    manager = BrowserManager(maximized, browser=browser_type)
     yield manager
     manager.driver_down()
 

@@ -1,7 +1,7 @@
 """
 Base test page class
 """
-from utils.browser_manager import SelectBy
+from utils.browser_manager import BrowserManagerException, SelectBy
 from utils.logger_manager import LoggerManager
 from selenium.webdriver.common.by import By
 
@@ -175,4 +175,8 @@ class BasePage:
             value:(str): pattern to find the element.
             driver (webdriver, optional): WebDriver instance. Defaults to self.driver.
         """
-        return self.browser.select_dropdown_option(method, option_value, by, value, driver)
+        try:
+            return self.browser.select_dropdown_option(method, option_value, by, value, driver)
+        except BrowserManagerException as e:
+            self.log.error(f"Unable to dropdown element by using the method {method} with filtering criteria {option_value}")
+            raise BasePageException("Dropdown was not performed") from e

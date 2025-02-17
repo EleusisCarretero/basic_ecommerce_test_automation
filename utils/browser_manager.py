@@ -63,7 +63,7 @@ class BrowserManager:
 
     def _init_webdriver(self, browser, *args):
         if browser not in AvailableBrowsers.get_available_browsers():
-            self.log.error(f"Bowser {browser} is not available")
+            self.log.error(f"Browser {browser} is not available")
             raise BrowserManagerException(f"Bowser {browser} is not available")
         options = getattr(webdriver, f"{browser}Options")()
         for arg in args:
@@ -309,7 +309,10 @@ class BrowserManager:
             driver:(webdriver obj:Optional, Default=None): webdriver object.
         """
         driver = driver or self.driver
-        dropdown = Select(driver.find_element(getattr(By, by), value))
-        select_method = getattr(dropdown, SelectBy.get_select_method_by(method))
+        try:
+            dropdown = Select(driver.find_element(getattr(By, by), value))
+            select_method = getattr(dropdown, SelectBy.get_select_method_by(method))
+        except Exception:
+            raise BrowserManagerException("Unable browser couldn't do the dropdown")
         return select_method(option_value)
 

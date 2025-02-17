@@ -1,3 +1,4 @@
+from pages.base_pages import BasePageException
 from tests.base_test import BaseTest
 from utils.browser_manager import BrowserManagerException
 from utils.tools import YamlManager
@@ -32,6 +33,37 @@ class TestFiltering(BaseTest):
             self.log.error("Unable to login using standard user credentials")
             raise BaseFilteringError("Login has failed") from e
     
-    def test_filtering_products(self):
-        self.home_page.filter_products(filter_option=FilteringBy.HIGH_TO_LOW)
+    def step_verify_filter_applied(self, expected_filter):
+
+        # Read current filter applied
+        current_filter = self.home_page.get_current_filter_applied()
+        if current_filter != expected_filter:
+            # Apply filter
+            self.result.check_not_raises_any_given_exception(
+            method=self.home_page.filter_products,
+            exceptions=BasePageException, 
+            step_msg="Verify The correct filter has been applied",
+            filter_option=expected_filter
+            )
+            assert self.result.step_status
+            current_filter = self.home_page.get_current_filter_applied()
+        # Compare the values expected vs actual
+        self.result.check_equals_to(
+            actual_value=current_filter, 
+            expected_value=expected_filter,
+            step_msg="Verify the current filtering has been updated")
+
+    
+    
+    @pytest.mark.parametrize(
+            ("filter_applied"),
+            [
+                (FilteringBy.HIGH_TO_LOW),
+                (FilteringBy.A_TO_Z),
+                (FilteringBy.Z_TO_A),
+                (FilteringBy.LOW_TO_HIGH),
+            ]
+        )
+    def test_filtering_products(self, filter_applied):
+        self.step_verify_filter_applied(expected_filter=filter_applied)
         print("Wait here")

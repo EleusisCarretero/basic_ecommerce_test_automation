@@ -2,7 +2,7 @@
 Home page class
 """
 from enum import Enum
-from pages.base_pages import BasePage
+from pages.base_pages import BasePage, BasePageException
 from utils.browser_manager import BrowserManagerException, SelectBy
 from utils.tools import YamlManager
 
@@ -147,8 +147,16 @@ class HomePage(BasePage):
         Args:
             filter_option (str): The visible text of the filter option to select.
         """
-        return self.select_dropdown(
-            SelectBy.VISIBLE_TEXT,
-            filter_option,
-            *self._get_element_params(key="filter")
-        )
+        try:
+            return self.select_dropdown(
+                SelectBy.VISIBLE_TEXT,
+                filter_option,
+                *self._get_element_params(key="filter")
+            )
+        except BasePageException as e:
+            self.log.error(f"Error trying to dropdown product filter using method: {SelectBy.VISIBLE_TEXT} "
+                           f"and option desired {filter_option}")
+            raise HomePageException("Could dropdown the filter from home page") from e
+    
+    def get_current_filter_applied(self):
+        return self.get_text_element(*self._get_element_params(key="filter_active_op"))
