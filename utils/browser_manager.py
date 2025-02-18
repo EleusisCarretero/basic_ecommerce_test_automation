@@ -86,7 +86,7 @@ class BrowserManager:
 
     def _init_webdriver(self, browser, *args):
         """Initialize WebDriver"""
-        if browser not in AvailableBrowsers.get_available_browsers():
+        if browser.capitalize() not in AvailableBrowsers.get_available_browsers():
             self.log.error(f"Browser {browser} is not available")
             raise BrowserManagerException(f"Browser {browser} is not available")
 
@@ -98,15 +98,20 @@ class BrowserManager:
             service_class, manager = getattr(ServiceManager, browser.upper()).value
             driver_path = manager().install()
 
-            # 🔴 Corregir detección del driver en Linux
-            if not os.path.isfile(driver_path) or not os.access(driver_path, os.X_OK):
-                self.log.error(f"❌ Chromedriver no es ejecutable: {driver_path}")
-                raise BrowserManagerException(f"Chromedriver no válido en {driver_path}")
+            # 🔴 Corregir detección de `chromedriver`
+            chromedriver_executable = os.path.join(os.path.dirname(driver_path), "chromedriver")
 
-            self.log.info(f"✅ Chromedriver path: {driver_path}")
+            if not os.path.isfile(chromedriver_executable):
+                self.log.error(f"❌ Chromedriver no encontrado en: {chromedriver_executable}")
+                raise BrowserManagerException(f"Chromedriver no válido en {chromedriver_executable}")
 
-            # 🔥 Evitar manipulación innecesaria de `service.path`
-            service = service_class(driver_path)
+            if not os.access(chromedriver_executable, os.X_OK):
+                self.log.info(f"🔧 Asignando permisos de ejecución a {chromedriver_executable}")
+                os.chmod(chromedriver_executable, 0o755)
+
+            self.log.info(f"✅ Usando Chromedriver en: {chromedriver_executable}")
+
+            service = service_class(chromedriver_executable)
             driver = getattr(webdriver, browser)(service=service, options=options)
 
         except AttributeError as e:
@@ -114,6 +119,7 @@ class BrowserManager:
             raise BrowserManagerException(f"Error webdriver does not have attribute: {browser}") from e
 
         return driver
+
 
     @property
     def driver(self):
