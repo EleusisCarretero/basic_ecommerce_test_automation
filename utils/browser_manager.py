@@ -96,7 +96,8 @@ class BrowserManager:
             driver_path =  manager().install()
             if "chromedriver.exe" not in driver_path:
                 self.log.info(f"Current driver path: {driver_path}")
-                possible_driver = os.path.join(driver_path.replace("/THIRD_PARTY_NOTICES.chromedriver", ""), "chromedriver.exe")
+                # possible_driver = os.path.join(driver_path.replace("/THIRD_PARTY_NOTICES.chromedriver", ""), "chromedriver.exe")
+                possible_driver = os.path.join(driver_path, "chromedriver.exe")
                 self.log.info(f"New driver path {possible_driver}")
                 if os.path.isfile(possible_driver):
                     self.log.info("Es valido")
