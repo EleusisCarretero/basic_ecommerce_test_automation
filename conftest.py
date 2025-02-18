@@ -57,12 +57,6 @@ def pytest_addoption(parser):
         action="store_true",
         help="Disable shared memory usage"
     )
-    # parser.addoption(
-    #     "--user-data-dir",
-    #     action="store",
-    #     default="",
-    #     help="Set user data directory"
-    # )
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -88,7 +82,6 @@ def browser(pytestconfig):
                           "--headless",
                           "--no-sandbox",
                           "--disable-dev-shm-usage",
-                        #   "--user-data-dir",
                           "--start-maximized"]:
         browser_options.append(pytestconfig.getoption(input_browser))
 
