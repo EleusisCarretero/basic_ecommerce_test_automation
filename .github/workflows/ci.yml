@@ -28,7 +28,6 @@ jobs:
           echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
           echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
           source venv/bin/activate
-          pip install pytest
           pip install -r requirements.txt
 
       - name: Run tests
