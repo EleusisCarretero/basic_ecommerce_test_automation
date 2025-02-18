@@ -28,32 +28,34 @@ jobs:
       - name: Desactivar Selenium Manager
         run: echo "SE_MANAGER=0" >> $GITHUB_ENV
       
-      - name: Instalar Google Chrome y Chromedriver
+      - name: Instalar Chromedriver
         run: |
-          echo "⏳ Verificando si Google Chrome ya está instalado..."
-          if command -v google-chrome &> /dev/null; then
-            echo "✅ Google Chrome ya está instalado: $(google-chrome --version)"
+          echo "⏳ Verificando si Chromedriver ya está instalado..."
+          if command -v chromedriver &> /dev/null; then
+            echo "✅ Chromedriver ya está instalado: $(chromedriver --version)"
           else
-            echo "📥 Instalando Google Chrome..."
-            set +e  # 🔴 Permitir errores temporalmente
-            sudo apt-get update
-            sudo apt-get install -y google-chrome-stable
-            set -e  # ✅ Volver a activar la detención de errores
+            echo "📥 Descargando la versión de Chromedriver compatible con Chrome $CHROME_VERSION..."
+            
+            CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+            
+            if [ -z "$CHROMEDRIVER_VERSION" ]; then
+              echo "⚠️ No se pudo obtener la versión de Chromedriver. Usando la última versión conocida."
+              CHROMEDRIVER_VERSION="133.0.6943.98"  # Última versión conocida de Chromedriver
+            fi
+      
+            echo "📥 Descargando Chromedriver versión: $CHROMEDRIVER_VERSION..."
+            wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" || {
+              echo "❌ Error al descargar Chromedriver. Reintentando con la última versión estable."
+              wget -q "https://chromedriver.storage.googleapis.com/133.0.6943.98/chromedriver_linux64.zip"
+            }
+      
+            unzip chromedriver_linux64.zip
+            sudo mv chromedriver /usr/local/bin/
+            sudo chmod +x /usr/local/bin/chromedriver
+      
+            echo "✅ Chromedriver instalado en: $(which chromedriver)"
           fi
       
-          # Obtener la versión de Chrome instalada
-          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
-          echo "✅ Chrome instalado en versión: $CHROME_VERSION"
-      
-          # Instalar Chromedriver correspondiente
-          echo "⏳ Descargando Chromedriver..."
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
-          wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/chromedriver
-      
-          echo "✅ Chromedriver instalado en: $(which chromedriver)"
       
 
       - name: Verificar instalación de Chromedriver
