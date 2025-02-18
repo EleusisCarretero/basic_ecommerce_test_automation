@@ -8,6 +8,9 @@ from utils.tools import YamlManager
 
 
 class FilteringBy(str, Enum):
+    """
+    Enum class with available sort filters
+    """
     A_TO_Z = "Name (A to Z)"
     Z_TO_A = "Name (A to Z)"
     LOW_TO_HIGH = "Price (low to high)"
@@ -161,9 +164,16 @@ class HomePage(BasePage):
                 *self._get_element_params(key="filter")
             )
         except BasePageException as e:
-            self.log.error(f"Error trying to dropdown product filter using method: {SelectBy.VISIBLE_TEXT} "
+            self.log.error("Error trying to dropdown product filter "
+                           f"using method: {SelectBy.VISIBLE_TEXT} "
                            f"and option desired {filter_option}")
             raise HomePageException("Could dropdown the filter from home page") from e
-    
+
     def get_current_filter_applied(self):
+        """
+        Method to return the text from home page filter
+
+        Returns
+            str: Current text from filter element
+        """
         return self.get_text_element(*self._get_element_params(key="filter_active_op"))

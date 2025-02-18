@@ -1,16 +1,25 @@
+"""
+Filtering test file and relates
+"""
+import pytest
 from pages.base_pages import BasePageException
+from pages.home_page import FilteringBy, HomePage
+from pages.login_page import LoginPage
 from tests.base_test import BaseTest
 from utils.browser_manager import BrowserManagerException
 from utils.tools import YamlManager
-from pages.home_page import FilteringBy, HomePage
-from pages.login_page import LoginPage
-import pytest
 
 
 class BaseFilteringError(Exception):
-    pass
+    """
+    TestFiltering error class
+    """
+
 
 class TestFiltering(BaseTest):
+    """
+    Filtering test class
+    """
 
     TESTING_PAGE =  "tests/test_inputs/sauce_demo.yaml"
     @pytest.fixture(autouse=True)
@@ -35,7 +44,25 @@ class TestFiltering(BaseTest):
             raise BaseFilteringError("Login has failed") from e
     
     def step_verify_filter_applied(self, expected_filter):
+        """
+        Verifies that the applied filter on the page matches the expected filter.
+        If the current filter does not match the expected one, it attempts to apply the correct filter 
+        and validates the update.
 
+        Steps:
+        1. Retrieves the currently applied filter from the homepage.
+        2. If the current filter does not match the expected one:
+        - Attempts to apply the expected filter without raising any exceptions.
+        - Ensures the filtering action is successfully executed.
+        - Retrieves the newly applied filter.
+        3. Compares the actual filter with the expected filter to confirm the update.
+
+        Args:
+            expected_filter (str): The name of the filter that should be applied.
+
+        Raises:
+            AssertionError: If the filter verification fails at any step.
+        """
         # Read current filter applied
         current_filter = self.home_page.get_current_filter_applied()
         if current_filter != expected_filter:
@@ -55,7 +82,6 @@ class TestFiltering(BaseTest):
             step_msg="Verify the current filtering has been updated")
         assert self.result.step_status
 
-    
     @pytest.mark.parametrize(
             ("filter_applied"),
             [
@@ -69,13 +95,15 @@ class TestFiltering(BaseTest):
         """
         Tests the filtering functionality for product sorting.
 
-        This test verifies that applying different sorting filters (High to Low, A to Z, Z to A, Low to High)
+        This test verifies that applying different sorting filters
+        (High to Low, A to Z, Z to A, Low to High)
         correctly rearranges the product listings. It follows these steps:
 
         1. Retrieves product names and prices before applying any filter.
         2. Applies the selected filter and verifies it is correctly applied.
         3. Retrieves the product names and prices after filtering.
-        4. Compares the displayed sorting order with the expected sorting order based on the applied filter.
+        4. Compares the displayed sorting order with the expected
+        sorting order based on the applied filter.
 
         Args:
             filter_applied (FilteringBy): The sorting filter to be applied.
@@ -101,10 +129,12 @@ class TestFiltering(BaseTest):
         current_sorted_items = self.home_page.get_item_prices()
         self.log.info(f"Items after apply sort filter {filter_applied}: {unsorted_items}")
         # 4. Make compare
-        expected_sorted_items = dict(sorted(unsorted_items.items(), key=sorted_func(filter_applied)))
+        expected_sorted_items = \
+            dict(sorted(unsorted_items.items(), key=sorted_func(filter_applied)))
         for expected_key, _ in expected_sorted_items.items():
             self.result.check_equals_to(
                 actual_value=current_sorted_items[expected_key], 
                 expected_value=expected_sorted_items[expected_key],
-                step_msg=f"Check the value items matches withe the expected after applying filter {filter_applied}")
+                step_msg="Check the value items matches withe the "
+                         f"expected after applying filter {filter_applied}")
         assert self.result.step_status

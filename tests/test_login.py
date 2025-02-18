@@ -156,25 +156,29 @@ class TestPositiveFlows(BaseLogIn):
         assert self.result.step_status
 
 
+#TODO: move it to common resources file
+ERROR_MSG = \
+        "Epic sadface: Username and password do not match any user in this service"
+
+
 class TestNegativeFlows(BaseLogIn):
     """
     Test class to validate negative flows.
     """
-
     @pytest.fixture(autouse=True)
     def setup(self, browser, result):
         super().setup(browser, result)
         self.login_page.open_page()
 
     @pytest.mark.parametrize(
-            ("user", "password", "expected_error_mgs"), 
+            ("user", "password", "expected_error_mgs"),
             [
                 ("Juan_Camaney", "12345",
-                 "Epic sadface: Username and password do not match any user in this service"),  # Invalid user, invalid password
+                 ERROR_MSG),  # Invalid user, invalid password
                 ("standard_user", "soy_123_wers",
-                 "Epic sadface: Username and password do not match any user in this service"),  # valid user, invalid password
+                 ERROR_MSG),  # valid user, invalid password
                 ("Uknowd_123_t", "secret_sauce",
-                 "Epic sadface: Username and password do not match any user in this service")  # invalid user, 'valid' password
+                 ERROR_MSG)  # invalid user, 'valid' password
             ]
     )
     @pytest.mark.Smoke

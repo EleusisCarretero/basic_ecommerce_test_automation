@@ -2,10 +2,10 @@
 Contains common functions, constants, classes that can be util but not
 necessary is part of a feature.
 """
+import random
 import os
 import yaml
 import requests
-import random
 
 
 class YamlManager:

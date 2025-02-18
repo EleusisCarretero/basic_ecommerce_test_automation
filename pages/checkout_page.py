@@ -26,7 +26,7 @@ class CheckOutPage(BasePage):
         )["general_inputs"]["checkout_page"]
         self.testing_page = self.page_dict["path"]
         self.which_checkout_page = 0
-    
+
     @property
     def testing_page(self):
         """property method to get value from _testing_page"""

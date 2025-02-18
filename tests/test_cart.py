@@ -133,7 +133,7 @@ class BaseTestCart(BaseTest):
         add_sub = {
             "including": lambda a, b: a + b,
             "removing": lambda a, b: abs(a - b),
-        } 
+        }
         for idx, item_text in enumerate(item_list):
             current_items_added = callback(item_text)
             inc_dec = idx if msg == "including" else len(item_list) - idx
@@ -197,7 +197,13 @@ class TestPositiveFlows(BaseTestCart):
                 (["Sauce Labs Backpack"]),
                 (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]),
                 (["Sauce Labs Onesie","Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]),
-                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt", "Sauce Labs Backpack", "Sauce Labs Onesie"]),
+                (
+                    [
+                        "Sauce Labs Bike Light",
+                        "Sauce Labs Bolt T-Shirt",
+                        "Sauce Labs Backpack", "Sauce Labs Onesie"
+                    ]
+                ),
             ]
     )
     def test_add_and_remove_items(self, items_text):
@@ -216,12 +222,19 @@ class TestPositiveFlows(BaseTestCart):
         self.iterate_items_list(items_text, self.step_remove_item_in_cart, "removing")
 
     @pytest.mark.parametrize(
-            ("items_text"), 
+            ("items_text"),
             [
                 (["Sauce Labs Backpack"]),
                 (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]),
                 (["Sauce Labs Onesie","Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]),
-                (["Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt", "Sauce Labs Backpack", "Sauce Labs Onesie"]),
+                (
+                    [
+                        "Sauce Labs Bike Light",
+                        "Sauce Labs Bolt T-Shirt",
+                        "Sauce Labs Backpack",
+                        "Sauce Labs Onesie"
+                    ]
+                ),
             ]
     )
     def test_validate_prices(self, items_text):
@@ -235,7 +248,7 @@ class TestPositiveFlows(BaseTestCart):
         # 1 . include itesm to the cart
         self.iterate_items_list(items_text, self.step_include_item_in_cart, "including")
         it_home_page = \
-            {key:value for key, value in self.home_page.get_item_prices().items() if key in items_text}
+            {key: value for key, value in self.home_page.get_item_prices().items() if key in items_text}
         self.log.info(f"Items included in the cart viewed in the home page: {it_home_page}")
         # 2. Click on cart item
         self.step_move_to_next_page(
@@ -258,7 +271,6 @@ class TestPositiveFlows(BaseTestCart):
         # TODO: move to base_page
         self.home_page.click_on_lateral_menu()
         self.home_page.click_on_reset_app()
-
 
     @pytest.mark.Sanity
     @pytest.mark.parametrize(

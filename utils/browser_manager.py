@@ -3,13 +3,13 @@ Browser manager class
 """
 from typing import Union
 from enum import Enum
+from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from .logger_manager import LoggerManager
-from selenium.webdriver.support.select import Select
 
 
 class AvailableBrowsers(str, Enum):
@@ -29,12 +29,18 @@ class AvailableBrowsers(str, Enum):
 
 
 class SelectBy(Enum):
+    """
+    Enum class to handle the select methods
+    """
     VISIBLE_TEXT = 1
     VALUE = 2
     INDEX = 3
 
     @classmethod
     def get_select_method_by(cls, select_by):
+        """
+        Classmethod to return the corresponding select method
+        """
         return {
             cls.VISIBLE_TEXT: "select_by_visible_text",
             cls.VALUE: "select_by_value",
@@ -72,14 +78,16 @@ class BrowserManager:
             driver = getattr(webdriver, browser)(options)
         except AttributeError as e:
             self.log.error(f"Error webdriver does not have attribute: {browser}")
-            raise BrowserManagerException(f"Error webdriver does not have attribute: {browser}") from e
+            raise BrowserManagerException(
+                f"Error webdriver does not have attribute: {browser}"
+                ) from e
         return driver
-    
+
     @property
     def driver(self):
         """Property method to get _driver value"""
         return self._driver
-    
+
     @driver.setter
     def driver(self, new_driver):
         self._driver = new_driver
@@ -127,7 +135,8 @@ class BrowserManager:
 
     def click_wait_clickable_element(self, by:By, value:str, driver=None, timeout: Union[int, float]=10):
         """
-        Waits until the element which matches with the 'by' and ' value' within a timeout and clicks on it, otherwise
+        Waits until the element which matches with the 'by' and ' value' within
+        a timeout and clicks on it, otherwise
         the BrowserManagerException is raised.
 
         Args:
@@ -137,7 +146,8 @@ class BrowserManager:
             timeout: (int/float): Timeout in seconds to wait.
 
         Raises:
-            BrowserManagerException: In case the timeout has been reached and the element is still not clickable.
+            BrowserManagerException: In case the timeout
+            has been reached and the element is still not clickable.
         """
         driver = driver or self.driver
         try:
@@ -151,8 +161,9 @@ class BrowserManager:
 
     def get_present_element(self, by:By, value:str, driver, timeout: Union[int, float]):
         """
-        Waits until the element which matches with the 'by' and ' value' within a timeout, (it does not means it is visible)
-        otherwise the BrowserManagerException is raised.
+        Waits until the element which matches with the 'by' and ' value'
+        within a timeout, (it does not means it is visible) otherwise the
+        BrowserManagerException is raised.
 
         Args:
             by(By): By enum, ID, XPATH, etc.
@@ -164,7 +175,8 @@ class BrowserManager:
             Element: Element found which matches within timeout.
 
         Raises:
-            BrowserManagerException: In case the timeout has been reached and the element is still not present.
+            BrowserManagerException: In case the timeout
+            has been reached and the element is still not present.
         """
         driver = driver or self.driver
         try:
@@ -172,7 +184,8 @@ class BrowserManager:
                 EC.presence_of_element_located((getattr(By, by), value))
             )
         except TimeoutException as e:
-            self.log.error(f"Unable get the element using parameters '({by}, {value})' within {timeout}s")
+            self.log.error("Unable get the element using parameters "
+                           f"'({by}, {value})' within {timeout}s")
             raise BrowserManagerException("Unable to write on element") from e
 
     def get_present_list_element(self, by:By, value:str, driver):
@@ -189,7 +202,8 @@ class BrowserManager:
             Element: Element found which matches within timeout.
 
         Raises:
-            BrowserManagerException: In case the timeout has been reached and the element is still not present.
+            BrowserManagerException: In case the timeout
+            has been reached and the element is still not present.
         """
         driver = driver or self.driver
         try:
@@ -200,8 +214,9 @@ class BrowserManager:
 
     def get_visible_element(self, by:By, value:str, driver, timeout: Union[int, float]):
         """
-        Waits until the element which matches with the 'by' and ' value' within a timeout, (the element should be visible)
-        otherwise the BrowserManagerException is raised.
+        Waits until the element which matches with the 'by' and ' value'
+        within a timeout, (the element should be visible) otherwise the
+        BrowserManagerException is raised.
 
         Args:
             by(By): By enum, ID, XPATH, etc.
@@ -213,7 +228,8 @@ class BrowserManager:
             Element: Element found which matches within timeout.
 
         Raises:
-            BrowserManagerException: In case the timeout has been reached and the element is still not visible.
+            BrowserManagerException: In case the timeout has
+            been reached and the element is still not visible.
         """
         driver = driver or self.driver
         try:
@@ -221,12 +237,14 @@ class BrowserManager:
                 EC.visibility_of_element_located((getattr(By, by), value))
             )
         except TimeoutException as e:
-            self.log.error(f"Unable get the element using parameters '({by}, {value})' within {timeout}s")
+            self.log.error("Unable get the element using parameters "
+                           f"'({by}, {value})' within {timeout}s")
             raise BrowserManagerException("Unable to get element") from e
 
     def enter_text_to_present_element(self, by:By, value:str, keys_value:str, driver, timeout: Union[int, float]) -> None:
         """
-        Writes a text ('keys_value') the located element, not necessary visible, with the 'by' and ' value' within a timeout, otherwise
+        Writes a text ('keys_value') the located element, not necessary visible,
+        with the 'by' and ' value' within a timeout, otherwise
         the BrowserManagerException is raised.
 
         Args:
@@ -277,7 +295,7 @@ class BrowserManager:
             self.log.error(f"Unable to switch the current driver to window {which_window}")
             raise BrowserManagerException("Unable to switch window") from e
         return self.get_current_driver_url()
-    
+
     def get_current_driver_url(self, driver=None) -> str:
         """
         Return url from given driver.
@@ -296,7 +314,7 @@ class BrowserManager:
         Teardown driver.
         """
         self.driver.quit()
-    
+
     def select_dropdown_option(self, method: SelectBy, option_value, by: By, value: str, driver=None):
         """
         Dropdown one element from web page based on the 'method' and 'option_value' to be found.
@@ -312,7 +330,6 @@ class BrowserManager:
         try:
             dropdown = Select(driver.find_element(getattr(By, by), value))
             select_method = getattr(dropdown, SelectBy.get_select_method_by(method))
-        except Exception:
-            raise BrowserManagerException("Unable browser couldn't do the dropdown")
+        except Exception as e:
+            raise BrowserManagerException("Unable browser couldn't do the dropdown") from e
         return select_method(option_value)
-
