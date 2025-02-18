@@ -93,7 +93,7 @@ class BrowserManager:
             options.add_argument(arg)
         try:
             service_class, manager = getattr(ServiceManager, browser.upper()).value
-            driver_path =  manager().install(path=r"/home/runner/chromedriver")
+            driver_path =  manager().install()
             if "chromedriver.exe" not in driver_path:
                 self.log.info(f"Current driver path: {driver_path}")
                 possible_driver = os.path.join(driver_path.replace("/THIRD_PARTY_NOTICES.chromedriver", ""), "chromedriver.exe")
