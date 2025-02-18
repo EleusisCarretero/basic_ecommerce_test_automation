@@ -83,7 +83,12 @@ def browser(pytestconfig):
     browser_type =  pytestconfig.getoption("browser_type")
     maximized = pytestconfig.getoption("--start-maximized")
 
-    for input_browser in ["--disable-gpu", "--headless", "--no-sandbox", "--disable-dev-shm-usage", "--user-data-dir", "--start-maximized"]:
+    for input_browser in ["--disable-gpu",
+                          "--headless",
+                          "--no-sandbox",
+                          "--disable-dev-shm-usage",
+                          "--user-data-dir",
+                          "--start-maximized"]:
         browser_options.append(pytestconfig.getoption(input_browser))
 
     manager = BrowserManager(maximized, browser=browser_type)
