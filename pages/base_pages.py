@@ -1,9 +1,9 @@
 """
 Base test page class
 """
-from utils.browser_manager import BrowserManagerException, SelectBy
-from utils.logger_manager import LoggerManager
 from selenium.webdriver.common.by import By
+from test_utils.logger_manager import LoggerManager
+from utils.browser_manager import BrowserManagerException, SelectBy
 
 
 class BasePageException(Exception):

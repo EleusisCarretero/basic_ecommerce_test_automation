@@ -1,10 +1,9 @@
 """
 Contains the common base test classes and shared stuff
 """
-
-from utils.browser_manager import BrowserManagerException
-from utils.logger_manager import LoggerManager
 from utils.tools import ApiManager, ApiManagerError
+from utils.browser_manager import BrowserManagerException
+from test_utils.logger_manager import LoggerManager
 
 
 class BaseTest:

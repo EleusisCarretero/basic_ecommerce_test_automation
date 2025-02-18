@@ -8,8 +8,8 @@ from pages.checkout_page import CheckOutPage
 from pages.home_page import HomePage, HomePageException
 from pages.cart_page import CartPage
 from pages.product_page import ProductPage
-from tests.base_test import BaseTest
 from pages.login_page import LoginPage
+from tests.base_test import BaseTest
 from utils.tools import YamlManager
 from utils.browser_manager import BrowserManagerException
 
@@ -368,7 +368,7 @@ class TestPositiveFlows(BaseTestCart):
         # 3 . Expected not be pass to next page checkout-2
         current_url = self.cart_page.get_current_url().split("/")[-1]
         self.result.check_not_equals_to(
-            actual_value=current_url, 
+            actual_value=current_url,
             expected_value="checkout-step-one.html",
             step_msg="Check buy couldn't continue because there is no times added"
         )
