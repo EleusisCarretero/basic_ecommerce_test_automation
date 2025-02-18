@@ -23,7 +23,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip
           python3 -m venv venv
           echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
           echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
