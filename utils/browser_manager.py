@@ -85,20 +85,30 @@ class BrowserManager:
             self.open_page(url)
 
     def _init_webdriver(self, browser, *args):
-        if browser.upper() not in ServiceManager.__dict__:
-            raise Exception(f"Browser {browser} is not available")
+        if browser not in AvailableBrowsers.get_available_browsers():
+            self.log.error(f"Browser {browser} is not available")
+            raise BrowserManagerException(f"Browser {browser} is not available")
         options = getattr(webdriver, f"{browser}Options")()
         for arg in args:
             options.add_argument(arg)
         try:
-            service_class, driver_manager = ServiceManager.__dict__[browser.upper()]
-            driver_path = driver_manager().install()
+            service, manager = getattr(ServiceManager, browser.upper()).value
+            driver_path =  manager().install()
+            if "chromedriver.exe" not in driver_path:
+                print(f"Current driver path: {driver_path}")
+                possible_driver = os.path.join(driver_path.replace("/THIRD_PARTY_NOTICES.chromedriver", ""), "chromedriver.exe")
+                print(f"New driver path {possible_driver}")
+                if os.path.isfile(possible_driver):
+                    driver_path = possible_driver
             if not os.path.isfile(driver_path) or not os.access(driver_path, os.X_OK):
                 raise Exception(f"El chromedriver descargado no es ejecutable: {driver_path}")
-            service = service_class(driver_path)
-            driver = getattr(webdriver, browser.lower())(service=service, options=options)
+            
+            driver = getattr(webdriver, browser)(service=service(driver_path), options=options)
         except AttributeError as e:
-            raise Exception(f"Error: WebDriver no tiene atributo {browser}") from e
+            self.log.error(f"Error webdriver does not have attribute: {browser}")
+            raise BrowserManagerException(
+                f"Error webdriver does not have attribute: {browser}"
+                ) from e
         return driver
 
     @property
