@@ -93,7 +93,7 @@ class BrowserManager:
             options.add_argument(arg)
 
         try:
-            service_class, driver_manager = ServiceManager.__dict__[browser]
+            service_class, driver_manager = ServiceManager.__dict__[browser.upper()]
             driver_path = driver_manager().install()
 
             if not os.path.isfile(driver_path) or not os.access(driver_path, os.X_OK):
