@@ -25,13 +25,13 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           python3 -m venv venv
-          echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
-          echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
+          echo virtual env: "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
+          echo github: "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
           source venv/bin/activate
           pip install pytest pylint
           pip install -r requirements.txt
           chmod +x set_pythonpath.sh
-          echo "PYTHONPATH=$GITHUB_WORKSPACE:$GITHUB_WORKSPACE/venv/lib/python3.11/site-packages" >> $GITHUB_ENV
+          echo pythonpath: "PYTHONPATH=$GITHUB_WORKSPACE:$GITHUB_WORKSPACE/venv/lib/python3.11/site-packages" >> $GITHUB_ENV
 
       - name: Verify installed packages
         run: |
