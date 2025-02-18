@@ -93,7 +93,7 @@ class BrowserManager:
         try:
             service = getattr(ServiceManager, browser.upper()).value[0]
             manager = getattr(ServiceManager, browser.upper()).value[1]
-            driver = getattr(webdriver, browser)(service=service(manager(cache_valid_range=1).install()), options=options)
+            driver = getattr(webdriver, browser)(service=service(manager().install()), options=options)
         except AttributeError as e:
             self.log.error(f"Error webdriver does not have attribute: {browser}")
             raise BrowserManagerException(

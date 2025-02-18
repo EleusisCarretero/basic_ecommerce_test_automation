@@ -29,6 +29,10 @@ jobs:
           echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
           source venv/bin/activate
           pip install -r requirements.txt
+      
+      - name: Limpiar caché de webdriver_manager
+        run: rm -rf /home/runner/.wdm
+
 
       - name: Run tests
         run: |
