@@ -9,34 +9,35 @@ on:
       - main
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
         with:
-          python-version: '3.11'
-
+          python-version: "3.10"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m venv venv
-          echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
-          echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
-          source venv/bin/activate
-          pip install -r requirements.txt
-      
-      - name: Limpiar caché de webdriver_manager
-        run: |
-          rm -rf /home/runner/.wdm
-          mkdir -p /home/runner/.wdm
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - uses: actions/checkout@v3
+        if: success() || failure()
+      - run: |
+          cd tests
+          mkdir -p reports
+          pytest test_login_page.py --browser=chrome --html=reports/reports.html
+          chmod 777  /home/runner/work/python-se/python-se/tests/reports/
 
-      - name: Run tests
-        run: |
-          source venv/bin/activate
-          pytest tests -s -m Smoke
+      - name: Set output
+        if: success() || failure()
+        id: results
+        run: echo "artifactPath=tests/reports/" >> $GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v3
+        if: success() || failure()
+        with:
+          name: test-report
+          path: ${{ steps.results.outputs.artifactPath }}
+
