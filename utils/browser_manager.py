@@ -95,9 +95,9 @@ class BrowserManager:
             service, manager = getattr(ServiceManager, browser.upper()).value
             driver_path =  manager().install()
             if "chromedriver.exe" not in driver_path:
-                print(f"Current driver path: {driver_path}")
+                self.log.info(f"Current driver path: {driver_path}")
                 possible_driver = os.path.join(driver_path.replace("/THIRD_PARTY_NOTICES.chromedriver", ""), "chromedriver.exe")
-                print(f"New driver path {possible_driver}")
+                self.log.info(f"New driver path {possible_driver}")
                 if os.path.isfile(possible_driver):
                     driver_path = possible_driver
             if not os.path.isfile(driver_path) or not os.access(driver_path, os.X_OK):
