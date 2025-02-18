@@ -28,6 +28,7 @@ jobs:
           echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
           source venv/bin/activate
           pip install -r requirements.txt
+          pip install pylint
           pip list
           chmod +x set_pythonpath.sh
           echo "PYTHONPATH=$GITHUB_WORKSPACE:$GITHUB_WORKSPACE/venv/lib/python3.11/site-packages" >> $GITHUB_ENV
