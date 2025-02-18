@@ -99,6 +99,7 @@ class BrowserManager:
                 possible_driver = os.path.join(driver_path.replace("/THIRD_PARTY_NOTICES.chromedriver", ""), "chromedriver.exe")
                 self.log.info(f"New driver path {possible_driver}")
                 if os.path.isfile(possible_driver):
+                    self.log.info("Es valido")
                     driver_path = possible_driver
             if not os.path.isfile(driver_path) or not os.access(driver_path, os.X_OK):
                 raise Exception(f"El chromedriver descargado no es ejecutable: {driver_path}")
