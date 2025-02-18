@@ -85,25 +85,20 @@ class BrowserManager:
             self.open_page(url)
 
     def _init_webdriver(self, browser, *args):
-        if browser not in ServiceManager.__dict__:
+        if browser.upper() not in ServiceManager.__dict__:
             raise Exception(f"Browser {browser} is not available")
-
         options = getattr(webdriver, f"{browser}Options")()
         for arg in args:
             options.add_argument(arg)
-
         try:
             service_class, driver_manager = ServiceManager.__dict__[browser.upper()]
             driver_path = driver_manager().install()
-
             if not os.path.isfile(driver_path) or not os.access(driver_path, os.X_OK):
                 raise Exception(f"El chromedriver descargado no es ejecutable: {driver_path}")
-
             service = service_class(driver_path)
             driver = getattr(webdriver, browser.lower())(service=service, options=options)
         except AttributeError as e:
             raise Exception(f"Error: WebDriver no tiene atributo {browser}") from e
-
         return driver
 
     @property
