@@ -30,15 +30,24 @@ jobs:
       
       - name: Instalar Google Chrome y Chromedriver
         run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          set -e  # 🔴 Detiene el script si hay un error
+          sudo apt-get update || echo "⚠️ Warning: Error en apt-get update"
+          sudo apt-get install -y google-chrome-stable || echo "⚠️ Warning: Chrome ya está instalado"
+
+          # Verificar versión de Chrome instalada
           CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
+          echo "✅ Chrome instalado en versión: $CHROME_VERSION"
+
+          # Descargar e instalar el `chromedriver` correspondiente
           CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
           wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
           unzip chromedriver_linux64.zip
           sudo mv chromedriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/chromedriver
+          echo "✅ Chromedriver instalado en: $(which chromedriver)"
 
+      - name: Verificar instalación de Chromedriver
+        run: chromedriver --version
 
       - uses: actions/checkout@v4
         if: success() || failure()
