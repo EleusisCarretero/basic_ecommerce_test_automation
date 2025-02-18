@@ -176,10 +176,10 @@ class BasePage:
         list_of_items = self.list_of_items or self.get_inventory_items()
         for item in list_of_items:
             tmp_price = self.get_text_element(
-                *self._get_element_params(key="item_price"),
+                self._get_element_params(key="item_price"),
                 item
             ).split('\n')[0]
-            tmp_name = self.get_text_element(*self._get_element_params(key="item_name"), item)
+            tmp_name = self.get_text_element(self._get_element_params(key="item_name"), item)
             prices_dict.update({tmp_name:tmp_price})
         return prices_dict
 

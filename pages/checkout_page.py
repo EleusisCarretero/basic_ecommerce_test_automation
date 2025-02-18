@@ -42,7 +42,7 @@ class CheckOutPage(BasePage):
         """
         Method to move from checkout page to checkout page
         """
-        self.click_on_element(*self._get_element_params(key="continue"))
+        self.click_on_element(self._get_element_params(key="continue"))
         # move testing page to checkout-step-two.html
         self.which_checkout_page += 1
 
@@ -67,7 +67,7 @@ class CheckOutPage(BasePage):
             locator(Tuple): Element locator
             data_write(str): user data to be written
         """
-        self.set_element_value(*self._get_element_params(key=locator), data_write)
+        self.set_element_value(self._get_element_params(key=locator), data_write)
 
     def finish_buy(self):
         """

@@ -146,7 +146,7 @@ class HomePage(BasePage):
         item = None
         list_of_items = self.get_inventory_items()
         for item in list_of_items:
-            tmp_name = self.get_text_element(*self._get_element_params(key="item_name"), item)
+            tmp_name = self.get_text_element(self._get_element_params(key="item_name"), item)
             if tmp_name == item_name:
                 break
         if item is not None:
