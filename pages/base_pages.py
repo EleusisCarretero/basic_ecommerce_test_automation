@@ -2,7 +2,6 @@
 Base test page class
 """
 from typing import Union
-from selenium.webdriver.common.by import By
 from test_utils.logger_manager import LoggerManager
 from utils.browser_manager import BrowserManagerException, SelectBy
 
@@ -123,8 +122,10 @@ class BasePage:
         Args:
             locator (tuple): The locator (By, value) used to find the web element.
             keys_value (str): The text to be entered into the element.
-            driver (webdriver, optional): WebDriver instance. Defaults to None, using self.driver if not provided.
-            timeout (int or float, optional): Maximum time (in seconds) to wait for the element to be present. Defaults to 5.
+            driver (webdriver, optional): WebDriver instance. Defaults
+            to None, using self.driver if not provided.
+            timeout (int or float, optional): Maximum time (in seconds)
+            to wait for the element to be present. Defaults to 5.
 
         Raises:
             TimeoutException: If the element is not found within the given timeout.

@@ -49,7 +49,8 @@ class LoginPage(BasePage):
             Gets the 'By' method and the webdriver element to look for the user credetials and
             returns the text values in list format
             """
-            return self._convert_text_to_list(self.get_text_element(self._get_element_params(key)), "\n", init, end)
+            return self._convert_text_to_list(
+                self.get_text_element(self._get_element_params(key)), "\n", init, end)
 
         users = get_credential("valid_users", 1)
         passwords = get_credential("valid_password", 1, 2)

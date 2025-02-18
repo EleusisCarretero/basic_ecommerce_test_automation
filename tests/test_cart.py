@@ -322,7 +322,7 @@ class TestPositiveFlows(BaseTestCart):
         self.product_page.add_item_to_cart()
         # 3. Get quantity of items in the cart
         self.result.check_equals_to(
-            actual_value=self.home_page.get_num_items_in_cart(), 
+            actual_value=self.home_page.get_num_items_in_cart(),
             expected_value=1,
             step_msg="Check the number of items matches the expected"
         )
@@ -342,8 +342,8 @@ class TestPositiveFlows(BaseTestCart):
         # 7. Get price from cart page
         cart_price = self.cart_page.get_item_prices()[item_name]
         self.result.check_equals_to(
-            actual_value=cart_price, 
-            expected_value=home_price, 
+            actual_value=cart_price,
+            expected_value=home_price,
             step_msg="Check the item price form home page and cart page is the same"
         )
         assert self.result.step_status

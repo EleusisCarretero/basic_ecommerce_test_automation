@@ -64,7 +64,7 @@ class HomePage(BasePage):
         """
         all_menu_items = self.get_lateral_menu_items()
         self.click_on_element(self._get_element_params(key="logout"), all_menu_items)
-    
+
     def click_on_reset_app(self):
         """
         Clicks on the logout button, which is part of the lateral menu.

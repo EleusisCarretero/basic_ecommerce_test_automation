@@ -60,12 +60,12 @@ class TestFiltering(BaseTest):
         except BrowserManagerException as e:
             self.log.error("Unable to login using standard user credentials")
             raise BaseFilteringError("Login has failed") from e
-    
+
     def step_verify_filter_applied(self, expected_filter):
         """
         Verifies that the applied filter on the page matches the expected filter.
-        If the current filter does not match the expected one, it attempts to apply the correct filter 
-        and validates the update.
+        If the current filter does not match the expected one,
+        it attempts to apply the correct filter and validates the update.
 
         Steps:
         1. Retrieves the currently applied filter from the homepage.
@@ -87,7 +87,7 @@ class TestFiltering(BaseTest):
             # Apply filter
             self.result.check_not_raises_any_given_exception(
             method=self.home_page.filter_products,
-            exceptions=BasePageException, 
+            exceptions=BasePageException,
             step_msg="Verify The correct filter has been applied",
             filter_option=expected_filter
             )
@@ -95,7 +95,7 @@ class TestFiltering(BaseTest):
             current_filter = self.home_page.get_current_filter_applied()
         # Compare the values expected vs actual
         self.result.check_equals_to(
-            actual_value=current_filter, 
+            actual_value=current_filter,
             expected_value=expected_filter,
             step_msg="Verify the current filtering has been updated")
         assert self.result.step_status
@@ -149,10 +149,10 @@ class TestFiltering(BaseTest):
         # 4. Make compare
         expected_sorted_items = \
             dict(sorted(unsorted_items.items(), key=sorted_func(filter_applied)))
-        for expected_key, _ in expected_sorted_items.items():
+        for expected_key, expected_value in expected_sorted_items.items():
             self.result.check_equals_to(
-                actual_value=current_sorted_items[expected_key], 
-                expected_value=expected_sorted_items[expected_key],
+                actual_value=current_sorted_items[expected_key],
+                expected_value=expected_value,
                 step_msg="Check the value items matches withe the "
                          f"expected after applying filter {filter_applied}")
         assert self.result.step_status

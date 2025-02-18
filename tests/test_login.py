@@ -67,7 +67,10 @@ class BaseLogIn(BaseTest):
         )
         assert self.result.step_status
 
-    def step_check_login_unsuccessfully(self, user_credential:dict, expected_error_msg, timeout=2) -> None:
+    def step_check_login_unsuccessfully(self,
+                                        user_credential:dict,
+                                        expected_error_msg,
+                                        timeout=2) -> None:
         """
         Step function to validate incorrect login.
 
