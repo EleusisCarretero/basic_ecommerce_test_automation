@@ -88,7 +88,7 @@ def browser(pytestconfig):
                           "--headless",
                           "--no-sandbox",
                           "--disable-dev-shm-usage",
-                          "--user-data-dir",
+                        #   "--user-data-dir",
                           "--start-maximized"]:
         browser_options.append(pytestconfig.getoption(input_browser))
 
