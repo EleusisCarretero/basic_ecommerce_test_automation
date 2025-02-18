@@ -1,25 +1,33 @@
-name: Pylint
+name: Pylint Analysis
 
-on: [push]
+on:
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
+  pylint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.11"]
+
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pylint
-    - name: Analysing the code with pylint
-      run: |
-        pylint $(git ls-files '*.py')
-    - name: Install dependencies
-      run: pip install -r requirements.txt
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m venv venv
+          echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
+          echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
+          source venv/bin/activate
+          pip install pylint
+
+      - name: Run pylint
+        run: |
+          source venv/bin/activate
+          pylint $(git ls-files '*.py')

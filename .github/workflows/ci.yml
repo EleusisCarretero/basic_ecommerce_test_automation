@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -23,29 +23,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python3 -m venv venv
+          python -m pip install --upgrade pip
+          python -m venv venv
           echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
           echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
           source venv/bin/activate
+          pip install pytest
           pip install -r requirements.txt
-          pip install pylint
-          pip list
-          chmod +x set_pythonpath.sh
-          echo "PYTHONPATH=$GITHUB_WORKSPACE:$GITHUB_WORKSPACE/venv/lib/python3.11/site-packages" >> $GITHUB_ENV
-
-      - name: Verify installed packages
-        run: |
-          source venv/bin/activate
-          python -m pip list
-
-      - name: Run pylint
-        run: |
-          source venv/bin/activate
-          pylint conftest.py
 
       - name: Run tests
-        env:
-          API_URL: http://localhost:5000
         run: |
           source venv/bin/activate
-          pytest tests -s -m Smoke --headless --disable-gpu --no-sandbox --disable-dev-shm-usage --user-data-dir /tmp/edge-profile
+          pytest tests
