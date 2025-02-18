@@ -28,7 +28,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--browser_type",
         action="store",
-        default="Edge",
+        default="Chrome",
         help="Browser to execute the tests"
     )
     parser.addoption(
