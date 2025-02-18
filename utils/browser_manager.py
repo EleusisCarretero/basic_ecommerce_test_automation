@@ -103,6 +103,7 @@ class BrowserManager:
             if not os.path.isfile(driver_path) or not os.access(driver_path, os.X_OK):
                 raise Exception(f"El chromedriver descargado no es ejecutable: {driver_path}")
             
+            self.log.info(f"Before create driver: {driver_path}")
             driver = getattr(webdriver, browser)(service=service(driver_path), options=options)
         except AttributeError as e:
             self.log.error(f"Error webdriver does not have attribute: {browser}")
