@@ -11,6 +11,7 @@ from test_utils.config import Config
 from test_utils.logger_manager import LoggerManager
 from test_utils.result_manager import ResultManagerClass
 from utils.browser_manager import BrowserManager
+from contextlib import contextmanager
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -111,6 +112,19 @@ def run_users_api(api_settings):
     """
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, "utils/api.py")
+    with start_server(file_path, api_settings):
+        response = requests.get("http://127.0.0.1:5000", timeout=10)
+        assert response.status_code == 200
+
+@contextmanager
+def start_server(file_path: str, api_settings: str):
+    """
+    Start API server
+
+    Args:
+        file_path(str): path to api.py file
+        api_settings(str): mongo configurations
+    """
     server = subprocess.Popen(
         [
             "python",
@@ -125,18 +139,19 @@ def run_users_api(api_settings):
         stdout=subprocess.DEVNULL,
         stderr=subprocess.PIPE,
         shell=True
-        )
+    )
 
     time.sleep(3)
 
     try:
         response = requests.get("http://127.0.0.1:5000", timeout=10)
         if response.status_code != 200:
-            pytest.exit("API didn't initialized")
+            pytest.exit("API didn't initialize")
     except requests.ConnectionError:
-        pytest.exit("Unable to connected to the API")
+        pytest.exit("Unable to connect to the API")
 
-    yield
-
-    server.terminate()
-    server.wait()
+    try:
+        yield
+    finally:
+        server.terminate()
+        server.wait()
