@@ -199,7 +199,6 @@ class TestNegativeFlows(BaseLogIn):
                  ERROR_MSG)  # invalid user, 'valid' password
             ]
     )
-    @pytest.mark.Smoke
     def test_invalid_credentials(self, user, password, expected_error_mgs):
         """
         Validate invalid credentials
