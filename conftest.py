@@ -65,6 +65,8 @@ def configure_logging(pytestconfig):
     Fixture that setups the common logger.
     """
     log_folder = pytestconfig.getoption("log_folder")
+    if not log_folder:
+        raise Exception(f"Variable empty {log_folder}")
     Config.log_folder = log_folder
     LoggerManager.setup_logger()
 
