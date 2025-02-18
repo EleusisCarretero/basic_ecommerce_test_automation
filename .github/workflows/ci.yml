@@ -30,9 +30,12 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
           chmod +x set_pythonpath.sh
-          echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+          echo "PYTHONPATH=$GITHUB_WORKSPACE:$GITHUB_WORKSPACE/venv/lib/python3.11/site-packages" >> $GITHUB_ENV
 
-
+      - name: Verify installed packages
+        run: |
+          source venv/bin/activate
+          python -m pip list
 
       - name: Run tests
         env:
