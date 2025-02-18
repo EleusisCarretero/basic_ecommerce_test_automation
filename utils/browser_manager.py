@@ -85,39 +85,34 @@ class BrowserManager:
             self.open_page(url)
 
     def _init_webdriver(self, browser, *args):
+        """Initialize WebDriver"""
         if browser not in AvailableBrowsers.get_available_browsers():
             self.log.error(f"Browser {browser} is not available")
             raise BrowserManagerException(f"Browser {browser} is not available")
+
         options = getattr(webdriver, f"{browser}Options")()
         for arg in args:
             options.add_argument(arg)
+
         try:
             service_class, manager = getattr(ServiceManager, browser.upper()).value
-            driver_path =  manager().install()
-            os.environ["PATH"] += os.pathsep + os.path.dirname(driver_path)
-            if "chromedriver.exe" not in driver_path:
-                self.log.info(f"Current driver path: {driver_path}")
-                possible_driver = os.path.join(driver_path.replace("/THIRD_PARTY_NOTICES.chromedriver", ""), "chromedriver.exe")
-                # possible_driver = os.path.join(driver_path, "chromedriver.exe")
-                self.log.info(f"New driver path {possible_driver}")
-                driver_path = possible_driver
-            #     if os.path.isfile(possible_driver):
-            #         self.log.info("Es valido")
-            #         driver_path = possible_driver
-            # if not os.path.isfile(driver_path) or not os.access(driver_path, os.X_OK):
-            #     raise Exception(f"El chromedriver descargado no es ejecutable: {driver_path}")
-            
-            self.log.info(f"Before create driver: {driver_path}")
-            service = service_class(driver_path)
-            service.path = driver_path  # 🔴 Evita que Selenium Manager intente descubrirlo
+            driver_path = manager().install()
 
+            # 🔴 Corregir detección del driver en Linux
+            if not os.path.isfile(driver_path) or not os.access(driver_path, os.X_OK):
+                self.log.error(f"❌ Chromedriver no es ejecutable: {driver_path}")
+                raise BrowserManagerException(f"Chromedriver no válido en {driver_path}")
+
+            self.log.info(f"✅ Chromedriver path: {driver_path}")
+
+            # 🔥 Evitar manipulación innecesaria de `service.path`
+            service = service_class(driver_path)
             driver = getattr(webdriver, browser)(service=service, options=options)
 
         except AttributeError as e:
             self.log.error(f"Error webdriver does not have attribute: {browser}")
-            raise BrowserManagerException(
-                f"Error webdriver does not have attribute: {browser}"
-                ) from e
+            raise BrowserManagerException(f"Error webdriver does not have attribute: {browser}") from e
+
         return driver
 
     @property
