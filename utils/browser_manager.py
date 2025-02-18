@@ -92,8 +92,8 @@ class BrowserManager:
         for arg in args:
             options.add_argument(arg)
         try:
-            service, manager = getattr(ServiceManager, browser.upper()).value
-            driver_path =  manager().install()
+            service_class, manager = getattr(ServiceManager, browser.upper()).value
+            driver_path =  manager().install(path=r"/home/runner/chromedriver")
             if "chromedriver.exe" not in driver_path:
                 self.log.info(f"Current driver path: {driver_path}")
                 possible_driver = os.path.join(driver_path.replace("/THIRD_PARTY_NOTICES.chromedriver", ""), "chromedriver.exe")
@@ -107,7 +107,11 @@ class BrowserManager:
             #     raise Exception(f"El chromedriver descargado no es ejecutable: {driver_path}")
             
             self.log.info(f"Before create driver: {driver_path}")
-            driver = getattr(webdriver, browser)(service=service(driver_path), options=options)
+            service = service_class(driver_path)
+            service.path = driver_path  # 🔴 Evita que Selenium Manager intente descubrirlo
+
+            driver = getattr(webdriver, browser)(service=service, options=options)
+
         except AttributeError as e:
             self.log.error(f"Error webdriver does not have attribute: {browser}")
             raise BrowserManagerException(
