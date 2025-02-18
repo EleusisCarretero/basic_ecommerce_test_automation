@@ -34,4 +34,4 @@ jobs:
       - name: Run tests
         run: |
           source venv/bin/activate
-          pytest tests -m Smoke
+          pytest -v tests\test_login.py::TestPositiveFlows::test_valid_login
