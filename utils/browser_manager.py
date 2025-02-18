@@ -61,13 +61,18 @@ class BrowserManager:
         driver(Webdriver): Webdriver instance.
     """
 
-    def __init__(self, *args, browser=AvailableBrowsers.CHROME, url=None):
+    def __init__(self,
+                 *args,
+                 browser=AvailableBrowsers.CHROME,
+                 url=None):
         self.log = LoggerManager.get_logger(self.__class__.__name__)
         self._driver = self._init_webdriver(browser, *args)
         if url:
             self.open_page(url)
 
-    def _init_webdriver(self, browser, *args):
+    def _init_webdriver(self,
+                        browser,
+                        *args):
         if browser not in AvailableBrowsers.get_available_browsers():
             self.log.error(f"Browser {browser} is not available")
             raise BrowserManagerException(f"Bowser {browser} is not available")
@@ -92,7 +97,9 @@ class BrowserManager:
     def driver(self, new_driver):
         self._driver = new_driver
 
-    def open_page(self, url:str, driver=None) -> None:
+    def open_page(self,
+                  url:str,
+                  driver=None) -> None:
         """
         Opens the url from web page.
 
@@ -111,14 +118,15 @@ class BrowserManager:
             self.log.error(f"Exception occurred: {e}")
             raise BrowserManagerException(f"Error trying to set page {url}") from e
 
-    def get_webdriver_element_obj(self, driver, by, value):
+    def get_webdriver_element_obj(self,
+                                  driver,
+                                  locator:tuple,):
         """
         Looks for an element, in driver, witch matches with the given by and value.
 
         Args:
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
             driver:(webdriver obj:Optional, Default=None): webdriver object.
+            locator(tuple): element locator.
 
         Returns:
             Element: element with matches the specifications.
@@ -128,20 +136,22 @@ class BrowserManager:
         """
         driver = driver or self.driver
         try:
-            return driver.find_element(getattr(By, by), value)
+            return driver.find_element(getattr(By, locator[0]), locator[1])
         except NoSuchElementException as e:
-            self.log.error(f"Unable to find element with parameters ('{by}', '{value}')")
+            self.log.error(f"Unable to find element with parameters ('{locator}')")
             raise BrowserManagerException("Unable to find element") from e
 
-    def click_wait_clickable_element(self, by:By, value:str, driver=None, timeout: Union[int, float]=10):
+    def click_wait_clickable_element(self,
+                                     locator:tuple,
+                                     driver=None,
+                                     timeout: Union[int, float]=10):
         """
         Waits until the element which matches with the 'by' and ' value' within
         a timeout and clicks on it, otherwise
         the BrowserManagerException is raised.
 
         Args:
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
+            locator(tuple): element locator.
             driver:(webdriver obj:Optional, Default=None): webdriver object.
             timeout: (int/float): Timeout in seconds to wait.
 
@@ -152,14 +162,17 @@ class BrowserManager:
         driver = driver or self.driver
         try:
             element = WebDriverWait(driver, timeout).until(
-                EC.element_to_be_clickable((getattr(By, by), value))
+                EC.element_to_be_clickable((getattr(By, locator[0]), locator[1]))
             )
         except TimeoutException as e:
-            self.log.error(f"Unable to have element '({by}, {value})' clickable within {timeout}s")
+            self.log.error(f"Unable to have element '({locator})' clickable within {timeout}s")
             raise BrowserManagerException("Unable to get element clickable") from e
         element.click()
 
-    def get_present_element(self, by:By, value:str, driver, timeout: Union[int, float]):
+    def get_present_element(self,
+                            locator:tuple,
+                            driver,
+                            timeout: Union[int, float]):
         """
         Waits until the element which matches with the 'by' and ' value'
         within a timeout, (it does not means it is visible) otherwise the
@@ -167,8 +180,7 @@ class BrowserManager:
 
         Args:
             by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
-            driver:(webdriver obj:Optional, Default=None): webdriver object.
+            locator(tuple): element locator.
             timeout: (int/float): Timeout in seconds to wait.
 
         Returns:
@@ -181,21 +193,23 @@ class BrowserManager:
         driver = driver or self.driver
         try:
             return WebDriverWait(driver, timeout).until(
-                EC.presence_of_element_located((getattr(By, by), value))
+                EC.presence_of_element_located((getattr(By, locator[0]), locator[1]))
             )
         except TimeoutException as e:
             self.log.error("Unable get the element using parameters "
-                           f"'({by}, {value})' within {timeout}s")
+                           f"'({locator})' within {timeout}s")
             raise BrowserManagerException("Unable to write on element") from e
 
-    def get_present_list_element(self, by:By, value:str, driver):
+    def get_present_list_element(self,
+                                 locator:tuple,
+                                 driver):
         """
-        Waits until the element which matches with the 'by' and ' value' within a timeout, (it does not means it is visible)
+        Waits until the element which matches with the 'by' and ' value'
+        within a timeout, (it does not means it is visible)
         otherwise the BrowserManagerException is raised.
 
         Args:
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
+            locator(tuple): element locator.
             driver:(webdriver obj:Optional, Default=None): webdriver object.
 
         Returns:
@@ -207,20 +221,22 @@ class BrowserManager:
         """
         driver = driver or self.driver
         try:
-            return driver.find_elements(getattr(By, by), value)
+            return driver.find_elements(getattr(By, locator[0]), locator[1])
         except TimeoutException as e:
-            self.log.error(f"Unable get the element using parameters '({by}, {value})'")
+            self.log.error(f"Unable get the element using parameters '({locator})'")
             raise BrowserManagerException("Unable to write on element") from e
 
-    def get_visible_element(self, by:By, value:str, driver, timeout: Union[int, float]):
+    def get_visible_element(self,
+                            locator:tuple,
+                            driver,
+                            timeout: Union[int, float]):
         """
         Waits until the element which matches with the 'by' and ' value'
         within a timeout, (the element should be visible) otherwise the
         BrowserManagerException is raised.
 
         Args:
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
+            locator(tuple): element locator.
             driver:(webdriver obj:Optional, Default=None): webdriver object.
             timeout: (int/float): Timeout in seconds to wait.
 
@@ -234,36 +250,42 @@ class BrowserManager:
         driver = driver or self.driver
         try:
             return WebDriverWait(driver, timeout).until(
-                EC.visibility_of_element_located((getattr(By, by), value))
+                EC.visibility_of_element_located((getattr(By, locator[0]), locator[1]))
             )
         except TimeoutException as e:
             self.log.error("Unable get the element using parameters "
-                           f"'({by}, {value})' within {timeout}s")
+                           f"'({locator})' within {timeout}s")
             raise BrowserManagerException("Unable to get element") from e
 
-    def enter_text_to_present_element(self, by:By, value:str, keys_value:str, driver, timeout: Union[int, float]) -> None:
+    def enter_text_to_present_element(self,
+                                      locator:tuple,
+                                      keys_value:str,
+                                      driver,
+                                      timeout: Union[int, float]) -> None:
         """
         Writes a text ('keys_value') the located element, not necessary visible,
         with the 'by' and ' value' within a timeout, otherwise
         the BrowserManagerException is raised.
 
         Args:
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
+            locator(tuple): element locator.
             driver:(webdriver obj:Optional, Default=None): webdriver object.
             timeout: (int/float): Timeout in seconds to wait.
         """
-        element = self.get_present_element(by, value, driver, timeout)
+        element = self.get_present_element(locator, driver, timeout)
         element.clear()
         element.send_keys(keys_value)
 
-    def get_element_text(self, by:By, value:str, driver, timeout: Union[int, float], visible=True) -> str:
+    def get_element_text(self,
+                         locator:tuple,
+                         driver,
+                         timeout: Union[int, float],
+                         visible=True) -> str:
         """
         Gets the text from an element.
 
         Args:
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
+            locator(tuple): element locator.
             driver:(webdriver obj:Optional, Default=None): webdriver object.
             timeout: (int/float): Timeout in seconds to wait.
             visible:(bool): Flag to indicate if the element should visible or not
@@ -272,10 +294,11 @@ class BrowserManager:
             str: Text from element.
         """
         if visible:
-            return self.get_visible_element(by, value, driver, timeout).text
-        return self.get_present_element(by, value, driver, timeout).text
+            return self.get_visible_element(locator, driver, timeout).text
+        return self.get_present_element(locator, driver, timeout).text
 
-    def switch_window(self, which_window:int=0) -> str:
+    def switch_window(self,
+                      which_window:int=0) -> str:
         """
         Handle the switching windows
 
@@ -296,7 +319,8 @@ class BrowserManager:
             raise BrowserManagerException("Unable to switch window") from e
         return self.get_current_driver_url()
 
-    def get_current_driver_url(self, driver=None) -> str:
+    def get_current_driver_url(self,
+                               driver=None) -> str:
         """
         Return url from given driver.
 
@@ -315,20 +339,23 @@ class BrowserManager:
         """
         self.driver.quit()
 
-    def select_dropdown_option(self, method: SelectBy, option_value, by: By, value: str, driver=None):
+    def select_dropdown_option(self,
+                               method: SelectBy,
+                               option_value,
+                               locator:tuple,
+                               driver=None):
         """
         Dropdown one element from web page based on the 'method' and 'option_value' to be found.
 
         Args:
             method(SelectBy): Selection method (e.g., "value", "index", "visible_text").
             option_value: Selection based on static method.
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
+            locator(tuple): element locator.
             driver:(webdriver obj:Optional, Default=None): webdriver object.
         """
         driver = driver or self.driver
         try:
-            dropdown = Select(driver.find_element(getattr(By, by), value))
+            dropdown = Select(driver.find_element(getattr(By, locator[0]), locator[1]))
             select_method = getattr(dropdown, SelectBy.get_select_method_by(method))
         except Exception as e:
             raise BrowserManagerException("Unable browser couldn't do the dropdown") from e

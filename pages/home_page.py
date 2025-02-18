@@ -29,7 +29,9 @@ class HomePage(BasePage):
         LOGIN_PAGE_DICT (dict): Saves al the needed and/or relevant inputs for Home page
         testing_page (str): Login page path
     """
-    def __init__(self, browser, testing_page):
+    def __init__(self,
+                 browser,
+                 testing_page):
         super().__init__(browser)
         self.page_dict = YamlManager.get_yaml_file_data(
             testing_page
@@ -44,9 +46,7 @@ class HomePage(BasePage):
         returns the need parameters, by and value, to get the correct element.
         """
         self.click_on_element(
-            *self._get_element_params(
-                key="lateral_menu"
-            )
+            self._get_element_params(key="lateral_menu")
         )
 
     def get_lateral_menu_items(self):
@@ -56,23 +56,24 @@ class HomePage(BasePage):
         Returns:
             Webdriver obj: Returns the webdriver element which contains the lateral menu parts.
         """
-        return self.get_webdriver_element_obj(*self._get_element_params(key="lateral_menu_items"))
+        return self.get_webdriver_element_obj(self._get_element_params(key="lateral_menu_items"))
 
     def click_on_logout(self):
         """
         Clicks on the logout button, which is part of the lateral menu.
         """
         all_menu_items = self.get_lateral_menu_items()
-        self.click_on_element(*self._get_element_params(key="logout"), all_menu_items)
+        self.click_on_element(self._get_element_params(key="logout"), all_menu_items)
     
     def click_on_reset_app(self):
         """
         Clicks on the logout button, which is part of the lateral menu.
         """
         all_menu_items = self.get_lateral_menu_items()
-        self.click_on_element(*self._get_element_params(key="reset"), all_menu_items)
+        self.click_on_element(self._get_element_params(key="reset"), all_menu_items)
 
-    def get_single_inventory_item(self, expected_item_text):
+    def get_single_inventory_item(self,
+                                  expected_item_text: str):
         """
         Looks into the inventory list based on its text, and gives back the item obj.
 
@@ -84,28 +85,30 @@ class HomePage(BasePage):
         """
         list_of_items = self.get_inventory_items()
         for item in list_of_items:
-            name = self.get_text_element(*self._get_element_params(key="item_name"), driver=item)
+            name = self.get_text_element(self._get_element_params(key="item_name"), driver=item)
             if expected_item_text == name:
                 return item
         raise HomePageException(f"Item wasn't found using text {expected_item_text}")
 
-    def add_item_to_cart(self, item):
+    def add_item_to_cart(self,
+                         item):
         """
         Adds the given 'item' to the checkout cart by click its 'Add to cart' button.
 
         Args:
             item(Webdriver obj): ite to add to checkout cart.
         """
-        self.click_on_element(*self._get_element_params(key="add_to_cart_button"), item)
+        self.click_on_element(self._get_element_params(key="add_to_cart_button"), item)
 
-    def remove_item_from_cart(self, item):
+    def remove_item_from_cart(self,
+                              item):
         """
         Removes the given 'item' from the checkout cart by click its 'Remove' button.
 
         Args:
             item(Webdriver obj): ite to add to checkout cart.
         """
-        self.click_on_element(*self._get_element_params(key="remove_button"), item)
+        self.click_on_element(self._get_element_params(key="remove_button"), item)
 
     def get_num_items_in_cart(self):
         """
@@ -115,10 +118,11 @@ class HomePage(BasePage):
             int: current quantity of items in the cart.
         """
         try:
-            q_items = int(
-                self.get_text_element(
-                    *self._get_element_params(key="cart_icon"),
-                    timeout=1))
+            q_items = int(self.get_text_element(
+                self._get_element_params(key="cart_icon"),
+                timeout=1
+                )
+            )
             self.log.info(f"The cart has currently {q_items} items")
         except BrowserManagerException:
             self.log.info("There is no item added in the cart")
@@ -129,9 +133,10 @@ class HomePage(BasePage):
         """
         Click on cart button to move to 'Cart' page.
         """
-        self.click_on_element(*self._get_element_params(key="cart_button"))
+        self.click_on_element(self._get_element_params(key="cart_button"))
 
-    def move_item_page(self, item_name):
+    def move_item_page(self,
+                       item_name: str):
         """
         click on a determinate item in home page and goes to the item page.
 
@@ -145,12 +150,13 @@ class HomePage(BasePage):
             if tmp_name == item_name:
                 break
         if item is not None:
-            self.click_on_element(*self._get_element_params(key="item_name"), item)
+            self.click_on_element(self._get_element_params(key="item_name"), item)
         else:
             self.log.info(f"Make sure item {item_name} is in home page")
             raise HomePageException(f"Unable to click on {item_name}")
 
-    def filter_products(self, filter_option:str):
+    def filter_products(self,
+                        filter_option:str):
         """
         Filters products using the dropdown menu.
 
@@ -161,7 +167,7 @@ class HomePage(BasePage):
             return self.select_dropdown(
                 SelectBy.VISIBLE_TEXT,
                 filter_option,
-                *self._get_element_params(key="filter")
+                self._get_element_params(key="filter")
             )
         except BasePageException as e:
             self.log.error("Error trying to dropdown product filter "
@@ -176,4 +182,4 @@ class HomePage(BasePage):
         Returns
             str: Current text from filter element
         """
-        return self.get_text_element(*self._get_element_params(key="filter_active_op"))
+        return self.get_text_element(self._get_element_params(key="filter_active_op"))

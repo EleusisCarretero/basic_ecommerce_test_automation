@@ -17,6 +17,10 @@ class BaseTest:
             the assertions and validations
         log (logger): Logger instance
     """
+    browser = None
+    result = None
+    log = None
+
     def setup(self, browser, result):
         """
         Setup the common attributes for all the test classes

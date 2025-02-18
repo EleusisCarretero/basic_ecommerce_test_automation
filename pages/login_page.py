@@ -19,7 +19,9 @@ class LoginPage(BasePage):
         LOGIN_PAGE_DICT (dict): Saves al the needed and/or relevant inputs for login page
         testing_page (str): Login page path
     """
-    def __init__(self, browser, testing_page):
+    def __init__(self,
+                 browser,
+                 testing_page):
         super().__init__(browser)
         self.page_dict = YamlManager.get_yaml_file_data(
             testing_page
@@ -47,9 +49,7 @@ class LoginPage(BasePage):
             Gets the 'By' method and the webdriver element to look for the user credetials and
             returns the text values in list format
             """
-            by = self.page_dict[key]["by"]
-            value = self.page_dict[key]["value"]
-            return self._convert_text_to_list(self.get_text_element(by, value), "\n", init, end)
+            return self._convert_text_to_list(self.get_text_element(self._get_element_params(key)), "\n", init, end)
 
         users = get_credential("valid_users", 1)
         passwords = get_credential("valid_password", 1, 2)
@@ -57,7 +57,8 @@ class LoginPage(BasePage):
             valid_credentials.append({"user": user, "password": passwords[0]})
         return valid_credentials
 
-    def get_just_specific_user(self, desired_user):
+    def get_just_specific_user(self,
+                               desired_user: str):
         """
         Returns the specific credentials for the 'desired' user.
 
@@ -78,7 +79,9 @@ class LoginPage(BasePage):
                        f"Check the 'accepted' users from {self.testing_page }")
         raise LoginPageException(f"{desired_user} is not a valid user")
 
-    def write_credentials(self, user, password):
+    def write_credentials(self,
+                          user: str,
+                          password: str):
         """
         Writes the credentials in 'Username' and 'Password' fields.
 
@@ -93,9 +96,7 @@ class LoginPage(BasePage):
             """
             Set the specific credential, username or password, in the corresponding field.
             """
-            by = self.page_dict[key]["by"]
-            value = self.page_dict[key]["value"]
-            self.set_element_value(by, value, keys_value)
+            self.set_element_value(self._get_element_params(key), keys_value)
 
         for key, keys_value in {"username": user, "password": password}.items():
             set_credentials(key, keys_value)
@@ -104,11 +105,12 @@ class LoginPage(BasePage):
         """
         Clicks on the login button form login page.
         """
-        by = self.page_dict["login_bttn"]["by"]
-        value = self.page_dict["login_bttn"]["value"]
-        self.click_on_element(by, value)
+        self.click_on_element(self._get_element_params("login_bttn"))
 
-    def login_page(self, user=None, password=None, credentials=True):
+    def login_page(self,
+                   user=None,
+                   password=None,
+                   credentials=True):
         """
         Tries to logins.
 
@@ -127,7 +129,8 @@ class LoginPage(BasePage):
         # Click on login button
         self.click_login_btn()
 
-    def get_login_error_text(self, timeout=2):
+    def get_login_error_text(self,
+                             timeout: int=2):
         """
         Returns the text from error message.
 
@@ -135,6 +138,6 @@ class LoginPage(BasePage):
             str: text from error message displayed after a wrong login.
         """
         return self.get_text_element(
-            *self._get_element_params(key="wrong_credential_error"),
-                timeout=timeout
+            self._get_element_params(key="wrong_credential_error"),
+            timeout=timeout
             )

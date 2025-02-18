@@ -1,6 +1,7 @@
 """
 Base test page class
 """
+from typing import Union
 from selenium.webdriver.common.by import By
 from test_utils.logger_manager import LoggerManager
 from utils.browser_manager import BrowserManagerException, SelectBy
@@ -20,7 +21,8 @@ class BasePage:
     """
     page_dict = {}
 
-    def __init__(self, browser):
+    def __init__(self,
+                 browser):
         self.browser = browser
         self.log = LoggerManager.get_logger(self.__class__.__name__)
         self.list_of_items = []
@@ -45,82 +47,101 @@ class BasePage:
         """
         self.browser.open_page(self.testing_page)
 
-    def get_webdriver_element_obj(self, by, value, driver=None, timeout=5):
+    def get_webdriver_element_obj(self,
+                                  locator:tuple,
+                                  driver=None,
+                                  timeout=5):
         """
         Wrapper method to get a webdriver element from browser manager.
 
         Args:
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
+            locator(tuple): element locator.
             driver:(webdriver obj:Optional, Default=None): webdriver object.
             timeout: (int/float): Timeout in seconds to wait.
         
         Returns
             Webdriver obj: Element which matches the given seek parameters
         """
-        return self.browser.get_present_element(by=by, value=value, driver=driver, timeout=timeout)
+        return self.browser.get_present_element(locator=locator, driver=driver, timeout=timeout)
 
-    def get_webdriver_list_element_obj(self, by, value, driver=None):
+    def get_webdriver_list_element_obj(self,
+                                       locator:tuple,
+                                       driver=None):
         """
         Wrapper method to get a webdriver element from browser manager.
 
         Args:
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
+            locator(tuple): element locator.
             driver:(webdriver obj:Optional, Default=None): webdriver object.
             timeout: (int/float): Timeout in seconds to wait.
         
         Returns
             Webdriver obj: Element which matches the given seek parameters
         """
-        return self.browser.get_present_list_element(by=by, value=value, driver=driver)
+        return self.browser.get_present_list_element(locator=locator, driver=driver)
 
-    def click_on_element(self, by, value, driver=None):
+    def click_on_element(self,
+                         locator:tuple,
+                         driver=None):
         """
         Wrapper method to click on a webdriver element.
 
         Args:
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
+            locator(tuple): element locator.
             driver:(webdriver obj:Optional, Default=None): webdriver object.
         """
-        self.browser.click_wait_clickable_element(by=by, value=value, driver=driver)
+        self.browser.click_wait_clickable_element(locator=locator, driver=driver)
 
-    def get_text_element(self, by, value, driver=None, timeout=5):
+    def get_text_element(self,
+                         locator:tuple,
+                         driver=None,
+                         timeout=5):
         """
         Wrapper method to get the text from webdriver element.
 
         Args:
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
+            locator(tuple): element locator.
             driver:(webdriver obj:Optional, Default=None): webdriver object.
             timeout: (int/float): Timeout in seconds to wait.
 
         Returns
             Webdriver obj: Element which matches the given seek parameters
         """
-        return self.browser.get_element_text(by=by, value=value, driver=driver, timeout=timeout)
+        return self.browser.get_element_text(locator=locator, driver=driver, timeout=timeout)
 
-    def set_element_value(self, by, value, keys_value, driver=None, timeout=5):
+    def set_element_value(self,
+                          locator:tuple,
+                          keys_value:str,
+                          driver=None,
+                          timeout=5):
         """
-        Wrapper method to send a desired text to webdriver element.
+        Sends a specified text input to a web element using WebDriver.
+
+        This method waits for the element to be present within the specified timeout 
+        before sending the provided text.
 
         Args:
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
-            driver:(webdriver obj:Optional, Default=None): webdriver object.
-            timeout: (int/float): Timeout in seconds to wait.
+            locator (tuple): The locator (By, value) used to find the web element.
+            keys_value (str): The text to be entered into the element.
+            driver (webdriver, optional): WebDriver instance. Defaults to None, using self.driver if not provided.
+            timeout (int or float, optional): Maximum time (in seconds) to wait for the element to be present. Defaults to 5.
 
+        Raises:
+            TimeoutException: If the element is not found within the given timeout.
+            WebDriverException: If sending text to the element fails.
+
+        Returns:
+            None
         """
         self.browser.enter_text_to_present_element(
-            by=by,
-            value=value,
+            locator=locator,
             driver=driver,
             keys_value=keys_value,
             timeout=timeout
         )
 
-    def get_current_url(self, switch=False):
+    def get_current_url(self,
+                        switch=False):
         """
         Returns the current window url, switch window if it necessary.
 
@@ -141,7 +162,7 @@ class BasePage:
         Returns:
             list: List of items which are part of the inventory.
         """
-        return self.get_webdriver_list_element_obj(*self._get_element_params(key="items_list"))
+        return self.get_webdriver_list_element_obj(self._get_element_params(key="items_list"))
 
     def get_item_prices(self):
         """
@@ -163,22 +184,37 @@ class BasePage:
 
 
     @staticmethod
-    def _convert_text_to_list(text, spliter, ini=0, end=-1):
+    def _convert_text_to_list(text,
+                              spliter,
+                              ini=0,
+                              end=-1):
         return text.split(spliter)[ini:end]
 
-    def select_dropdown(self, method: SelectBy, option_value, by: By, value: str, driver=None):
+    def select_dropdown(self,
+                        method: SelectBy,
+                        option_value: Union[int, str],
+                        locator: tuple,
+                        driver=None):
         """
         Selects an option from a dropdown element.
 
         Args:
-            method (str): Selection method ("value", "index", "visible_text").
-            option_value: Value to select based on the specified method.
-            by(By): By enum, ID, XPATH, etc.
-            value:(str): pattern to find the element.
-            driver (webdriver, optional): WebDriver instance. Defaults to self.driver.
+            method (SelectBy): Selection method ("value", "index", "visible_text").
+            option_value (str or int): Value to select based on the specified method.
+            locator (tuple): Element locator (By, value).
+            driver (webdriver, optional): WebDriver instance. Defaults to self.driver if None.
+
+        Raises:
+            BasePageException: If the dropdown selection fails.
+
+        Returns:
+            bool: True if the selection was successful.
         """
         try:
-            return self.browser.select_dropdown_option(method, option_value, by, value, driver)
+            return self.browser.select_dropdown_option(method, option_value, locator, driver)
         except BrowserManagerException as e:
-            self.log.error(f"Unable to dropdown element by using the method {method} with filtering criteria {option_value}")
-            raise BasePageException("Dropdown was not performed") from e
+            self.log.error(
+                f"Unable to select dropdown element using method '{method}' "
+                f"with value '{option_value}' and locator {locator}"
+            )
+            raise BasePageException("Dropdown selection failed") from e

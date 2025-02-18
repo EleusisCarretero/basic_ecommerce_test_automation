@@ -19,7 +19,9 @@ class CartPage(BasePage):
         LOGIN_PAGE_DICT (dict): Saves al the needed and/or relevant inputs for login page
         testing_page (str): Login page path
     """
-    def __init__(self, browser, testing_page):
+    def __init__(self,
+                 browser,
+                 testing_page):
         super().__init__(browser)
         self.page_dict = YamlManager.get_yaml_file_data(testing_page)["general_inputs"]["cart_page"]
         self.testing_page = self.page_dict["path"]
@@ -28,10 +30,10 @@ class CartPage(BasePage):
         """
         Method to move from cart page to checkout page
         """
-        self.click_on_element(*self._get_element_params(key="checkout_button"))
+        self.click_on_element(self._get_element_params(key="checkout_button"))
 
     def continues_shopping(self):
         """
         Method to come back from cart page to home page
         """
-        self.click_on_element(*self._get_element_params(key="continues_shopping"))
+        self.click_on_element(self._get_element_params(key="continues_shopping"))

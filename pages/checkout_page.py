@@ -19,7 +19,9 @@ class CheckOutPage(BasePage):
         LOGIN_PAGE_DICT (dict): Saves al the needed and/or relevant inputs for login page
         testing_page (str): Login page path
     """
-    def __init__(self, browser, testing_page):
+    def __init__(self,
+                 browser,
+                 testing_page):
         super().__init__(browser)
         self.page_dict = YamlManager.get_yaml_file_data(
             testing_page
@@ -44,7 +46,8 @@ class CheckOutPage(BasePage):
         # move testing page to checkout-step-two.html
         self.which_checkout_page += 1
 
-    def filed_checkout_info(self, **kwargs):
+    def filed_checkout_info(self,
+                            **kwargs):
         """
         Method to fill the different user data in the checkout page.
 
@@ -54,7 +57,9 @@ class CheckOutPage(BasePage):
         for key, value in kwargs.items():
             self.fill_sing_checkout_info_element(key, value)
 
-    def fill_sing_checkout_info_element(self, locator, data_write):
+    def fill_sing_checkout_info_element(self,
+                                        locator: tuple,
+                                        data_write: str):
         """
         Method to fill an specific field from the user data in checkout page.
 
@@ -68,12 +73,12 @@ class CheckOutPage(BasePage):
         """
         Method to click on finish button
         """
-        self.click_on_element(*self._get_element_params(key="finish"))
+        self.click_on_element(self._get_element_params(key="finish"))
         self.which_checkout_page += 1
 
     def back_home(self):
         """
         Method to click on back home button
         """
-        self.click_on_element(*self._get_element_params(key="back_home"))
+        self.click_on_element(self._get_element_params(key="back_home"))
         self.which_checkout_page = 0
