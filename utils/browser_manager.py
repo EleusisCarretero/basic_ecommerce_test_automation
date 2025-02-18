@@ -2,6 +2,7 @@
 Browser manager class
 """
 import os
+import tempfile
 from typing import Union
 from enum import Enum
 from selenium.webdriver.support.select import Select
@@ -91,6 +92,10 @@ class BrowserManager:
             raise BrowserManagerException(f"Browser {browser} is not available")
 
         options = getattr(webdriver, f"{browser}Options")()
+        options.binary_location = "/usr/bin/google-chrome" 
+        user_data_dir = tempfile.mkdtemp()
+        options.add_argument(f"--user-data-dir={user_data_dir}")
+        options.add_argument("--headless")
         for arg in args:
             options.add_argument(arg)
 
@@ -107,7 +112,7 @@ class BrowserManager:
 
             if not os.access(chromedriver_executable, os.X_OK):
                 self.log.info(f"🔧 Asignando permisos de ejecución a {chromedriver_executable}")
-                os.chmod(chromedriver_executable, 0o755)
+            os.chmod(chromedriver_executable, 0o755)
 
             self.log.info(f"✅ Usando Chromedriver en: {chromedriver_executable}")
 

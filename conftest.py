@@ -4,6 +4,7 @@ General configuration
 import sys
 import os
 import subprocess
+import tempfile
 import time
 import requests
 import pytest
@@ -86,6 +87,7 @@ def browser(pytestconfig):
                           "--disable-dev-shm-usage",
                           "--start-maximized"]:
         browser_options.append(pytestconfig.getoption(input_browser))
+    
 
     manager = BrowserManager(maximized, browser=browser_type)
     yield manager
