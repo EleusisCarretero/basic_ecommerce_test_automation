@@ -8,7 +8,13 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.edge.service import Service as EdgeService
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager as FirefoxManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager as EdgeManager
 from test_utils.logger_manager import LoggerManager
 
 
@@ -26,6 +32,13 @@ class AvailableBrowsers(str, Enum):
         Returns a list with al class elements.
         """
         return list(cls)
+
+
+class ServiceManager(Enum):
+    """Browser Services and manager"""
+    CHROME = ChromeService, ChromeDriverManager
+    FIREFOX = FirefoxService, FirefoxManager
+    EDGE = EdgeService, EdgeManager
 
 
 class SelectBy(Enum):
@@ -70,17 +83,17 @@ class BrowserManager:
         if url:
             self.open_page(url)
 
-    def _init_webdriver(self,
-                        browser,
-                        *args):
+    def _init_webdriver(self, browser, *args):
         if browser not in AvailableBrowsers.get_available_browsers():
             self.log.error(f"Browser {browser} is not available")
-            raise BrowserManagerException(f"Bowser {browser} is not available")
+            raise BrowserManagerException(f"Browser {browser} is not available")
         options = getattr(webdriver, f"{browser}Options")()
         for arg in args:
             options.add_argument(arg)
         try:
-            driver = getattr(webdriver, browser)(options)
+            service = getattr(ServiceManager, browser.upper()).value[0]
+            manager = getattr(ServiceManager, browser.upper()).value[1]
+            driver = getattr(webdriver, browser)(service=service(manager().install()), options=options)
         except AttributeError as e:
             self.log.error(f"Error webdriver does not have attribute: {browser}")
             raise BrowserManagerException(
