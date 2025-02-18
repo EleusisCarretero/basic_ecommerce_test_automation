@@ -1,6 +1,7 @@
 """
 Browser manager class
 """
+import os
 from typing import Union
 from enum import Enum
 from selenium.webdriver.support.select import Select
@@ -84,21 +85,25 @@ class BrowserManager:
             self.open_page(url)
 
     def _init_webdriver(self, browser, *args):
-        if browser not in AvailableBrowsers.get_available_browsers():
-            self.log.error(f"Browser {browser} is not available")
-            raise BrowserManagerException(f"Browser {browser} is not available")
+        if browser not in ServiceManager.__dict__:
+            raise Exception(f"Browser {browser} is not available")
+
         options = getattr(webdriver, f"{browser}Options")()
         for arg in args:
             options.add_argument(arg)
+
         try:
-            service = getattr(ServiceManager, browser.upper()).value[0]
-            manager = getattr(ServiceManager, browser.upper()).value[1]
-            driver = getattr(webdriver, browser)(service=service(manager().install()), options=options)
+            service_class, driver_manager = ServiceManager.__dict__[browser]
+            driver_path = driver_manager().install()
+
+            if not os.path.isfile(driver_path) or not os.access(driver_path, os.X_OK):
+                raise Exception(f"El chromedriver descargado no es ejecutable: {driver_path}")
+
+            service = service_class(driver_path)
+            driver = getattr(webdriver, browser.lower())(service=service, options=options)
         except AttributeError as e:
-            self.log.error(f"Error webdriver does not have attribute: {browser}")
-            raise BrowserManagerException(
-                f"Error webdriver does not have attribute: {browser}"
-                ) from e
+            raise Exception(f"Error: WebDriver no tiene atributo {browser}") from e
+
         return driver
 
     @property
