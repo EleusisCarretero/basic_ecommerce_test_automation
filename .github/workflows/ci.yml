@@ -26,15 +26,3 @@ jobs:
         if: success() || failure()
       - run: |
           pytest tests -v -s -m Smoke
-
-      - name: Set output
-        if: success() || failure()
-        id: results
-        run: echo "artifactPath=tests/reports/" >> $GITHUB_OUTPUT
-
-      - uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: test-report
-          path: ${{ steps.results.outputs.artifactPath }}
-
