@@ -25,7 +25,7 @@ class AvailableBrowsers(str, Enum):
         """
         Returns a list with al class elements.
         """
-        return [browser for browser in cls]
+        return list(cls)
 
 
 class SelectBy(Enum):

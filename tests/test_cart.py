@@ -28,9 +28,34 @@ class BaseTestCartError(Exception):
 
 class BaseTestCart(BaseTest):
     """
-    Base test cart
+    Base class for cart-related test cases.
+
+    This class extends BaseTest and provides common attributes and 
+    setup elements needed for testing cart functionalities in the application.
+
+    Attributes:
+        browser: WebDriver instance used for browser automation.
+        result: Stores the result of test steps and assertions.
+        log: Logger instance for logging test events.
+        inventory_page_dict: Dictionary containing inventory page elements.
+        login_page: Instance of the login page object.
+        home_page: Instance of the home page object.
+        cart_page: Instance of the cart page object.
+        product_page: Instance of the product page object.
+        checkout_page: Instance of the checkout page object.
+        TESTING_PAGE (str): Path to the test configuration file.
     """
+    browser = None
+    result = None
+    log = None
+    inventory_page_dict = None
+    login_page = None
+    home_page = None
+    cart_page = None
+    product_page = None
+    checkout_page = None
     TESTING_PAGE =  "tests/test_inputs/sauce_demo.yaml"
+
     def setup(self, browser, result, run_users_api):
         super().setup(browser, result)
         self.inventory_page_dict = YamlManager.get_yaml_file_data(
@@ -248,7 +273,9 @@ class TestPositiveFlows(BaseTestCart):
         # 1 . include itesm to the cart
         self.iterate_items_list(items_text, self.step_include_item_in_cart, "including")
         it_home_page = \
-            {key: value for key, value in self.home_page.get_item_prices().items() if key in items_text}
+            {key: value
+             for key, value in self.home_page.get_item_prices().items()
+             if key in items_text}
         self.log.info(f"Items included in the cart viewed in the home page: {it_home_page}")
         # 2. Click on cart item
         self.step_move_to_next_page(

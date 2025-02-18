@@ -18,10 +18,28 @@ class BaseFilteringError(Exception):
 
 class TestFiltering(BaseTest):
     """
-    Filtering test class
-    """
+    Test class for filtering functionality.
 
+    This class extends BaseTest and provides common attributes 
+    and setup elements for testing product filtering in the application.
+
+    Attributes:
+        browser: WebDriver instance used for browser automation.
+        result: Stores the result of test steps and assertions.
+        log: Logger instance for logging test events.
+        inventory_page_dict: Dictionary containing inventory page elements.
+        login_page: Instance of the login page object.
+        home_page: Instance of the home page object.
+        TESTING_PAGE (str): Path to the test configuration file.
+    """
+    browser = None
+    result = None
+    log = None
+    inventory_page_dict = None
+    login_page = None
+    home_page = None
     TESTING_PAGE =  "tests/test_inputs/sauce_demo.yaml"
+
     @pytest.fixture(autouse=True)
     def setup(self, browser, result):
         super().setup(browser, result)

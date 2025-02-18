@@ -14,7 +14,7 @@ class BaseTest:
     Attributes:
         browser(BrowserManager): Instance of the browser manager to handle WebDriver.
         result(ResultManager): Instance of the result manager to handle all
-            the assertions and validations
+                               the assertions and validations
         log (logger): Logger instance
     """
     browser = None

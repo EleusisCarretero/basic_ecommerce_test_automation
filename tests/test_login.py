@@ -15,14 +15,29 @@ from utils.tools import YamlManager
 
 class BaseLogIn(BaseTest):
     """
-    Common login class handles the common stuff shared for all login test classes.
+    Base class for login-related test cases.
+
+    This class extends BaseTest and provides common attributes and functionality 
+    shared among all login test classes.
 
     Attributes:
-        inventory_page_dict(dict): dictionary which saves the common inputs for login test classes.
-        login_page(LoginPage): interface login page stuff.
-        home_page(HomePage): interface home page stuff.
+        browser: WebDriver instance used for browser automation.
+        result: Stores the result of test steps and assertions.
+        log: Logger instance for logging test events.
+        inventory_page_dict (dict): Dictionary storing common input values 
+            used across login test cases.
+        login_page (LoginPage): Instance of the login page object.
+        home_page (HomePage): Instance of the home page object.
+        TESTING_PAGE (str): Path to the test configuration file.
     """
+    browser = None
+    result = None
+    log = None
+    inventory_page_dict = None
+    login_page = None
+    home_page = None
     TESTING_PAGE =  "tests/test_inputs/sauce_demo.yaml"
+
     def setup(self, browser, result):
         super().setup(browser, result)
         self.inventory_page_dict = YamlManager.get_yaml_file_data(
