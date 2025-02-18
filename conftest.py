@@ -67,7 +67,7 @@ def configure_logging(pytestconfig):
     log_folder = pytestconfig.getoption("log_folder")
     if not log_folder:
         raise Exception(f"Variable empty {log_folder}")
-    Config.log_folder = log_folder
+    Config.log_folder = "logs_folder"
     LoggerManager.setup_logger()
 
 
