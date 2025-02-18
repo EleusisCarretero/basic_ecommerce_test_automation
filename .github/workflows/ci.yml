@@ -25,10 +25,13 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           python3 -m venv venv
+          echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
+          echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
           source venv/bin/activate
           pip install -r requirements.txt
           chmod +x set_pythonpath.sh
-          export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE
+          echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
 
 
       - name: Run tests
