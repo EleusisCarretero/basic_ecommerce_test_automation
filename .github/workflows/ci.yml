@@ -12,9 +12,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python 3.10
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
       - name: Install dependencies
@@ -22,20 +22,17 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         if: success() || failure()
       - run: |
-          cd tests
-          mkdir -p reports
-          pytest test_login_page.py --browser=chrome --html=reports/reports.html
-          chmod 777  /home/runner/work/python-se/python-se/tests/reports/
+          pytest tests
 
       - name: Set output
         if: success() || failure()
         id: results
         run: echo "artifactPath=tests/reports/" >> $GITHUB_OUTPUT
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: test-report
