@@ -24,6 +24,10 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
           pip show test_utils
+      
+      - name: Desactivar Selenium Manager
+        run: echo "SE_MANAGER=0" >> $GITHUB_ENV
+
 
       - uses: actions/checkout@v4
         if: success() || failure()
