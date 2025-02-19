@@ -29,6 +29,6 @@ jobs:
       - uses: actions/checkout@v4
         if: success() || failure()
       - run: |
-          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Firefox
-          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Chrome
-          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Edge
+          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Firefox --junitxml=firefox_report.xml
+          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Chrome --junitxml=chrome_report.xml
+          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Edge --junitxml=edge_report.xml
