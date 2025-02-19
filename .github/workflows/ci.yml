@@ -64,4 +64,4 @@ jobs:
       - uses: actions/checkout@v4
         if: success() || failure()
       - run: |
-          pytest tests -v -s -m Smoke
+          pytest tests -v -s -m Smoke --headless --start-maximized

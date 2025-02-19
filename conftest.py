@@ -11,7 +11,7 @@ import pytest
 from test_utils.config import Config
 from test_utils.logger_manager import LoggerManager
 from test_utils.result_manager import ResultManagerClass
-from utils.browser_manager import BrowserManager
+from utils.browser_manager import BrowserManager, BrowserOptions
 from contextlib import contextmanager
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -35,27 +35,31 @@ def pytest_addoption(parser):
     parser.addoption(
         "--headless",
         action="store_true",
+        default="",
         help="Run browser in headless mode"
     )
     parser.addoption(
         "--start-maximized",
-        action="store",
-        default="--start-maximized",
+        action="store_true",
+        default="",
         help="Set window maximized"
     )
     parser.addoption(
         "--disable-gpu",
         action="store_true",
+        default="",
         help="Disable GPU"
     )
     parser.addoption(
         "--no-sandbox",
         action="store_true",
+        default="",
         help="Disable sandbox"
     )
     parser.addoption(
         "--disable-dev-shm-usage",
         action="store_true",
+        default="",
         help="Disable shared memory usage"
     )
 
@@ -79,17 +83,12 @@ def browser(pytestconfig):
     """
     browser_options = []
     browser_type =  pytestconfig.getoption("browser_type")
-    maximized = pytestconfig.getoption("--start-maximized")
 
-    for input_browser in ["--disable-gpu",
-                          "--headless",
-                          "--no-sandbox",
-                          "--disable-dev-shm-usage",
-                          "--start-maximized"]:
-        browser_options.append(pytestconfig.getoption(input_browser))
-    
+    for input_browser in BrowserOptions:
+        if pytestconfig.getoption(input_browser.value):
+            browser_options.append(input_browser.value)
 
-    manager = BrowserManager(maximized, browser=browser_type)
+    manager = BrowserManager(*browser_options, browser=browser_type)
     yield manager
     manager.driver_down()
 

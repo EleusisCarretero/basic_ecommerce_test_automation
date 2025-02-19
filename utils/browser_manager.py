@@ -43,6 +43,15 @@ class ServiceManager(Enum):
     EDGE = EdgeService, EdgeManager
 
 
+class BrowserOptions(str, Enum):
+    """Available browser options"""
+    DISABLE_GPU = "--disable-gpu"
+    HEADLESS = "--headless"
+    NO_SANBOX = "--no-sandbox"
+    DISANLE_DEV_SHM_USAGE = "--disable-dev-shm-usage"
+    SATRT_MAXIMAZED = "--start-maximized"
+
+
 class SelectBy(Enum):
     """
     Enum class to handle the select methods
