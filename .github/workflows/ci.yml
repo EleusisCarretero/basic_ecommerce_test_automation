@@ -35,5 +35,6 @@ jobs:
       
       - name: Add test report to summary
         run: |
-          echo "## Test Report :white_check_mark:" >> $GITHUB_STEP_SUMMARY
+          echo "## Test Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           echo "[Download Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
