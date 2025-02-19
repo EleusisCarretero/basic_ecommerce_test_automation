@@ -33,8 +33,15 @@ jobs:
           pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Chrome --junitxml=chrome_report.xml
           pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Edge --junitxml=edge_report.xml
       
-      - name: Add test report to summary
+      # - name: Add test report to summary
+      #   run: |
+      #     echo "## Test Report" >> $GITHUB_STEP_SUMMARY
+      #     echo "" >> $GITHUB_STEP_SUMMARY
+      #     echo "[Download Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+
+      - name: Publish Test Summary Results
         run: |
-          echo "## Test Report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "[Download Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          npx github-actions-ctrf ctrf/firefox_report.xml
+          npx github-actions-ctrf ctrf/chrome_report.xml
+          npx github-actions-ctrf ctrf/edge_report.xml
+
