@@ -30,3 +30,5 @@ jobs:
         if: success() || failure()
       - run: |
           pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Firefox
+          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Chrome
+          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Edge
