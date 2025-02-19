@@ -101,10 +101,10 @@ class BrowserManager:
             raise BrowserManagerException(f"Browser {browser} is not available")
 
         options = getattr(webdriver, f"{browser}Options")()
-        options.binary_location = "/usr/bin/google-chrome" 
-        user_data_dir = tempfile.mkdtemp()
-        options.add_argument(f"--user-data-dir={user_data_dir}")
-        options.add_argument("--headless")
+        # options.binary_location = "/usr/bin/google-chrome" 
+        # user_data_dir = tempfile.mkdtemp()
+        # options.add_argument(f"--user-data-dir={user_data_dir}")
+        # options.add_argument("--headless")
         for arg in args:
             options.add_argument(arg)
 
