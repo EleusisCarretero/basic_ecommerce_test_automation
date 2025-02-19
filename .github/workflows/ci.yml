@@ -25,41 +25,41 @@ jobs:
           if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
           pip show test_utils
       
-      - name: Desactivar Selenium Manager
-        run: echo "SE_MANAGER=0" >> $GITHUB_ENV
+      # - name: Desactivar Selenium Manager
+      #   run: echo "SE_MANAGER=0" >> $GITHUB_ENV
       
-      - name: Instalar Chromedriver
-        run: |
-          echo "⏳ Verificando si Chromedriver ya está instalado..."
-          if command -v chromedriver &> /dev/null; then
-            echo "✅ Chromedriver ya está instalado: $(chromedriver --version)"
-          else
-            echo "📥 Descargando la versión de Chromedriver compatible con Chrome $CHROME_VERSION..."
+      # - name: Instalar Chromedriver
+      #   run: |
+      #     echo "⏳ Verificando si Chromedriver ya está instalado..."
+      #     if command -v chromedriver &> /dev/null; then
+      #       echo "✅ Chromedriver ya está instalado: $(chromedriver --version)"
+      #     else
+      #       echo "📥 Descargando la versión de Chromedriver compatible con Chrome $CHROME_VERSION..."
             
-            CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+      #       CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
             
-            if [ -z "$CHROMEDRIVER_VERSION" ]; then
-              echo "⚠️ No se pudo obtener la versión de Chromedriver. Usando la última versión conocida."
-              CHROMEDRIVER_VERSION="133.0.6943.98"  # Última versión conocida de Chromedriver
-            fi
+      #       if [ -z "$CHROMEDRIVER_VERSION" ]; then
+      #         echo "⚠️ No se pudo obtener la versión de Chromedriver. Usando la última versión conocida."
+      #         CHROMEDRIVER_VERSION="133.0.6943.98"  # Última versión conocida de Chromedriver
+      #       fi
       
-            echo "📥 Descargando Chromedriver versión: $CHROMEDRIVER_VERSION..."
-            wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" || {
-              echo "❌ Error al descargar Chromedriver. Reintentando con la última versión estable."
-              wget -q "https://chromedriver.storage.googleapis.com/133.0.6943.98/chromedriver_linux64.zip"
-            }
+      #       echo "📥 Descargando Chromedriver versión: $CHROMEDRIVER_VERSION..."
+      #       wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" || {
+      #         echo "❌ Error al descargar Chromedriver. Reintentando con la última versión estable."
+      #         wget -q "https://chromedriver.storage.googleapis.com/133.0.6943.98/chromedriver_linux64.zip"
+      #       }
       
-            unzip chromedriver_linux64.zip
-            sudo mv chromedriver /usr/local/bin/
-            sudo chmod +x /usr/local/bin/chromedriver
+      #       unzip chromedriver_linux64.zip
+      #       sudo mv chromedriver /usr/local/bin/
+      #       sudo chmod +x /usr/local/bin/chromedriver
       
-            echo "✅ Chromedriver instalado en: $(which chromedriver)"
-          fi
+      #       echo "✅ Chromedriver instalado en: $(which chromedriver)"
+      #     fi
       
       
 
-      - name: Verificar instalación de Chromedriver
-        run: chromedriver --version
+      # - name: Verificar instalación de Chromedriver
+      #   run: chromedriver --version
 
       - uses: actions/checkout@v4
         if: success() || failure()
