@@ -29,9 +29,9 @@ jobs:
       - uses: actions/checkout@v4
         if: success() || failure()
       - run: |
-          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Firefox --junitxml=firefox_report.xml
-          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Chrome --junitxml=chrome_report.xml
-          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Edge --junitxml=edge_report.xml
+          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Firefox --junitxml=test-results/firefox_report.xml
+          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Chrome --junitxml=test-results/chrome_report.xml
+          pytest tests -v -s -m Smoke --headless --start-maximized --browser_type Edge --junitxml=test-results/edge_report.xml
       
       # - name: Add test report to summary
       #   run: |
@@ -39,9 +39,9 @@ jobs:
       #     echo "" >> $GITHUB_STEP_SUMMARY
       #     echo "[Download Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
 
-      - name: Publish Test Summary Results
-        run: |
-          npx github-actions-ctrf ctrf/firefox_report.xml
-          npx github-actions-ctrf ctrf/chrome_report.xml
-          npx github-actions-ctrf ctrf/edge_report.xml
-
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            test-results/**/*.xml
