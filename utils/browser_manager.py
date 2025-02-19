@@ -36,6 +36,20 @@ class AvailableBrowsers(str, Enum):
         return list(cls)
 
 
+class BrowserExtension(str, Enum):
+    """Browser extensions"""
+    EDGE = "msedgedriver"
+    CHROME = "chromedriver"
+    FIREFOX = "geckodriver"
+
+
+class BinaryFiles(str, Enum):
+    "Bin files path"
+    EDGE = "/usr/bin/microsoft-edge"
+    CHROME = "/usr/bin/google-chrome"
+    FIREFOX = "/usr/bin/firefox"
+
+
 class ServiceManager(Enum):
     """Browser Services and manager"""
     CHROME = ChromeService, ChromeDriverManager
@@ -101,31 +115,29 @@ class BrowserManager:
             raise BrowserManagerException(f"Browser {browser} is not available")
 
         options = getattr(webdriver, f"{browser}Options")()
-        # options.binary_location = "/usr/bin/google-chrome" 
-        # user_data_dir = tempfile.mkdtemp()
-        # options.add_argument(f"--user-data-dir={user_data_dir}")
-        # options.add_argument("--headless")
+        options.binary_location = getattr(BinaryFiles, browser.upper()).value
+        user_data_dir = tempfile.mkdtemp()
+        options.add_argument(f"--user-data-dir={user_data_dir}")
+    
         for arg in args:
             options.add_argument(arg)
 
         try:
             service_class, manager = getattr(ServiceManager, browser.upper()).value
             driver_path = manager().install()
+            # correct extension fro browser
+            extension = getattr(BrowserExtension, browser.upper()).value
+            driver_executable = os.path.join(os.path.dirname(driver_path), extension)
+            if not os.path.isfile(driver_executable):
+                self.log.error(f"{extension} not found in: {driver_executable}")
+                raise BrowserManagerException(f"{extension} not valid in {driver_executable}")
 
-            # 🔴 Corregir detección de `chromedriver`
-            chromedriver_executable = os.path.join(os.path.dirname(driver_path), "chromedriver")
+            if not os.access(driver_executable, os.X_OK):
+                self.log.info(f"Assigning permission to {driver_executable}")
+            os.chmod(driver_executable, 0o755)
 
-            if not os.path.isfile(chromedriver_executable):
-                self.log.error(f"❌ Chromedriver no encontrado en: {chromedriver_executable}")
-                raise BrowserManagerException(f"Chromedriver no válido en {chromedriver_executable}")
-
-            if not os.access(chromedriver_executable, os.X_OK):
-                self.log.info(f"🔧 Asignando permisos de ejecución a {chromedriver_executable}")
-            os.chmod(chromedriver_executable, 0o755)
-
-            self.log.info(f"✅ Usando Chromedriver en: {chromedriver_executable}")
-
-            service = service_class(chromedriver_executable)
+            self.log.info(f"Using {extension} in: {driver_executable}")
+            service = service_class(driver_executable)
             driver = getattr(webdriver, browser)(service=service, options=options)
 
         except AttributeError as e:
@@ -133,7 +145,6 @@ class BrowserManager:
             raise BrowserManagerException(f"Error webdriver does not have attribute: {browser}") from e
 
         return driver
-
 
     @property
     def driver(self):
