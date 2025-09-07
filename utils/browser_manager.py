@@ -2,6 +2,7 @@
 Browser manager class
 """
 import os
+import platform
 from typing import Union
 from enum import Enum
 from selenium.webdriver.support.select import Select
@@ -40,6 +41,10 @@ class ServiceManager(Enum):
     CHROME = ChromeService, ChromeDriverManager
     FIREFOX = FirefoxService, FirefoxManager
     EDGE = EdgeService, EdgeManager
+
+class BrowserFolder(Enum):
+    CHROME = "chromedriver"
+    FIREFOX = "geckodriver"
 
 
 class SelectBy(Enum):
@@ -98,20 +103,22 @@ class BrowserManager:
             service_class, manager = getattr(ServiceManager, browser.upper()).value
             driver_path = manager().install()
 
-            # 🔴 Corregir detección de `chromedriver`
-            chromedriver_executable = os.path.join(os.path.dirname(driver_path), "chromedriver")
+            # 🔴 Corregir detección de `driver`
+            executable = os.path.join(os.path.dirname(driver_path), getattr(BrowserFolder, browser.upper()).value)
 
-            if not os.path.isfile(chromedriver_executable):
-                self.log.error(f"❌ Chromedriver no encontrado en: {chromedriver_executable}")
-                raise BrowserManagerException(f"Chromedriver no válido en {chromedriver_executable}")
+            if platform.system().lower() == "windows":
+                executable = f"{executable}.exe"
+            if not os.path.isfile(executable):
+                self.log.error(f"❌ Driver no encontrado en: {executable}")
+                raise BrowserManagerException(f"Driver no válido en {executable}")
 
-            if not os.access(chromedriver_executable, os.X_OK):
-                self.log.info(f"🔧 Asignando permisos de ejecución a {chromedriver_executable}")
-                os.chmod(chromedriver_executable, 0o755)
+            if not os.access(executable, os.X_OK):
+                self.log.info(f"🔧 Asignando permisos de ejecución a {executable}")
+                os.chmod(executable, 0o755)
 
-            self.log.info(f"✅ Usando Chromedriver en: {chromedriver_executable}")
+            self.log.info(f"✅ Usando Chromedriver en: {executable}")
 
-            service = service_class(chromedriver_executable)
+            service = service_class(executable)
             driver = getattr(webdriver, browser)(service=service, options=options)
 
         except AttributeError as e:

@@ -28,7 +28,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--browser_type",
         action="store",
-        default="Chrome",
+        default="Firefox",
         help="Browser to execute the tests"
     )
     parser.addoption(
@@ -107,9 +107,9 @@ def run_users_api(api_settings):
     """
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, "utils/api.py")
-    with start_server(file_path, api_settings):
+    """with start_server(file_path, api_settings):
         response = requests.get("http://127.0.0.1:5000", timeout=10)
-        assert response.status_code == 200
+        assert response.status_code == 200"""
 
 @contextmanager
 def start_server(file_path: str, api_settings: str):

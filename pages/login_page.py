@@ -1,9 +1,9 @@
 """
 Login page class
 """
-from tkinter import Button
 from pages.base_pages import BasePage
 from ui.input import Input
+from ui.button import Button
 from utils.tools import YamlManager
 
 
@@ -29,9 +29,9 @@ class LoginPage(BasePage):
             testing_page
         )["general_inputs"]["login_page"]
         self.testing_page = self.page_dict["path"]
-        self.user_name = Input(driver=browser, locator=self._get_element_params("username"), name="username_input", timeout=60)
-        self.password = Input(driver=browser, locator=self._get_element_params("password"), name="password_input", timeout=60)
-        self.login = Button(driver=browser, locator=self._get_element_params("login_bttn"), name="login_button", timeout=60)
+        self.user_name = Input(driver=browser.driver, locator=self._get_element_params("username"), name="username_input", timeout=60)
+        self.password = Input(driver=browser.driver, locator=self._get_element_params("password"), name="password_input", timeout=60)
+        self.login = Button(driver=browser.driver, locator=self._get_element_params("login_bttn"), name="login_button", timeout=60)
 
     def get_valid_credentials(self):
         """
@@ -147,3 +147,8 @@ class LoginPage(BasePage):
             self._get_element_params(key="wrong_credential_error"),
             timeout=timeout
             )
+
+    def alter_log_in(self, user_name, password):
+        self.user_name.write(user_name)
+        self.password.write(password)
+        self.login.click()

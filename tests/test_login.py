@@ -104,6 +104,9 @@ class TestPositiveFlows(BaseLogIn):
     def setup(self, browser, result):
         super().setup(browser, result)
         self.login_page.open_page()
+    
+    def test_alter_loging(self):
+        self.login_page.alter_log_in(user_name="standard_user", password="secret_sauce")
 
     @pytest.mark.Smoke
     def test_valid_login(self):
