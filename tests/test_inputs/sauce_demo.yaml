@@ -17,8 +17,8 @@ general_inputs:
       by: "ID"
       value: "login-button"
     wrong_credential_error:
-      by: "CSS_SELECTOR"
-      value: "div.error-message-container.error h3"
+      by: "XPATH"
+      value: "//h3[normalize-space()='{error_msg}']"
   inventory_page:
     path: inventory.html
     lateral_menu:
