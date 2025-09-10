@@ -2,6 +2,7 @@
 Login page class
 """
 from pages.base_pages import BasePage
+from ui.error_message import ErrorMessage
 from ui.input import Input
 from ui.button import Button
 from utils.tools import YamlManager
@@ -21,6 +22,7 @@ class LoginPage(BasePage):
         LOGIN_PAGE_DICT (dict): Saves al the needed and/or relevant inputs for login page
         testing_page (str): Login page path
     """
+    TIMEOUT = 60
     def __init__(self,
                  browser,
                  testing_page):
@@ -29,10 +31,48 @@ class LoginPage(BasePage):
             testing_page
         )["general_inputs"]["login_page"]
         self.testing_page = self.page_dict["path"]
-        self.user_name = Input(driver=browser.driver, locator=self._get_element_params("username"), name="username_input", timeout=60)
-        self.password = Input(driver=browser.driver, locator=self._get_element_params("password"), name="password_input", timeout=60)
-        self.login = Button(driver=browser.driver, locator=self._get_element_params("login_bttn"), name="login_button", timeout=60)
+        self._user_name = Input(driver=browser.driver, locator=self._get_element_params("username"), name="username_input", timeout=60)
+        self._password = Input(driver=browser.driver, locator=self._get_element_params("password"), name="password_input", timeout=60)
+        self._login_button = Button(driver=browser.driver, locator=self._get_element_params("login_bttn"), name="login_button", timeout=60)
 
+    @property
+    def user_name(self):
+        return self._user_name
+
+    @property
+    def password(self):
+        return self._password
+
+    @property
+    def login_button(self):
+        return self._login_button
+
+    def _login(self, user_name=None, password=None):
+        if user_name:
+            self.user_name.write(user_name)
+        if password:
+            self.password.write(password)
+        self.login_button.click()
+    
+    
+    def logining(self,
+                 user_name=None,
+                 password=None):
+        """
+        Tries to logins.
+
+        With the given 'user' and 'password' or not it tries to logins.
+
+        Args:
+            user (str:optional): User name
+            password (str:optional): corresponding password
+            credentials (bool:optional:default=True): Flag to try to login with or without
+        """
+        self.log.info("Tying to login")
+        self.log.debug(f"{user_name=}, {password=}")
+        # Write credentials if it is requested
+        self._login(user_name=user_name, password=password)
+    
     def get_valid_credentials(self):
         """
         Gives back a list with all the available user credentials from https://www.saucedemo.com/
@@ -60,7 +100,7 @@ class LoginPage(BasePage):
         users = get_credential("valid_users", 1)
         passwords = get_credential("valid_password", 1, 2)
         for user in users:
-            valid_credentials.append({"user": user, "password": passwords[0]})
+            valid_credentials.append({"user_name": user, "password": passwords[0]})
         return valid_credentials
 
     def get_just_specific_user(self,
@@ -79,76 +119,22 @@ class LoginPage(BasePage):
         """
         users = self.get_valid_credentials()
         for user in users:
-            if user["user"] == desired_user:
+            if user["user_name"] == desired_user:
                 return user
         self.log.error(f"{desired_user} is not part of the valid users form {users}. "
                        f"Check the 'accepted' users from {self.testing_page }")
         raise LoginPageException(f"{desired_user} is not a valid user")
 
-    def write_credentials(self,
-                          user: str,
-                          password: str):
-        """
-        Writes the credentials in 'Username' and 'Password' fields.
-
-        This method takes the parameters 'user' and 'password' and write
-        them in their corresponding spaces.
-
-        Args:
-            user (str): User name
-            password (str): corresponding password
-        """
-        def set_credentials(key, keys_value):
-            """
-            Set the specific credential, username or password, in the corresponding field.
-            """
-            self.set_element_value(self._get_element_params(key), keys_value)
-
-        for key, keys_value in {"username": user, "password": password}.items():
-            set_credentials(key, keys_value)
-
-    def click_login_btn(self):
-        """
-        Clicks on the login button form login page.
-        """
-        self.click_on_element(self._get_element_params("login_bttn"))
-
-    def login_page(self,
-                   user=None,
-                   password=None,
-                   credentials=True):
-        """
-        Tries to logins.
-
-        With the given 'user' and 'password' or not it tries to logins.
-
-        Args:
-            user (str:optional): User name
-            password (str:optional): corresponding password
-            credentials (bool:optional:default=True): Flag to try to login with or without
-        """
-        self.log.info("Tying to login")
-        # Write credentials if it is requested
-        if credentials:
-            self.log.info(f"Writing credentials: user name {user}, password: {password}")
-            self.write_credentials(user, password)
-        # Click on login button
-        self.click_login_btn()
-
-    def get_login_error_text(self,
-                             timeout: int=2):
+    def error_message(self, error_msg: str, timeout=None):
         """
         Returns the text from error message.
 
         Returns:
             str: text from error message displayed after a wrong login.
         """
-        return self.get_text_element(
-            self._get_element_params(key="wrong_credential_error"),
-            timeout=timeout
-            )
-
-    def alter_log_in(self, user_name, password):
-        self.user_name.write(user_name)
-        self.password.write(password)
-        self.login.click()
+        by, value = self._get_element_params("wrong_credential_error")
+        timeout = timeout or self.TIMEOUT
+        return super().error_message(
+            locator=(by, value.format(error_msg=error_msg)),
+            name="Login page error message",
+            timeout=timeout)

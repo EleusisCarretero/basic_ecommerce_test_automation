@@ -61,7 +61,7 @@ class BaseLogIn(BaseTest):
         """
         step_msg = f"Check using credentials {user_credential} we are able to login successfully."
         self.result.check_not_raises_any_exception(
-            self.login_page.login_page,
+            self.login_page.logining,
               step_msg,
               **user_credential
         )
@@ -80,17 +80,17 @@ class BaseLogIn(BaseTest):
         # 1. correct login
         step_msg = f"Check using credentials {user_credential} we are able to login unsuccessfully."
         self.result.check_not_raises_any_exception(
-            self.login_page.login_page,
+            self.login_page.logining,
               step_msg,
-              **user_credential
+              **user_credential  
         )
         assert self.result.step_status
         # 2. validate error message
         step_msg = "Check the error message is displayed as expected"
-        current_error_msg = self.login_page.get_login_error_text(timeout=timeout)
+        is_visible = self.login_page.error_message(error_msg=expected_error_msg,timeout=timeout).is_visible()
         self.result.check_equals_to(
-            actual_value=current_error_msg,
-            expected_value=expected_error_msg,
+            actual_value=is_visible,
+            expected_value=True,
             step_msg=step_msg
         )
         assert self.result.step_status
@@ -104,9 +104,6 @@ class TestPositiveFlows(BaseLogIn):
     def setup(self, browser, result):
         super().setup(browser, result)
         self.login_page.open_page()
-    
-    def test_alter_loging(self):
-        self.login_page.alter_log_in(user_name="standard_user", password="secret_sauce")
 
     @pytest.mark.Smoke
     def test_valid_login(self):
@@ -192,7 +189,7 @@ class TestNegativeFlows(BaseLogIn):
         self.login_page.open_page()
 
     @pytest.mark.parametrize(
-            ("user", "password", "expected_error_mgs"),
+            ("user_name", "password", "expected_error_mgs"),
             [
                 ("Juan_Camaney", "12345",
                  ERROR_MSG),  # Invalid user, invalid password
@@ -202,38 +199,38 @@ class TestNegativeFlows(BaseLogIn):
                  ERROR_MSG)  # invalid user, 'valid' password
             ]
     )
-    def test_invalid_credentials(self, user, password, expected_error_mgs):
+    def test_invalid_credentials(self, user_name, password, expected_error_mgs):
         """
         Validate invalid credentials
 
         Args:
-            user(str): user credential.
+            user_name(str): user credential.
             password(str): password credentials.
             expected_error_mgs(str): expected error message shown when a wrong user tries to login.
         """
         self.step_check_login_unsuccessfully(
-            user_credential={"user":user,"password":password},
+            user_credential={"user_name":user_name,"password":password},
             expected_error_msg=expected_error_mgs
         )
 
     @pytest.mark.parametrize(
-            ("user", "password", "expected_error_msg"),
+            ("user_name", "password", "expected_error_msg"),
             [
                 ("standard_user", "", "Epic sadface: Password is required"),  # Empty password
                 ("", "secret_sauce", "Epic sadface: Username is required"),  # Empty user
                 ("", "", "Epic sadface: Username is required")  # Empty user and empty password
             ]
     )
-    def test_empty_credentials(self, user, password, expected_error_msg):
+    def test_empty_credentials(self, user_name, password, expected_error_msg):
         """
         Validate empty credentials, user, password or both.
 
         Args:
-            user(str): user credential.
+            user_name(str): user credential.
             password(str): password credentials.
             expected_error_mgs(str): expected error message shown when a wrong user tries to login.
         """
         self.step_check_login_unsuccessfully(
-            user_credential={"user":user,"password":password},
+            user_credential={"user_name":user_name,"password":password},
             expected_error_msg=expected_error_msg
         )

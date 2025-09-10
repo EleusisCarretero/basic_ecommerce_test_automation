@@ -3,6 +3,7 @@ Base test page class
 """
 from typing import Union
 from test_utils.logger_manager import LoggerManager
+from ui.error_message import ErrorMessage
 from utils.browser_manager import BrowserManagerException, SelectBy
 
 
@@ -219,3 +220,15 @@ class BasePage:
                 f"with value '{option_value}' and locator {locator}"
             )
             raise BasePageException("Dropdown selection failed") from e
+    
+    def error_message(self,
+                  locator,
+                  name,
+                  timeout: int=60):
+        """
+        Returns the text from error message.
+
+        Returns:
+            str: text from error message displayed after a wrong login.
+        """
+        return ErrorMessage(driver=self.browser.driver, locator=locator, name=name, timeout=timeout)
