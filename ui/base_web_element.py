@@ -36,6 +36,7 @@ class BaseWebElement:
     def __init__(self, driver, locator, name, timeout):
         self._driver = driver
         self._element = Element(*locator, driver)
+        self._locator = locator
         self._name = name
         self.timeout = timeout or self.TIMEOUT
         self.wait = WebDriverWait(driver, timeout)
@@ -53,6 +54,21 @@ class BaseWebElement:
     @property
     def name(self):
         return self._name
+    
+    @property
+    def locator(self):
+        by, path = self._locator
+        return getattr(By, by), path
+    
+    @locator.setter
+    def locator(self, new_locator):
+        if isinstance(new_locator, tuple):
+            self._locator = new_locator
+        elif isinstance(new_locator, By):
+            self._locator[0] = new_locator
+        else:
+            self._locator[1] = new_locator
+        
 
     def is_visible(self):
         """
@@ -70,12 +86,14 @@ class BaseWebElement:
         is_visible = False
         try:
             self.wait.until(
-                EC.visibility_of_element_located(self._element.locator())
+                EC.visibility_of_element_located(self.locator)
             )
             is_visible = True
         except TimeoutException as e:
             self.log.error("Element is not visible on "
-                           f"'({self._element.locator()})' within {self.timeout}s: {e}")
+                           f"'({self.locator})' within {self.timeout}s: {e}")
+        except Exception as e:
+            self.log.error(f"Unknow excpetion: {e}")
         return is_visible
 
     def get_text(self) -> str:
