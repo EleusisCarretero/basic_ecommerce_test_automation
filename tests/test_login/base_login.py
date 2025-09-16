@@ -72,7 +72,7 @@ class BaseLogIn(BaseTest):
         self.result.check_not_raises_any_exception(
             self.login_page.logining,
               step_msg,
-              **user_credential  
+              **user_credential
         )
         assert self.result.step_status
         # 2. validate error message

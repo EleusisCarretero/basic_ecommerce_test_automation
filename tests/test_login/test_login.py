@@ -25,7 +25,7 @@ class TestPositiveFlows(BaseLogIn):
         Check the valid users can access to page successfully.
         """
         # 1. Get the user credentials.
-        user_credential = self.login_page.get_just_specific_user("standard_user")
+        user_credential = self.login_page.get_user_credentials("standard_user")
         # 2. Check if we are able to login without exceptions.
         self.step_check_login_successfully(user_credential)
         # 3. Check the url correspond to the inventory url
@@ -44,7 +44,7 @@ class TestPositiveFlows(BaseLogIn):
         Validate the correct login and logout
         """
         # 1. Get the user credentials.
-        user_credential = self.login_page.get_just_specific_user("standard_user")
+        user_credential = self.login_page.get_user_credentials("standard_user")
         # 2. Check if we are able to login without exceptions.
         self.step_check_login_successfully(user_credential)
         #3. click on lateral menu
@@ -75,7 +75,7 @@ class TestPositiveFlows(BaseLogIn):
         """Test that login page takes the timeout to login"""
         self.log.info(f"Testing login page with a timeout of {timeout}s")
         # 1. Get the user credentials.
-        user_credential = self.login_page.get_just_specific_user("standard_user")
+        user_credential = self.login_page.get_user_credentials("standard_user")
         start_time = time.time()
         self.step_check_login_successfully(user_credential)
         end_time = time.time()

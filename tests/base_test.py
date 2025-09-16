@@ -1,6 +1,10 @@
 """
 Contains the common base test classes and shared stuff
 """
+from typing import List
+from ui.base_web_element import BaseWebElementException
+from ui.button import Button
+from ui.input import Input
 from utils.tools import ApiManager, ApiManagerError
 from utils.browser_manager import BrowserManagerException
 from test_utils.logger_manager import LoggerManager
@@ -21,6 +25,7 @@ class BaseTest:
     result = None
     log = None
 
+
     def setup(self, browser, result):
         """
         Setup the common attributes for all the test classes
@@ -28,6 +33,50 @@ class BaseTest:
         self.browser = browser
         self.result = result
         self.log = LoggerManager.get_logger(self.__class__.__name__)
+    
+    def check_input_fill(self, input_element: Input, value:str):
+        self.log.info(f"Check the input element {input_element.name} has the expected value")
+        self.result.check_equals_to(
+            actual_value=input_element.text,
+            expected_value=value,
+            step_msg=f"The input element {input_element.name} has the correct value {value}"
+        )
+        assert self.result.step_status
+    
+    def check_simple_click(self, button_element: Button):
+        self.log.info(f"Check the button element {button_element.name} has perform simple click successfully")
+        self.result.check_not_raises_any_given_exception(
+        button_element.click,
+        BaseWebElementException,
+        f"Check the button element {button_element.name} has perform simple click successfully"
+        )
+        assert self.result.step_status
+    
+    def check_url_after_event(self, event_callback, is_equals=True):
+        current_url = self.browser.get_current_driver_url()
+        if is_equals:
+            self.log.info(f"Check the url from current page is equals to the expected  {expected_url}")
+            self.result.check_equals_to(
+            actual_value=current_url,
+            expected_value=expected_url,
+            step_msg=f"Check new page url {current_url} matches with the expected {expected_url}"
+            )
+        else:
+            self.log.info(f"Check the url from current page is NOT equals to the expected  {expected_url}")
+            self.result.check_not_equals_to(
+            actual_value=current_url,
+            expected_value=expected_url,
+            step_msg=f"Check new page url {current_url} NOT matches with the expected {expected_url}"
+            )
+
+    def step_check_fill_and_click(self, input_elements:dict, button_element: Button, url_changed=False):
+        current_url = ""
+        self.log.info("Check all the input elements are correctly filled and clicking successfully")
+        for input_element in input_elements:
+            self.check_input_fill(**input_element)
+        if url_changed:
+            self.check_simple_click(button_element=button_element)
+        
 
     def step_check_execution_events(self, callable_event, exceptions, *args, **kwargs):
         """
