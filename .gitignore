@@ -1,5 +1,7 @@
-*/__pycache__
+*/__pycache__/*
 logs/
-log_folder/
+logs_folder/
 .vscode
 .pytest_cache
+*.log
+*.html
