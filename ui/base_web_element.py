@@ -96,7 +96,8 @@ class BaseWebElement:
             self.log.error(f"Unknow excpetion: {e}")
         return is_visible
 
-    def get_text(self) -> str:
+    @property
+    def text(self) -> str:
         return self.element.get_attribute("value")
     
     def move_on(self, *extra_expected_conditions) -> None:
