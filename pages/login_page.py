@@ -54,7 +54,6 @@ class LoginPage(BasePage):
             self.password.write(password)
         self.login_button.click()
     
-    
     def logining(self,
                  user_name=None,
                  password=None):
@@ -72,6 +71,20 @@ class LoginPage(BasePage):
         self.log.debug(f"{user_name=}, {password=}")
         # Write credentials if it is requested
         self._login(user_name=user_name, password=password)
+
+    def error_message(self, error_msg: str, timeout=None):
+        """
+        Returns ErrorMessage element instance based on the error message.
+
+        Returns:
+            str: text from error message displayed after a wrong login.
+        """
+        by, value = self._get_element_params("wrong_credential_error")
+        timeout = timeout or self.TIMEOUT
+        return super().error_message(
+            locator=(by, value.format(error_msg=error_msg)),
+            name="Login page error message",
+            timeout=timeout)
     
     def get_valid_credentials(self):
         """
@@ -103,7 +116,7 @@ class LoginPage(BasePage):
             valid_credentials.append({"user_name": user, "password": passwords[0]})
         return valid_credentials
 
-    def get_just_specific_user(self,
+    def get_user_credentials(self,
                                desired_user: str):
         """
         Returns the specific credentials for the 'desired' user.
@@ -124,17 +137,3 @@ class LoginPage(BasePage):
         self.log.error(f"{desired_user} is not part of the valid users form {users}. "
                        f"Check the 'accepted' users from {self.testing_page }")
         raise LoginPageException(f"{desired_user} is not a valid user")
-
-    def error_message(self, error_msg: str, timeout=None):
-        """
-        Returns the text from error message.
-
-        Returns:
-            str: text from error message displayed after a wrong login.
-        """
-        by, value = self._get_element_params("wrong_credential_error")
-        timeout = timeout or self.TIMEOUT
-        return super().error_message(
-            locator=(by, value.format(error_msg=error_msg)),
-            name="Login page error message",
-            timeout=timeout)
